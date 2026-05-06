@@ -35,6 +35,39 @@ body {
 }
 a { color:#22c55e; }
 </style>
+
+<!-- WALLET CONNECT (FIXED + MULTI WALLET) -->
+<script type="module">
+import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi'
+import { mainnet, bsc, polygon, arbitrum } from 'https://esm.sh/@wagmi/core/chains'
+
+const projectId = '3106e2f5010a30340d51257097ffc140'
+
+const metadata = {
+  name: 'DeadEx Protocol',
+  description: 'Recovery Terminal',
+  url: 'https://dead-token-exchange.vercel.app/'
+}
+
+const chains = [mainnet, bsc, polygon, arbitrum]
+
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata
+})
+
+window.modal = createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  themeMode: 'dark',
+  themeVariables: {
+    '--w3m-accent': '#22c55e'
+  }
+})
+</script>
+
 </head>
 
 <body>
@@ -48,29 +81,57 @@ a { color:#22c55e; }
 </div>
 
 <!-- HERO -->
-<div class="text-center mt-16 px-4">
+<div class="text-center mt-14 px-4">
 <h1 class="text-5xl font-bold glow">
 ACCESS<br>LOCKED VALUE
 </h1>
 
 <p class="text-gray-500 mt-6 max-w-md mx-auto">
-A recovery protocol designed to extract hidden liquidity from abandoned crypto assets and convert them into usable value (USDX).
+A controlled recovery protocol that extracts hidden liquidity from abandoned crypto assets and converts them into usable USDX value.
 </p>
 
 <p class="text-green-500/60 text-xs mt-6 tracking-[0.3em]">
 RESTRICTED FINANCIAL INFRASTRUCTURE
 </p>
+
+<!-- CONNECT BUTTON -->
+<div class="mt-6">
+<button onclick="window.modal.open()" class="bg-green-500 text-black px-6 py-3 font-bold">
+AUTHORIZE TERMINAL
+</button>
+</div>
 </div>
 
-<!-- WHY SECTION -->
+<!-- WHY -->
 <div class="max-w-2xl mx-auto mt-16 box p-6 rounded-xl">
-<h2 class="text-green-500 text-sm mb-3">WHY THIS EXISTS</h2>
+<h2 class="text-green-500 text-sm mb-3">WHY DEADEx EXISTS</h2>
 <p class="text-gray-400 text-xs leading-relaxed">
-Millions of crypto tokens become unusable due to liquidity loss, abandoned projects, or market collapse.
+Millions of tokens become unusable due to liquidity loss or project abandonment.
 <br><br>
-DeadEx is built as a recovery layer — converting these dormant assets into USDX, a usable internal liquidity unit.
-<br><br>
-This is not a typical swap platform. It is a controlled recovery system for digital value extraction.
+DeadEx acts as a recovery layer — converting dormant assets into USDX, a usable internal liquidity unit.
+</p>
+</div>
+
+<!-- HOW -->
+<div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
+<h2 class="text-green-500 text-sm mb-3">HOW IT WORKS</h2>
+<p class="text-gray-400 text-xs">
+1. Connect Wallet  
+<br>2. Select Token  
+<br>3. Evaluate Recovery Value  
+<br>4. Receive USDX  
+<br>5. Hold or Exit
+</p>
+</div>
+
+<!-- BENEFITS -->
+<div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
+<h2 class="text-green-500 text-sm mb-3">WHAT YOU GET</h2>
+<p class="text-gray-400 text-xs">
+✔ Recover dead assets  
+✔ Instant liquidity  
+✔ Exit abandoned tokens  
+✔ Controlled ecosystem value
 </p>
 </div>
 
@@ -109,19 +170,17 @@ INITIATE RECOVERY
 
 <!-- PARTNERS -->
 <div class="max-w-4xl mx-auto mt-20 text-center">
-<h2 class="text-green-500 text-sm mb-6">PARTNERS & ECOSYSTEM</h2>
-
+<h2 class="text-green-500 text-sm mb-6">PARTNERS</h2>
 <div class="grid md:grid-cols-3 gap-4 text-xs">
-<div class="box p-4">Ethereum Ecosystem</div>
-<div class="box p-4">BSC Network Tools</div>
-<div class="box p-4">Web3Modal Infra</div>
+<div class="box p-4">Ethereum Network</div>
+<div class="box p-4">BSC Ecosystem</div>
+<div class="box p-4">Web3 Infra Stack</div>
 </div>
 </div>
 
 <!-- SOCIALS -->
 <div class="max-w-4xl mx-auto mt-16 text-center">
 <h2 class="text-green-500 text-sm mb-4">COMMUNITY</h2>
-
 <div class="flex justify-center gap-6 text-xs">
 <a href="#">Twitter</a>
 <a href="#">Telegram</a>
@@ -131,34 +190,22 @@ INITIATE RECOVERY
 
 <!-- NEWSLETTER -->
 <div class="max-w-md mx-auto mt-16 box p-6 rounded-xl text-center">
-<h2 class="text-green-500 text-sm mb-3">JOIN UPDATE NETWORK</h2>
-
+<h2 class="text-green-500 text-sm mb-3">JOIN NETWORK</h2>
 <p class="text-gray-500 text-xs mb-4">
-Get protocol updates, recovery listings & new token integrations.
+Get recovery updates & new token listings.
 </p>
-
-<input type="email" placeholder="Enter email"
+<input type="email" placeholder="Email"
 class="w-full p-3 bg-black mb-3 text-center">
-
 <button class="w-full bg-green-500 text-black p-3 font-bold">
 SUBSCRIBE
 </button>
 </div>
 
-<!-- TRUST MESSAGE -->
-<div class="text-center mt-16 px-4">
-<p class="text-gray-600 text-xs">
-Transparent system • No custody • On-chain execution layer
-</p>
-</div>
-
 <!-- LICENSE -->
-<div class="text-center mt-10 mb-10 px-4 text-[10px] text-gray-700">
-© 2026 DeadEx Protocol  
-<br>
-Licensed as experimental Web3 recovery infrastructure  
-<br>
-Use at your own discretion.
+<div class="text-center mt-16 mb-10 text-[10px] text-gray-700">
+© 2026 DeadEx Protocol<br>
+Experimental recovery infrastructure<br>
+Use at your own risk
 </div>
 
 <!-- LIVE FEED -->
@@ -181,7 +228,6 @@ document.getElementById("swapBtn").onclick=()=>{
 alert("RECOVERY INITIATED...");
 };
 
-// LIVE FEED
 function log(){
 let wallets=["0x4a...21","0x8c...99","0x1d...32"];
 let div=document.createElement("div");
