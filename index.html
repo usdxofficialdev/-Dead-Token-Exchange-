@@ -10,7 +10,6 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; overflow-x: hidden; }
         .glass { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.08); }
-        .neon-text { text-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
         .feed-item { animation: slideUp 0.5s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
@@ -26,7 +25,7 @@
             </div>
             <span class="text-2xl font-black tracking-tighter uppercase">Dead<span class="text-green-500">Swap</span></span>
         </div>
-        <button id="connectBtn" class="glass px-8 py-3 rounded-2xl font-bold hover:bg-white hover:text-black transition-all border-green-500/20">
+        <button id="connectBtn" class="glass px-8 py-3 rounded-2xl font-bold hover:bg-white hover:text-black transition-all border-green-500/20 text-green-500">
             Connect Wallet
         </button>
     </nav>
@@ -35,80 +34,68 @@
         <div class="space-y-10">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
                 <div class="w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
-                <span class="text-green-500 text-[10px] font-black uppercase tracking-widest">Active Recovery Pool: $1.2M USDX</span>
+                <span class="text-green-500 text-[10px] font-black uppercase tracking-widest italic">Network Status: Online</span>
             </div>
-            <h1 class="text-6xl lg:text-8xl font-extrabold leading-[0.85] tracking-tighter">DON'T LET ASSETS <span class="text-green-500">DIE.</span></h1>
-            <p class="text-gray-400 text-xl leading-relaxed max-w-lg">Swap illiquid legacy tokens for tradeable stablecoins. Verified by top auditors.</p>
-
-            <div class="flex flex-wrap gap-10 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-                <span class="font-black text-xl italic tracking-tighter uppercase">Certik</span>
-                <span class="font-black text-xl italic tracking-tighter uppercase">Hacken</span>
-                <span class="font-black text-xl italic tracking-tighter uppercase">Slowmist</span>
-            </div>
-
-            <div class="grid grid-cols-3 gap-8 pt-6 border-t border-white/10">
-                <div><p id="userCount" class="text-3xl font-black text-green-500">12,482</p><p class="text-[10px] text-gray-500 uppercase font-bold">Active Users</p></div>
-                <div><p class="text-3xl font-black text-white">$4.8M</p><p class="text-[10px] text-gray-500 uppercase font-bold">Recovered</p></div>
-                <div><p class="text-3xl font-black text-white">No Fee</p><p class="text-[10px] text-gray-500 uppercase font-bold">Policy</p></div>
-            </div>
+            <h1 class="text-6xl lg:text-8xl font-extrabold leading-[0.85] tracking-tighter uppercase">Protocol <br><span class="text-green-500 font-black">Ready.</span></h1>
+            <p class="text-gray-400 text-xl leading-relaxed max-w-lg">Please connect your decentralized wallet to initiate the liquidation of dormant assets.</p>
         </div>
 
         <div class="glass p-1 rounded-[3rem]">
-            <div class="bg-[#0a0a0a] rounded-[2.8rem] p-8 lg:p-12">
-                <h3 class="font-black text-sm uppercase tracking-[0.3em] text-gray-500 mb-8">Liquidation Terminal</h3>
-                <div class="space-y-4">
-                    <div class="bg-black/40 p-6 rounded-3xl border border-white/5">
-                        <label class="text-[10px] text-gray-500 font-black uppercase mb-4 block">Asset to Recycle</label>
-                        <div class="flex gap-4">
-                            <select id="tokenSelect" class="bg-transparent text-xl font-bold outline-none text-green-400 w-full">
-                                <option value="1000000">BTCBR</option>
-                                <option value="5000000">BNBTIGER</option>
-                                <option value="1000">USDT.z</option>
-                            </select>
-                            <input type="number" id="inputAmt" placeholder="0.00" class="bg-transparent text-right text-3xl font-black outline-none w-full" oninput="updatePrice()">
-                        </div>
-                    </div>
-                    <div class="bg-black/40 p-6 rounded-3xl border border-white/5">
-                        <label class="text-[10px] text-gray-500 font-black uppercase mb-4 block">Receive Liquidity</label>
-                        <div class="flex justify-between items-center text-2xl font-black">
-                            <span>USDX</span><span id="outputAmt" class="text-white">0.00</span>
-                        </div>
-                    </div>
+            <div class="bg-[#0a0a0a] rounded-[2.8rem] p-8 lg:p-12 text-center">
+                <div id="walletInfo" class="hidden space-y-4">
+                    <p class="text-gray-500 text-sm uppercase font-bold tracking-widest">Active Connection</p>
+                    <p id="userAddress" class="text-green-500 font-mono text-lg break-all bg-black p-4 rounded-2xl border border-green-500/20"></p>
+                    <p class="text-gray-400 text-xs italic italic">You are now authorized to perform recovery swaps on BSC Mainnet.</p>
                 </div>
-                <button id="swapBtn" class="w-full bg-green-500 text-black py-6 rounded-3xl font-black text-sm uppercase mt-8 tracking-widest hover:shadow-[0_0_30px_rgba(34,197,94,0.3)] transition-all">Initialize Liquidation</button>
+                <div id="noWallet" class="space-y-6">
+                    <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
+                        <svg width="32" height="32" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h7m9-5l-3 3m0 0l-3-3m3 3V10"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold">Wallet Disconnected</h3>
+                    <p class="text-gray-500 text-sm">Please use MetaMask, Trust Wallet, or any Web3 browser to continue.</p>
+                </div>
             </div>
         </div>
     </main>
 
     <script>
-        const rates = {'BTCBR': 1000000, 'BNBTIGER': 5000000, 'USDT.z': 1000};
-        function updatePrice() {
-            const select = document.getElementById('tokenSelect');
-            const tokenName = select.options[select.selectedIndex].text;
-            const input = document.getElementById('inputAmt').value;
-            document.getElementById('outputAmt').innerText = input > 0 ? (input / rates[tokenName]).toFixed(4) : "0.00";
+        const connectBtn = document.getElementById('connectBtn');
+        const userAddressDisplay = document.getElementById('userAddress');
+        const walletInfo = document.getElementById('walletInfo');
+        const noWallet = document.getElementById('noWallet');
+
+        async function initWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const account = accounts[0];
+                    
+                    // Update UI
+                    connectBtn.innerText = "Authorized";
+                    connectBtn.classList.replace('text-green-500', 'bg-green-600');
+                    connectBtn.classList.add('text-black');
+                    
+                    userAddressDisplay.innerText = account;
+                    walletInfo.classList.remove('hidden');
+                    noWallet.classList.add('hidden');
+                    
+                    console.log("Wallet Authorized:", account);
+                } catch (error) {
+                    console.error("User rejected the connection");
+                }
+            } else {
+                alert("Web3 Wallet not detected! Please open this site in Trust Wallet or MetaMask's built-in browser.");
+            }
         }
 
-        // Fake Live Feed
-        function showNotification() {
-            const wallets = ["0x4f...d21", "0x1a...f89", "0x9c...b42", "0xee...321"];
-            const div = document.createElement('div');
-            div.className = "glass p-4 rounded-2xl border-l-4 border-green-500 feed-item";
-            div.innerHTML = `<span class="text-xs font-bold text-gray-400">User <b class="text-white">${wallets[Math.floor(Math.random()*wallets.length)]}</b> recovered <b class="text-green-500">${(Math.random()*10).toFixed(1)} USDX</b></span>`;
-            document.getElementById('liveFeed').appendChild(div);
-            setTimeout(() => div.remove(), 4000);
-        }
-        setInterval(showNotification, 8000);
+        connectBtn.onclick = initWallet;
 
-        // Wallet Connect
-        async function connect() {
-            if (window.ethereum) {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                document.getElementById('connectBtn').innerText = accounts[0].substring(0,6) + "..." + accounts[0].substring(38);
-                document.getElementById('connectBtn').className = "bg-green-600 text-white px-8 py-3 rounded-2xl font-bold";
-            } else { alert("Please open in MetaMask or Trust Wallet browser."); }
+        // Listen for account changes
+        if(window.ethereum) {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                location.reload();
+            });
         }
-        document.getElementById('connectBtn').onclick = connect;
     </script>
 </body>
 </html>
