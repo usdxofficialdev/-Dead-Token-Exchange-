@@ -29,13 +29,21 @@
         const chains = [mainnet, bsc, polygon]
         const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
-        window.modal = createWeb3Modal({
-            wagmiConfig,
-            projectId,
-            chains,
-            themeMode: 'dark',
-            themeVariables: { '--w3m-accent': '#22c55e' }
-        })
+       const wagmiConfig = defaultWagmiConfig({ 
+    chains, 
+    projectId, 
+    metadata 
+  })
+
+  window.modal = createWeb3Modal({
+    wagmiConfig,
+    projectId,
+    chains,
+    themeMode: 'dark',
+    themeVariables: {
+      '--w3m-accent': '#22c55e'
+    }
+  })
     </script>
 </head>
 <body>
