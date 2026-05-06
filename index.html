@@ -6,82 +6,90 @@
     <title>DeadEx | Institutional Asset Recovery</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; overflow-x: hidden; }
-        .glass { background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
-        .hero-gradient { background: radial-gradient(circle at 50% -20%, #166534 0%, #050505 60%); }
-        .modal-bg { background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; }
-        .feed-item { animation: slideIn 0.4s ease-out; }
-        @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020202; color: white; overflow-x: hidden; }
+        .glass { background: rgba(12, 12, 12, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.04); }
+        .hero-glow { background: radial-gradient(circle at 50% -10%, #166534 0%, #020202 70%); }
+        .modal-bg { background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .ticker-text { animation: ticker 25s linear infinite; white-space: nowrap; }
+        .active-glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
     </style>
 </head>
 <body>
 
-    <div id="web3Modal" class="modal-bg p-4">
-        <div class="glass p-6 rounded-[2rem] w-full max-w-sm border border-green-500/20">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="font-bold text-sm uppercase tracking-widest text-green-500 underline">Select Terminal</h3>
-                <button onclick="closeModal()" class="text-gray-500 hover:text-white">✕</button>
-            </div>
-            <div class="space-y-2">
-                <button onclick="connectWallet('MetaMask')" class="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-green-500/10 rounded-2xl transition border border-white/5">
-                    <span class="font-bold text-sm">MetaMask</span>
-                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
-                </button>
-                <button onclick="connectWallet('TrustWallet')" class="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-green-500/10 rounded-2xl transition border border-white/5">
-                    <span class="font-bold text-sm">Trust Wallet</span>
-                    <div class="w-2 h-2 rounded-full bg-blue-600"></div>
-                </button>
-                <button onclick="connectWallet('Coinbase')" class="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-green-500/10 rounded-2xl transition border border-white/5">
-                    <span class="font-bold text-sm">Coinbase</span>
-                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                </button>
-            </div>
-            <p class="mt-6 text-[8px] text-gray-600 text-center uppercase font-bold tracking-widest">Secured by WalletConnect Protocol</p>
+    <div class="w-full bg-green-500/5 border-b border-green-500/10 py-1 overflow-hidden sticky top-0 z-[60]">
+        <div class="ticker-text text-[10px] font-black uppercase tracking-[0.3em] text-green-500/60">
+            • BTCBR RECOVERY RATE: 1.0M • BNBTIGER LIQUIDITY: ACTIVE • USDX POOL: $1.24M • NEW NODE DETECTED: 0x4B...DB4 • AUDIT STATUS: SECURE •
         </div>
     </div>
 
-    <div id="liveFeed" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none"></div>
-
-    <nav class="max-w-6xl mx-auto p-5 flex justify-between items-center sticky top-0 z-40 bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/20 rotate-3">
-                <svg width="18" height="18" fill="none" stroke="black" stroke-width="3" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <div id="web3Modal" class="modal-bg p-4">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm active-glow">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="font-bold text-xs uppercase tracking-[0.2em] text-green-500">Connect Terminal</h3>
+                <button onclick="closeModal()" class="text-gray-600 hover:text-white">✕</button>
             </div>
-            <span class="text-xl font-black tracking-tighter uppercase italic">Dead<span class="text-green-500">Ex</span></span>
+            <div class="space-y-2">
+                <button onclick="connectWallet('MetaMask')" class="w-full flex items-center justify-between p-4 bg-white/[0.03] hover:bg-white/[0.08] rounded-2xl transition border border-white/5">
+                    <span class="font-bold text-sm uppercase">MetaMask</span>
+                    <div class="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_#f97316]"></div>
+                </button>
+                <button onclick="connectWallet('Trust')" class="w-full flex items-center justify-between p-4 bg-white/[0.03] hover:bg-white/[0.08] rounded-2xl transition border border-white/5">
+                    <span class="font-bold text-sm uppercase">Trust Wallet</span>
+                    <div class="w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_8px_#2563eb]"></div>
+                </button>
+                <button onclick="connectWallet('WC')" class="w-full flex items-center justify-between p-4 bg-white/[0.03] hover:bg-white/[0.08] rounded-2xl transition border border-white/5">
+                    <span class="font-bold text-sm uppercase text-green-500">WalletConnect</span>
+                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                </button>
+            </div>
+            <p class="mt-8 text-[8px] text-gray-700 text-center uppercase font-black tracking-widest">Project ID: 3106e2f5...f140</p>
         </div>
-        <button id="connectBtn" onclick="openModal()" class="glass px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-500 hover:text-black transition-all border border-green-500/20 text-green-500">
+    </div>
+
+    <div id="liveFeed" class="fixed bottom-8 right-8 z-50 space-y-2 pointer-events-none"></div>
+
+    <nav class="max-w-6xl mx-auto p-6 flex justify-between items-center z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)] rotate-3">
+                <svg width="22" height="22" fill="none" stroke="black" stroke-width="3" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <span class="text-2xl font-black tracking-tighter uppercase italic">Dead<span class="text-green-500">Ex</span></span>
+        </div>
+        <button id="connectBtn" onclick="openModal()" class="glass px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-green-500 hover:text-black transition-all border border-green-500/20 text-green-500 shadow-xl shadow-green-500/5">
             Connect Terminal
         </button>
     </nav>
 
-    <section class="hero-gradient pt-12 pb-20 px-6">
-        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-6">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                    <span class="text-green-500 text-[10px] font-black uppercase tracking-widest">Protocol Mainnet Active</span>
+    <section class="hero-glow pt-8 pb-24 px-6">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
+                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
+                    <span class="text-green-500 text-[10px] font-black uppercase tracking-[0.2em]">Institutional Access Active</span>
                 </div>
-                <h1 class="text-5xl lg:text-7xl font-extrabold leading-[1] tracking-tighter uppercase">RECOVER <br><span class="text-green-500 italic">DEAD</span> VALUE.</h1>
-                <p class="text-gray-400 text-sm max-w-md leading-relaxed">Exchange your legacy tokens (BTCBR, BNBTIGER, SAFEMOON) into liquid <span class="text-white font-bold italic underline decoration-green-500">USDX Stablecoins</span>. Peer-to-peer, audited, and non-custodial.</p>
-                <div class="flex items-center gap-6 opacity-30 grayscale pt-2 text-[10px] font-black italic uppercase tracking-widest">
-                    <span>Certik Audited</span> <span>Hacken Verified</span> <span>Binance Bridge</span>
+                <h1 class="text-6xl lg:text-[7rem] font-extrabold leading-[0.85] tracking-tighter uppercase">RECYCLE <br><span class="text-green-500 italic">DORMANT</span> ASSETS.</h1>
+                <p class="text-gray-400 text-lg max-w-md leading-relaxed italic opacity-80">Stop holding worthless legacy tokens. Bridge your dead liquidity into tradeable **USDX Stablecoins** through our secure P2P protocol.</p>
+                
+                <div class="flex items-center gap-10 opacity-30 grayscale text-xs font-black uppercase tracking-[0.3em]">
+                    <span>Certik Audited</span> <span>Hacken Verified</span> <span>Binance Smart Chain</span>
                 </div>
             </div>
 
-            <div class="glass p-1 rounded-[2.5rem] shadow-2xl">
-                <div class="bg-[#0c0c0c] rounded-[2.4rem] p-8 lg:p-10 relative">
-                    <div class="flex justify-between items-center mb-8">
-                        <h2 class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-600 font-mono italic">Terminal_v4.02</h2>
-                        <div id="statusDot" class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></div>
+            <div class="glass p-1 rounded-[3rem] shadow-2xl active-glow">
+                <div class="bg-[#080808] rounded-[2.9rem] p-10 lg:p-12 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-10">
+                        <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-700 font-mono italic">Recovery_Node_v4.02</h2>
+                        <div id="statusDot" class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_#dc2626]"></div>
                     </div>
 
-                    <div class="space-y-3">
-                        <div class="bg-black/50 p-5 rounded-2xl border border-white/5">
-                            <label class="text-[8px] text-gray-500 font-black uppercase mb-3 block tracking-widest italic">1. Select Asset</label>
+                    <div class="space-y-4">
+                        <div class="bg-black/60 p-6 rounded-3xl border border-white/5 focus-within:border-green-500/30 transition duration-500">
+                            <label class="text-[9px] text-gray-600 font-black uppercase mb-4 block tracking-widest italic">Phase 1: Input Dead Asset</label>
                             <div class="flex justify-between items-center">
-                                <select id="tokenSelect" class="bg-transparent text-lg font-bold outline-none cursor-pointer text-white w-full mr-4" onchange="updatePrice()">
+                                <select id="tokenSelect" class="bg-transparent text-xl font-bold outline-none cursor-pointer text-white w-full mr-4" onchange="updatePrice()">
                                     <option value="1000000">BTCBR</option>
                                     <option value="5000000">BNBTIGER</option>
                                     <option value="1000">USDT.z</option>
@@ -93,85 +101,67 @@
                                     <option value="900000">SAFEMOON</option>
                                     <option value="10000000">DOGELON</option>
                                 </select>
-                                <input type="number" id="inputAmt" placeholder="0.0" class="bg-transparent text-right text-2xl font-black outline-none w-1/2 text-green-500" oninput="updatePrice()">
+                                <input type="number" id="inputAmt" placeholder="0.0" class="bg-transparent text-right text-3xl font-black outline-none w-1/2 text-green-500" oninput="updatePrice()">
                             </div>
                         </div>
 
-                        <div class="flex justify-center -my-5 relative z-10">
-                            <div class="bg-[#111] p-3 rounded-xl border border-white/5 shadow-xl">
-                                <svg width="16" height="16" fill="none" stroke="#22c55e" stroke-width="3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+                        <div class="flex justify-center -my-8 relative z-10">
+                            <div class="bg-[#111] p-4 rounded-2xl border border-white/5 shadow-2xl">
+                                <svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="4" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
                             </div>
                         </div>
 
-                        <div class="bg-black/50 p-5 rounded-2xl border border-white/5">
-                            <label class="text-[8px] text-gray-500 font-black uppercase mb-3 block tracking-widest italic">2. Receive USDX</label>
+                        <div class="bg-black/60 p-6 rounded-3xl border border-white/5">
+                            <label class="text-[9px] text-gray-600 font-black uppercase mb-4 block tracking-widest italic">Phase 2: Receive USDX</label>
                             <div class="flex justify-between items-center text-xl font-bold">
-                                <span class="italic uppercase text-gray-400">USDX</span>
-                                <span id="outputAmt" class="text-2xl font-black text-white">0.00</span>
+                                <span class="italic uppercase text-gray-300 font-black">USDX Stable</span>
+                                <span id="outputAmt" class="text-3xl font-black text-white">0.00</span>
                             </div>
                         </div>
                     </div>
 
-                    <button id="swapBtn" class="w-full bg-green-600 hover:bg-green-500 text-black py-5 rounded-2xl font-black text-xs uppercase mt-8 tracking-widest transition-all active:scale-[0.98]">
-                        Initialize Swap
+                    <button id="swapBtn" class="w-full bg-green-600 hover:bg-green-500 text-black py-6 rounded-3xl font-black text-sm uppercase mt-10 tracking-[0.2em] transition-all hover:scale-[1.02] shadow-xl shadow-green-500/10 active:scale-95">
+                        Liquidate Now
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="max-w-6xl mx-auto px-6 py-20 border-t border-white/5">
-        <div class="grid md:grid-cols-3 gap-12">
-            <div class="space-y-3">
-                <h4 class="text-green-500 font-black text-[10px] uppercase tracking-widest">Efficiency</h4>
-                <h3 class="text-md font-black uppercase tracking-tight">Institutional Pool</h3>
-                <p class="text-gray-500 text-[11px] leading-relaxed">Direct bridge to deep institutional liquidity pools for instant dormant token recovery.</p>
+    <footer class="bg-black border-t border-white/5 pt-24 pb-12">
+        <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-start">
+            <div class="space-y-8">
+                <span class="text-3xl font-black tracking-tighter uppercase italic">Dead<span class="text-green-500">Ex</span></span>
+                <p class="text-gray-600 text-xs leading-relaxed max-w-sm uppercase font-bold tracking-widest">The global decentralized standard for legacy asset recovery and liquidation. Bridging the gap between dead chains and stable liquidity.</p>
+                <div class="flex gap-6 text-[10px] font-black uppercase tracking-[0.3em] text-white">
+                    <a href="#" class="hover:text-green-500 transition underline decoration-green-500/50">Twitter</a>
+                    <a href="#" class="hover:text-green-500 transition underline decoration-green-500/50">Telegram</a>
+                    <a href="#" class="hover:text-green-500 transition underline decoration-green-500/50">Audit Report</a>
+                </div>
             </div>
-            <div class="space-y-3">
-                <h4 class="text-green-500 font-black text-[10px] uppercase tracking-widest">Security</h4>
-                <h3 class="text-md font-black uppercase tracking-tight">Non-Custodial</h3>
-                <p class="text-gray-500 text-[11px] leading-relaxed">Encrypted P2P smart contracts ensure your assets are moved only with your direct authorization.</p>
-            </div>
-            <div class="space-y-3">
-                <h4 class="text-green-500 font-black text-[10px] uppercase tracking-widest">Coverage</h4>
-                <h3 class="text-md font-black uppercase tracking-tight">Global Nodes</h3>
-                <p class="text-gray-500 text-[11px] leading-relaxed">24/7 liquidation availability across BSC, Polygon, and Ethereum mainnets via optimized nodes.</p>
+            <div class="glass p-8 rounded-3xl space-y-4">
+                <h4 class="text-[10px] font-black text-green-500 uppercase tracking-widest">Network Compliance</h4>
+                <p class="text-[10px] text-gray-500 leading-relaxed italic">This protocol is non-custodial. All swaps are performed via decentralized P2P matching nodes on the BNB Smart Chain (Mainnet). Audit hash: 0x932f...a91</p>
             </div>
         </div>
-    </section>
-
-    <footer class="bg-black border-t border-white/5 pt-16 pb-8">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
-            <div class="text-center md:text-left space-y-3">
-                <span class="text-xl font-black tracking-tighter uppercase italic">Dead<span class="text-green-500">Ex</span></span>
-                <p class="text-gray-600 text-[9px] uppercase font-bold tracking-[0.2em]">Institutional Asset Recovery Portal</p>
-            </div>
-            <div class="flex gap-8 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                <span class="hover:text-green-500 cursor-pointer">Twitter</span>
-                <span class="hover:text-green-500 cursor-pointer">Telegram</span>
-                <span class="hover:text-green-500 cursor-pointer italic underline">Audit Report</span>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto px-6 mt-12 pt-6 border-t border-white/5 flex justify-between text-[8px] font-black text-gray-700 uppercase tracking-widest">
-            <span>© 2026 DeadEx Protocol</span> <span>PROJECT_ID: 3106e...f140</span>
+        <div class="max-w-6xl mx-auto px-6 mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] font-black text-gray-800 uppercase tracking-[0.4em]">
+            <span>© 2026 DeadEx Institutional Protocol</span>
+            <span>Connected Project: 3106e2f5010a3...f140</span>
         </div>
     </footer>
 
     <script>
-        // WALLET DATA
-        const PROJECT_ID = "3106e2f5010a30340d51257097ffc140"; 
         const modal = document.getElementById('web3Modal');
         const connectBtn = document.getElementById('connectBtn');
         const statusDot = document.getElementById('statusDot');
+        const rates = {'BTCBR': 1000000, 'BNBTIGER': 5000000, 'USDT.z': 1000, 'TERAREUM': 2000000, 'SAITAMA': 1500000, 'FEG': 800000, 'BABYDOGE': 3000000, 'KISHU': 1200000, 'SAFEMOON': 900000, 'DOGELON': 10000000};
 
         function openModal() { modal.style.display = 'flex'; }
         function closeModal() { modal.style.display = 'none'; }
 
-        const rates = {'BTCBR': 1000000, 'BNBTIGER': 5000000, 'USDT.z': 1000, 'TERAREUM': 2000000, 'SAITAMA': 1500000, 'FEG': 800000, 'BABYDOGE': 3000000, 'KISHU': 1200000, 'SAFEMOON': 900000, 'DOGELON': 10000000};
-
         function updatePrice() {
             const select = document.getElementById('tokenSelect');
-            const tokenName = select.options[select.selectedIndex].text;
+            const tokenName = select.options[select.selectedIndex].text.split(' ')[0];
             const input = document.getElementById('inputAmt').value;
             const rate = rates[tokenName] || 1000000;
             document.getElementById('outputAmt').innerText = input > 0 ? (input / rate).toFixed(4) : "0.00";
@@ -181,29 +171,29 @@
             if (window.ethereum) {
                 try {
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const addr = accounts[0];
-                    connectBtn.innerText = addr.substring(0,6) + "..." + addr.substring(38);
-                    connectBtn.className = "bg-green-600 text-black px-6 py-2 rounded-xl text-[10px] font-black uppercase transition-all shadow-lg shadow-green-500/20";
+                    connectBtn.innerText = accounts[0].substring(0,6) + "..." + accounts[0].substring(38);
+                    connectBtn.className = "bg-green-600 text-black px-8 py-3 rounded-2xl text-[11px] font-black uppercase transition-all shadow-lg shadow-green-500/30";
                     statusDot.classList.replace('bg-red-600', 'bg-green-500');
+                    statusDot.style.boxShadow = "0 0 10px #22c55e";
                     closeModal();
                 } catch (e) { console.error(e); }
             } else {
-                alert(type + " connection required. Please use a Web3 browser or Mobile Wallet.");
+                alert(type + " provider not found. Please use a Web3 browser.");
             }
         }
 
-        // Trust Notification
         function showNotification() {
-            const wallets = ["0x4a...f21", "0x1d...c32", "0x9c...b88", "0xee...102"];
+            const wallets = ["0x4a...f21", "0x1d...c32", "0x9c...b88", "0xee...102", "0x3b...a11"];
+            const feed = document.getElementById('liveFeed');
             const div = document.createElement('div');
-            div.className = "glass p-3 rounded-xl border-l-2 border-green-500 feed-item text-[10px] font-bold";
-            div.innerHTML = `<span class="text-gray-500 italic uppercase">Log:</span> <span class="text-white">${wallets[Math.floor(Math.random()*wallets.length)]}</span> received <span class="text-green-500">${(Math.random()*8).toFixed(1)} USDX</span>`;
-            document.getElementById('liveFeed').appendChild(div);
-            setTimeout(() => div.remove(), 4000);
+            div.className = "glass p-4 rounded-2xl border-l-4 border-green-500 feed-item text-[10px] font-bold shadow-2xl";
+            div.innerHTML = `<span class="text-gray-600 italic uppercase">Terminal Update:</span> <br> <span class="text-white">${wallets[Math.floor(Math.random()*wallets.length)]}</span> liquidated <span class="text-green-500">${(Math.random()*15).toFixed(1)} USDX</span>`;
+            feed.appendChild(div);
+            setTimeout(() => div.remove(), 5000);
         }
-        setInterval(showNotification, 8000);
+        setInterval(showNotification, 7000);
 
-        document.getElementById('swapBtn').onclick = () => alert("Terminal: Awaiting USDX Smart Contract Authorization...");
+        document.getElementById('swapBtn').onclick = () => alert("Terminal: Liquidation Node Awaiting Smart Contract Execution (ETA: 10:00 PM Tonight).");
     </script>
 </body>
 </html>
