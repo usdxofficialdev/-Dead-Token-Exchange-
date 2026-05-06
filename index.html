@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dead Token Exchange</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
+
+    <nav class="fixed top-0 w-full p-6 flex justify-between items-center bg-gray-900/50">
+        <h1 class="text-2xl font-bold text-green-500">DEAD TOKEN EXCHANGE</h1>
+        <button id="connectWallet" class="bg-green-600 px-6 py-2 rounded-full font-bold">Connect Wallet</button>
+    </nav>
+
+    <div class="bg-gray-900 p-8 rounded-3xl border border-green-500/30 w-full max-w-md text-center shadow-2xl">
+        <h2 class="text-xl mb-4 font-semibold">Recover Asset Liquidity</h2>
+        
+        <select id="tokenSelect" class="w-full bg-black p-4 rounded-xl mb-4 border border-gray-700 text-white outline-none">
+            <option value="btcbr">BTCBR</option>
+            <option value="bnbtiger">BNB Tiger</option>
+            <option value="usdtz">USDT.z</option>
+        </select>
+
+        <input type="number" id="amountInput" placeholder="0.00" class="w-full bg-black p-4 rounded-xl mb-6 border border-gray-700 text-white outline-none">
+        
+        <button id="swapBtn" class="w-full bg-green-500 text-black font-black py-4 rounded-2xl uppercase hover:scale-105 transition-all">Exchange Now</button>
+        
+        <p class="mt-4 text-[10px] text-gray-500 uppercase tracking-widest">Secure Escrow System</p>
+    </div>
+
+    <script>
+        async function connect() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    document.getElementById('connectWallet').innerText = "Connected: " + accounts[0].substring(0,6) + "...";
+                } catch (err) { alert("Denied!"); }
+            } else { alert("MetaMask install karo!"); }
+        }
+        document.getElementById('connectWallet').onclick = connect;
+        document.getElementById('swapBtn').onclick = () => alert("Logic connect ho raha hai...");
+    </script>
+</body>
+</html>
