@@ -25,7 +25,6 @@ body {
 </style>
 
 <script type="module">
-    // Aapka Web3Modal ka code yahan aayega...
   import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi@3.5.0'
   import { mainnet, bsc, polygon } from 'https://esm.sh/@wagmi/core/chains'
 
@@ -42,29 +41,29 @@ body {
   const wagmiConfig = defaultWagmiConfig({ 
     chains, 
     projectId, 
-   enableCoinbase: true 
-    })
+    metadata,
+    enableCoinbase: true 
+  })
 
-    window.modal = createWeb3Modal({
-        wagmiConfig,
-        projectId,
-        chains,
-        themeMode: 'dark',
+  // Window object mein assign kiya taaki button click par access ho sake
+  window.modal = createWeb3Modal({
+    wagmiConfig,
+    projectId,
+    chains,
+    themeMode: 'dark',
     themeVariables: {
-        '--w3m-accent': '#22c55e',
-      }
-    });
-  </script>   
-  </head>
-  <body>
+      '--w3m-accent': '#22c55e',
+    }
+  });
+</script>   
+</head>
+<body>
     <div class="scan"></div>
-<!-- HEADER -->
 <div class="p-4 flex justify-between text-xs text-green-500">
 <span>DEADEx // GLOBAL RECOVERY NETWORK</span>
 <span class="animate-pulse">● LIVE</span>
 </div>
 
-<!-- HERO -->
 <div class="text-center mt-14 px-4">
 <h1 class="text-5xl font-bold glow">
 ACCESS<br>LOCKED VALUE
@@ -78,7 +77,6 @@ A controlled recovery protocol that extracts hidden liquidity from abandoned cry
 RESTRICTED FINANCIAL INFRASTRUCTURE
 </p>
 
-<!-- CONNECT BUTTON -->
 <div class="mt-6">
 <button onclick="window.modal.open()" class="bg-green-500 text-black px-6 py-3 font-bold">
 AUTHORIZE TERMINAL
@@ -86,7 +84,6 @@ AUTHORIZE TERMINAL
 </div>
 </div>
 
-<!-- WHY -->
 <div class="max-w-2xl mx-auto mt-16 box p-6 rounded-xl">
 <h2 class="text-green-500 text-sm mb-3">WHY DEADEx EXISTS</h2>
 <p class="text-gray-400 text-xs leading-relaxed">
@@ -96,7 +93,6 @@ DeadEx acts as a recovery layer — converting dormant assets into USDX, a usabl
 </p>
 </div>
 
-<!-- HOW -->
 <div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
 <h2 class="text-green-500 text-sm mb-3">HOW IT WORKS</h2>
 <p class="text-gray-400 text-xs">
@@ -108,7 +104,6 @@ DeadEx acts as a recovery layer — converting dormant assets into USDX, a usabl
 </p>
 </div>
 
-<!-- BENEFITS -->
 <div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
 <h2 class="text-green-500 text-sm mb-3">WHAT YOU GET</h2>
 <p class="text-gray-400 text-xs">
@@ -119,7 +114,6 @@ DeadEx acts as a recovery layer — converting dormant assets into USDX, a usabl
 </p>
 </div>
 
-<!-- SWAP -->
 <div class="max-w-md mx-auto mt-16 box p-6 rounded-xl">
 
 <div class="text-green-500 text-xs mb-4">
@@ -152,7 +146,6 @@ INITIATE RECOVERY
 
 </div>
 
-<!-- PARTNERS -->
 <div class="max-w-4xl mx-auto mt-20 text-center">
 <h2 class="text-green-500 text-sm mb-6">PARTNERS</h2>
 <div class="grid md:grid-cols-3 gap-4 text-xs">
@@ -162,7 +155,6 @@ INITIATE RECOVERY
 </div>
 </div>
 
-<!-- SOCIALS -->
 <div class="max-w-4xl mx-auto mt-16 text-center">
 <h2 class="text-green-500 text-sm mb-4">COMMUNITY</h2>
 <div class="flex justify-center gap-6 text-xs">
@@ -172,7 +164,6 @@ INITIATE RECOVERY
 </div>
 </div>
 
-<!-- NEWSLETTER -->
 <div class="max-w-md mx-auto mt-16 box p-6 rounded-xl text-center">
 <h2 class="text-green-500 text-sm mb-3">JOIN NETWORK</h2>
 <p class="text-gray-500 text-xs mb-4">
@@ -185,14 +176,12 @@ SUBSCRIBE
 </button>
 </div>
 
-<!-- LICENSE -->
 <div class="text-center mt-16 mb-10 text-[10px] text-gray-700">
 © 2026 DeadEx Protocol<br>
 Experimental recovery infrastructure<br>
 Use at your own risk
 </div>
 
-<!-- LIVE FEED -->
 <div id="feed" class="fixed bottom-4 right-4 text-xs space-y-2"></div>
 
 <script>
