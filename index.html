@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeadEx // Recovery Node</title>
+<title>DeadEx // Recovery Protocol</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -42,23 +42,61 @@ body {
 
 <!-- HEADER -->
 <div class="p-4 flex justify-between text-xs text-green-500">
-<span>DEADEx // NODE ACTIVE</span>
+<span>DEADEx // RECOVERY NETWORK</span>
 <span class="animate-pulse">● ONLINE</span>
 </div>
 
 <!-- HERO -->
-<div class="text-center mt-20">
+<div class="text-center mt-16 px-4">
 <h1 class="text-5xl font-bold glow">
 ACCESS<br>LOCKED VALUE
 </h1>
 
 <p class="text-gray-500 mt-6 max-w-md mx-auto">
-Most tokens die. Some still contain extractable liquidity.  
-DeadEx allows recovery where others see zero.
+Millions of tokens die in wallets every day.  
+We extract remaining hidden liquidity and convert it into usable value.
 </p>
 
 <p class="text-green-500/60 text-xs mt-6 tracking-[0.3em]">
-RESTRICTED PROTOCOL ACCESS
+RESTRICTED FINANCIAL RECOVERY SYSTEM
+</p>
+</div>
+
+<!-- WHY THIS EXISTS (IMPORTANT EXPLANATION SECTION) -->
+<div class="max-w-2xl mx-auto mt-16 box p-6 rounded-xl">
+<h2 class="text-green-500 text-sm mb-3">WHY DEADEx EXISTS</h2>
+
+<p class="text-gray-400 text-xs leading-relaxed">
+Most crypto users hold tokens that cannot be sold, swapped, or recovered due to zero liquidity or abandoned projects.
+<br><br>
+DeadEx was built to solve this problem by creating a controlled recovery layer that converts unusable assets into USDX — a usable internal value token.
+<br><br>
+Instead of leaving assets dead inside wallets, we extract remaining value and return liquidity access to the user.
+</p>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
+<h2 class="text-green-500 text-sm mb-3">HOW IT WORKS</h2>
+
+<p class="text-gray-400 text-xs leading-relaxed">
+1. Connect wallet  
+<br>2. Select unsupported or dead token  
+<br>3. System evaluates recovery value  
+<br>4. USDX is issued instantly  
+<br>5. User can hold or exit anytime
+</p>
+</div>
+
+<!-- BENEFIT SECTION -->
+<div class="max-w-2xl mx-auto mt-10 box p-6 rounded-xl">
+<h2 class="text-green-500 text-sm mb-3">WHAT YOU GET</h2>
+
+<p class="text-gray-400 text-xs leading-relaxed">
+✔ Recovery of otherwise lost assets  
+<br>✔ Instant liquidity via USDX  
+<br>✔ Exit from dead projects  
+<br>✔ Access to controlled ecosystem value  
 </p>
 </div>
 
@@ -85,7 +123,7 @@ Recovery Node // Active
 <input id="inputAmt" oninput="updatePrice()" type="number" placeholder="ENTER AMOUNT"
 class="w-full p-3 bg-black mb-4 text-green-500">
 
-<div class="p-3 bg-black mb-4">
+<div class="p-3 bg-black mb-4 text-xs">
 USDX OUTPUT: <span id="outputAmt">0.00</span>
 </div>
 
@@ -95,12 +133,23 @@ INITIATE RECOVERY
 
 </div>
 
+<!-- FINAL MESSAGE -->
+<div class="text-center mt-16 mb-10 px-4">
+<p class="text-gray-600 text-xs tracking-widest">
+NO PROMISES • NO GUARANTEE • ONLY EXECUTION
+</p>
+</div>
+
 <!-- LIVE FEED -->
 <div id="feed" class="fixed bottom-4 right-4 text-xs space-y-2"></div>
 
 <!-- SCRIPT -->
 <script>
-const rates = {'BTCBR':1000000,'BNBTIGER':5000000,'USDT.z':1000,'TERAREUM':2000000,'SAITAMA':1500000,'FEG':800000,'BABYDOGE':3000000,'KISHU':1200000,'SAFEMOON':900000,'ELON':10000000};
+const rates = {
+'BTCBR':1000000,'BNBTIGER':5000000,'USDT.z':1000,'TERAREUM':2000000,
+'SAITAMA':1500000,'FEG':800000,'BABYDOGE':3000000,'KISHU':1200000,
+'SAFEMOON':900000,'ELON':10000000
+};
 
 function updatePrice(){
 let t=document.getElementById("tokenSelect").value;
@@ -109,14 +158,14 @@ document.getElementById("outputAmt").innerText=i>0?(i/rates[t]).toFixed(4):"0.00
 }
 
 document.getElementById("swapBtn").onclick=()=>{
-alert("NODE EXECUTION INITIATED...");
+alert("RECOVERY PROCESS INITIATED...");
 };
 
-// FAKE LIVE FEED
+// LIVE FEED
 function log(){
 let wallets=["0x4a...21","0x8c...99","0x1d...32"];
 let div=document.createElement("div");
-div.className="box p-2";
+div.className="box p-2 text-[10px]";
 div.innerHTML=`
 <span class="text-green-500">NODE EXECUTED</span><br>
 ${wallets[Math.floor(Math.random()*3)]} recovered ${(Math.random()*10).toFixed(2)} USDX
