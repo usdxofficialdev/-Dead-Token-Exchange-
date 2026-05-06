@@ -3,43 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dead Token Exchange</title>
+    <title>Dead Token Exchange | Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
+<body class="bg-[#050505] text-white min-h-screen flex flex-col items-center justify-center p-4">
 
-    <nav class="fixed top-0 w-full p-6 flex justify-between items-center bg-gray-900/50">
-        <h1 class="text-2xl font-bold text-green-500">DEAD TOKEN EXCHANGE</h1>
-        <button id="connectWallet" class="bg-green-600 px-6 py-2 rounded-full font-bold">Connect Wallet</button>
+    <nav class="fixed top-0 w-full p-6 flex justify-between items-center max-w-6xl">
+        <h1 class="text-2xl font-black tracking-tighter text-green-500">DEAD TOKEN <span class="text-white">EXCHANGE</span></h1>
+        <button id="connectWallet" class="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-green-500 transition-all">
+            Connect Wallet
+        </button>
     </nav>
 
-    <div class="bg-gray-900 p-8 rounded-3xl border border-green-500/30 w-full max-w-md text-center shadow-2xl">
-        <h2 class="text-xl mb-4 font-semibold">Recover Asset Liquidity</h2>
-        
-        <select id="tokenSelect" class="w-full bg-black p-4 rounded-xl mb-4 border border-gray-700 text-white outline-none">
-            <option value="btcbr">BTCBR</option>
-            <option value="bnbtiger">BNB Tiger</option>
-            <option value="usdtz">USDT.z</option>
-        </select>
+    <main class="w-full max-w-md mt-10">
+        <div class="bg-[#111] border border-green-500/20 rounded-3xl p-6 shadow-2xl">
+            
+            <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                Asset Recovery
+            </h2>
 
-        <input type="number" id="amountInput" placeholder="0.00" class="w-full bg-black p-4 rounded-xl mb-6 border border-gray-700 text-white outline-none">
-        
-        <button id="swapBtn" class="w-full bg-green-500 text-black font-black py-4 rounded-2xl uppercase hover:scale-105 transition-all">Exchange Now</button>
-        
-        <p class="mt-4 text-[10px] text-gray-500 uppercase tracking-widest">Secure Escrow System</p>
-    </div>
+            <div class="bg-black/50 p-4 rounded-2xl border border-white/5 mb-4">
+                <label class="text-[10px] text-gray-500 uppercase font-bold">Select Dead Token</label>
+                <select id="tokenSelect" class="w-full bg-transparent text-lg font-bold outline-none cursor-pointer text-green-400 mt-2" onchange="handleTokenChange()">
+                    <option value="0x0cF8e180350253271f4b917CcFb0aCCc4862F262">BTCBR</option>
+                    <option value="0xAC68931B666E086E9de380CFDb0Fb5704a35dc2D">BNBTIGER</option>
+                    <option value="0x4BE35Ec329343d7d9F548d42B0F8c17FFfe07db4">USDT.z</option>
+                    <option value="custom">ADD NEW TOKEN +</option>
+                </select>
+            </div>
+
+            <div id="customTokenBox" class="hidden bg-black/50 p-4 rounded-2xl border border-blue-500/30 mb-4 transition-all">
+                <label class="text-[10px] text-blue-400 uppercase font-bold">Paste Contract Address (CA)</label>
+                <input type="text" id="customAddress" placeholder="0x..." class="w-full bg-transparent text-sm font-mono mt-2 outline-none border-b border-gray-700 focus:border-blue-500 pb-1">
+            </div>
+
+            <div class="bg-black/50 p-4 rounded-2xl border border-white/5 mb-2">
+                <label class="text-[10px] text-gray-500 uppercase font-bold">Amount to Swap</label>
+                <input type="number" id="inputAmount" placeholder="0.0" class="w-full bg-transparent text-xl font-bold outline-none mt-2">
+            </div>
+
+            <div class="bg-green-900/10 p-4 rounded-2xl border border-green-500/10 mt-4">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-400 font-medium">You Receive:</span>
+                    <span class="text-green-500 font-bold">~ <span id="outVal">0.00</span> USDX</span>
+                </div>
+            </div>
+
+            <button id="swapBtn" class="w-full bg-green-600 hover:bg-green-500 text-black font-black py-4 rounded-2xl mt-6 text-sm uppercase tracking-widest transition-all">
+                Swap Assets
+            </button>
+        </div>
+    </main>
 
     <script>
+        // Token Change Logic
+        function handleTokenChange() {
+            const select = document.getElementById('tokenSelect');
+            const customBox = document.getElementById('customTokenBox');
+            if (select.value === 'custom') {
+                customBox.classList.remove('hidden');
+            } else {
+                customBox.classList.add('hidden');
+            }
+        }
+
+        // Wallet Logic
         async function connect() {
             if (window.ethereum) {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    document.getElementById('connectWallet').innerText = "Connected: " + accounts[0].substring(0,6) + "...";
-                } catch (err) { alert("Denied!"); }
-            } else { alert("MetaMask install karo!"); }
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                document.getElementById('connectWallet').innerText = accounts[0].substring(0,6) + "...";
+            } else { alert("MetaMask Install Karein!"); }
         }
         document.getElementById('connectWallet').onclick = connect;
-        document.getElementById('swapBtn').onclick = () => alert("Logic connect ho raha hai...");
+
+        // Exchange Logic Placeholder
+        document.getElementById('swapBtn').onclick = () => {
+            const token = document.getElementById('tokenSelect').value;
+            const address = token === 'custom' ? document.getElementById('customAddress').value : token;
+            alert("Exchanging Token: " + address + "\nStatus: Waiting for USDX Contract...");
+        };
     </script>
 </body>
 </html>
