@@ -42,22 +42,22 @@ body {
   const wagmiConfig = defaultWagmiConfig({ 
     chains, 
     projectId, 
-    metadata,
-    enableWalletConnect: true,
-    enableInjected: true,
-    enableCoinbase: true 
- </script>
-</head>
-<body>
-    <div class="scan"></div>
-  window.modal = createWeb3Modal({
-    wagmiConfig,
-    projectId,
-    chains,
-  themeVariables: {
+   enableCoinbase: true 
+    })
+
+    window.modal = createWeb3Modal({
+        wagmiConfig,
+        projectId,
+        chains,
+        themeMode: 'dark',
+        themeVariables: {
             '--w3m-accent': '#22c55e',
             '--w3m-background-color': '#020202'
         }
+    })
+</script>
+</head>
+<body> 
     })
 </script>
 </head>
