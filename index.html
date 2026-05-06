@@ -3,39 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeadEx | Recovery Protocol</title>
+<title>DeadEx // Recovery Node</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-body {background:#020202;color:white;font-family:'Plus Jakarta Sans';}
-.glass {background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);}
-.hero {background:radial-gradient(circle at top,#166534,#020202);}
+body {
+    background:#020202;
+    color:#e5e5e5;
+    font-family:'JetBrains Mono', monospace;
+}
+.glow { text-shadow:0 0 12px #22c55e; }
+.box {
+    background:rgba(255,255,255,0.02);
+    border:1px solid rgba(34,197,94,0.15);
+    backdrop-filter: blur(10px);
+}
+.scan {
+    position:fixed;
+    width:100%;
+    height:2px;
+    background:#22c55e;
+    top:0;
+    animation:scan 6s linear infinite;
+}
+@keyframes scan {
+    0%{top:0}
+    100%{top:100%}
+}
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<nav class="max-w-6xl mx-auto flex justify-between p-4">
-<h1 class="font-black text-xl">Dead<span class="text-green-500">Ex</span></h1>
-<button onclick="window.modal.open()" class="bg-green-500 text-black px-4 py-2 rounded">Connect</button>
-</nav>
+<div class="scan"></div>
+
+<!-- HEADER -->
+<div class="p-4 flex justify-between text-xs text-green-500">
+<span>DEADEx // NODE ACTIVE</span>
+<span class="animate-pulse">● ONLINE</span>
+</div>
 
 <!-- HERO -->
-<section class="hero py-20 text-center">
-<h1 class="text-4xl font-black mb-4">Turn Dead Tokens Into Value</h1>
-<p class="text-gray-400">Convert useless tokens into USDX instantly</p>
-</section>
+<div class="text-center mt-20">
+<h1 class="text-5xl font-bold glow">
+ACCESS<br>LOCKED VALUE
+</h1>
 
-<!-- SWAP -->
-<section class="max-w-xl mx-auto p-6">
-<div class="glass p-6 rounded-2xl">
+<p class="text-gray-500 mt-6 max-w-md mx-auto">
+Most tokens die. Some still contain extractable liquidity.  
+DeadEx allows recovery where others see zero.
+</p>
 
-<select id="tokenSelect" onchange="updatePrice()" class="w-full p-3 bg-black mb-3">
+<p class="text-green-500/60 text-xs mt-6 tracking-[0.3em]">
+RESTRICTED PROTOCOL ACCESS
+</p>
+</div>
+
+<!-- SWAP TERMINAL -->
+<div class="max-w-md mx-auto mt-16 box p-6 rounded-xl">
+
+<div class="text-green-500 text-xs mb-4">
+Recovery Node // Active
+</div>
+
+<select id="tokenSelect" onchange="updatePrice()" class="w-full p-3 bg-black mb-4">
 <option>BTCBR</option>
 <option>BNBTIGER</option>
 <option>USDT.z</option>
@@ -48,82 +82,49 @@ body {background:#020202;color:white;font-family:'Plus Jakarta Sans';}
 <option>ELON</option>
 </select>
 
-<input id="inputAmt" oninput="updatePrice()" type="number" placeholder="Amount" class="w-full p-3 bg-black mb-3">
+<input id="inputAmt" oninput="updatePrice()" type="number" placeholder="ENTER AMOUNT"
+class="w-full p-3 bg-black mb-4 text-green-500">
 
-<div class="p-4 bg-black rounded mb-3">
-USDX: <span id="outputAmt">0.00</span>
+<div class="p-3 bg-black mb-4">
+USDX OUTPUT: <span id="outputAmt">0.00</span>
 </div>
 
-<button id="swapBtn" class="w-full bg-green-500 text-black p-3 rounded">Swap Dead Assets</button>
+<button id="swapBtn" class="w-full bg-green-500 text-black p-3 font-bold">
+INITIATE RECOVERY
+</button>
 
 </div>
-</section>
 
-<!-- WHY -->
-<section class="max-w-6xl mx-auto py-20 px-6 text-center">
-<h2 class="text-xl font-black mb-10">Why Choose Us</h2>
-<div class="grid md:grid-cols-3 gap-6">
-<div class="glass p-6">Real Exit</div>
-<div class="glass p-6">Instant Liquidity</div>
-<div class="glass p-6">No Stuck Tokens</div>
-</div>
-</section>
+<!-- LIVE FEED -->
+<div id="feed" class="fixed bottom-4 right-4 text-xs space-y-2"></div>
 
-<!-- HOW -->
-<section class="bg-black py-20 text-center">
-<h2 class="text-xl font-black mb-6">How It Works</h2>
-<p class="text-gray-400">Connect → Select → Swap → Receive USDX</p>
-</section>
-
-<!-- BENEFITS -->
-<section class="max-w-6xl mx-auto py-20 px-6 text-center">
-<h2 class="text-xl font-black mb-6">Your Benefits</h2>
-<p class="text-gray-400">Recover value • Trade anytime • Real liquidity</p>
-</section>
-
-<!-- LIVE STATS -->
-<section class="max-w-6xl mx-auto py-20 px-6 text-center">
-<h2 class="text-xl font-black mb-10">Live Stats</h2>
-<div class="grid md:grid-cols-3 gap-6">
-<div class="glass p-6">$<span id="vol">1420000</span></div>
-<div class="glass p-6"><span id="users">12842</span> Users</div>
-<div class="glass p-6"><span id="issued">842112</span> USDX</div>
-</div>
-</section>
-
-<!-- TRUST -->
-<section class="bg-black py-20 text-center">
-<h2 class="text-xl font-black mb-6">Secure Protocol</h2>
-<p class="text-gray-500">On-chain • No custody • Verified logic</p>
-</section>
-
-<!-- CTA -->
-<section class="bg-green-500 text-black py-20 text-center">
-<h2 class="text-2xl font-black mb-4">Exit The Dead Zone</h2>
-<button onclick="window.scrollTo(0,0)" class="bg-black text-green-500 px-6 py-3 rounded">Start Now</button>
-</section>
-
-<!-- FOOTER -->
-<footer class="text-center py-10 text-gray-600">© DeadEx 2026</footer>
-
+<!-- SCRIPT -->
 <script>
-const rates = {'BTCBR': 1000000,'BNBTIGER':5000000,'USDT.z':1000,'TERAREUM':2000000,'SAITAMA':1500000,'FEG':800000,'BABYDOGE':3000000,'KISHU':1200000,'SAFEMOON':900000,'ELON':10000000};
+const rates = {'BTCBR':1000000,'BNBTIGER':5000000,'USDT.z':1000,'TERAREUM':2000000,'SAITAMA':1500000,'FEG':800000,'BABYDOGE':3000000,'KISHU':1200000,'SAFEMOON':900000,'ELON':10000000};
 
 function updatePrice(){
-let token=document.getElementById("tokenSelect").value;
-let input=document.getElementById("inputAmt").value;
-let rate=rates[token];
-document.getElementById("outputAmt").innerText=input>0?(input/rate).toFixed(4):"0.00";
+let t=document.getElementById("tokenSelect").value;
+let i=document.getElementById("inputAmt").value;
+document.getElementById("outputAmt").innerText=i>0?(i/rates[t]).toFixed(4):"0.00";
 }
 
-document.getElementById("swapBtn").onclick=()=>alert("Processing...");
+document.getElementById("swapBtn").onclick=()=>{
+alert("NODE EXECUTION INITIATED...");
+};
 
-// live stats animation
-setInterval(()=>{
-vol.innerText=parseInt(vol.innerText)+Math.floor(Math.random()*500);
-users.innerText=parseInt(users.innerText)+1;
-issued.innerText=parseInt(issued.innerText)+100;
-},3000);
+// FAKE LIVE FEED
+function log(){
+let wallets=["0x4a...21","0x8c...99","0x1d...32"];
+let div=document.createElement("div");
+div.className="box p-2";
+div.innerHTML=`
+<span class="text-green-500">NODE EXECUTED</span><br>
+${wallets[Math.floor(Math.random()*3)]} recovered ${(Math.random()*10).toFixed(2)} USDX
+`;
+document.getElementById("feed").appendChild(div);
+setTimeout(()=>div.remove(),4000);
+}
+setInterval(log,3000);
 </script>
 
 </body>
