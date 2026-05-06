@@ -91,17 +91,17 @@
                         <div class="bg-white/[0.02] p-5 rounded-2xl border border-white/5">
                             <label class="text-[8px] text-gray-600 font-black uppercase mb-3 block tracking-widest italic">Asset Selection</label>
                             <div class="flex justify-between items-center">
-                                <select id="tokenSelect" class="bg-transparent text-base font-bold outline-none cursor-pointer text-white w-full mr-4" onchange="updatePrice()">
-                                    <option value="1000000">BTCBR</option>
-                                    <option value="5000000">BNBTIGER</option>
-                                    <option value="1000">USDT.z</option>
-                                    <option value="2000000">TERAREUM</option>
-                                    <option value="1500000">SAITAMA</option>
-                                    <option value="800000">FEG</option>
-                                    <option value="3000000">BABYDOGE</option>
-                                    <option value="1200000">KISHU</option>
-                                    <option value="900000">SAFEMOON</option>
-                                    <option value="10000000">ELON</option>
+                              <select id="tokenSelect" class="bg-[#0c0c0c] text-white text-[11px] font-bold outline-none cursor-pointer w-full mr-4 p-2 rounded-lg" onchange="updatePrice()">
+    <option value="1000000" style="background:#0c0c0c; color:white;">BTCBR</option>
+    <option value="5000000" style="background:#0c0c0c; color:white;">BNBTIGER</option>
+    <option value="1000" style="background:#0c0c0c; color:white;">USDT.z</option>
+    <option value="2000000" style="background:#0c0c0c; color:white;">TERAREUM</option>
+    <option value="1500000" style="background:#0c0c0c; color:white;">SAITAMA</option>
+    <option value="800000" style="background:#0c0c0c; color:white;">FEG</option>
+    <option value="3000000" style="background:#0c0c0c; color:white;">BABYDOGE</option>
+    <option value="1200000" style="background:#0c0c0c; color:white;">KISHU</option>
+    <option value="900000" style="background:#0c0c0c; color:white;">SAFEMOON</option>
+    <option value="10000000" style="background:#0c0c0c; color:white;">ELON</option>
                                 </select>
                                 <input type="number" id="inputAmt" placeholder="0.0" class="bg-transparent text-right text-2xl font-black outline-none w-1/2 text-green-500" oninput="updatePrice()">
                             </div>
@@ -164,18 +164,20 @@
             document.getElementById('outputAmt').innerText = input > 0 ? (input / rate).toFixed(4) : "0.00";
         }
 
-        async function connectWallet(type) {
-            if (window.ethereum) {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    connectBtn.innerText = accounts[0].substring(0,6) + "..." + accounts[0].substring(38);
-                    connectBtn.className = "glass px-6 py-2.5 rounded-xl text-[9px] font-black uppercase bg-green-500 text-black shadow-lg shadow-green-500/20";
-                    statusDot.classList.replace('bg-red-600', 'bg-green-500');
-                    statusDot.style.boxShadow = "0 0 10px #22c55e";
-                    closeModal();
-                } catch (e) { console.error(e); }
-            } else { alert("Open in MetaMask or Trust Wallet App."); }
-        }
+      async function connectWallet(type) {
+    if (window.ethereum) {
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            connectBtn.innerText = accounts[0].substring(0,6) + "..." + accounts[0].substring(38);
+            connectBtn.className = "bg-green-600 text-black px-6 py-2 rounded-xl text-[9px] font-black uppercase shadow-lg shadow-green-500/40";
+            statusDot.classList.replace('bg-red-600', 'bg-green-500');
+            closeModal();
+        } catch (e) { console.error(e); }
+    } else { 
+        // Agar mobile browser hai to seedha MetaMask app khulega
+        window.location.href = "https://metamask.app.link/dapp/dead-token-exchange.vercel.app/";
+    }
+}
 
         function showNotification() {
             const wallets = ["0x4a...f21", "0x1d...c32", "0x9c...b88", "0xee...102"];
