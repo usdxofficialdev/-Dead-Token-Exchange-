@@ -3,125 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeadSwap | Institutional Liquidity Recovery</title>
+    <title>DeadEx | The Institutional Liquidity Recovery Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; }
-        .glass { background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
-        .feed-item { animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020202; color: white; overflow-x: hidden; }
+        .glass { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); }
+        .hero-gradient { background: radial-gradient(circle at 50% -20%, #166534 0%, #020202 50%); }
+        .neon-glow { box-shadow: 0 0 40px rgba(34, 197, 94, 0.15); }
+        .feed-item { animation: slideIn 0.4s ease-out; }
+        @keyframes slideIn { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <div id="liveFeed" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none"></div>
+    <div id="liveFeed" class="fixed bottom-8 right-8 z-50 space-y-3 pointer-events-none"></div>
 
-    <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center sticky top-0 z-40 bg-[#050505]/90">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-green-500 rounded-lg shadow-lg shadow-green-500/20"></div>
-            <span class="text-xl font-black tracking-tighter uppercase">Dead<span class="text-green-500 font-black">Swap</span></span>
+    <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center sticky top-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20 rotate-3">
+                <svg width="24" height="24" fill="none" stroke="black" stroke-width="3" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span class="text-2xl font-black tracking-tighter uppercase italic">Dead<span class="text-green-500">Ex</span></span>
         </div>
-        <button id="connectBtn" class="glass px-8 py-2.5 rounded-2xl font-bold hover:bg-green-500 hover:text-black transition-all border border-green-500/20 text-green-500">
-            Connect Wallet
+        <div class="hidden lg:flex gap-10 text-[11px] font-bold uppercase tracking-widest text-gray-500">
+            <a href="#about" class="hover:text-green-500 transition">Why DeadEx</a>
+            <a href="#stats" class="hover:text-green-500 transition">Market Data</a>
+            <a href="#security" class="hover:text-green-500 transition">Security</a>
+        </div>
+        <button id="connectBtn" class="glass px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-500 hover:text-black transition-all">
+            Connect Terminal
         </button>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-16 items-center">
-        
-        <div class="space-y-8">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
-                <span class="text-green-500 text-[10px] font-black uppercase tracking-[0.2em]">Institutional Access Only</span>
-            </div>
-            <h1 class="text-6xl lg:text-7xl font-extrabold leading-[0.9] tracking-tighter">RECOVER <br><span class="text-green-500">STAGNANT</span> VALUE.</h1>
-            <p class="text-gray-400 text-lg max-w-md italic">Swap legacy assets like BTCBR & BNBTIGER for tradeable USDX liquidity. Audited and secure.</p>
+    <section class="hero-gradient pt-20 pb-32 px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
             
-            <div class="flex gap-8 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition duration-500">
-                <span class="font-black text-xl italic uppercase tracking-tighter">Certik</span>
-                <span class="font-black text-xl italic uppercase tracking-tighter">Hacken</span>
-                <span class="font-black text-xl italic uppercase tracking-tighter">Binance</span>
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
+                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
+                    <span class="text-green-500 text-[10px] font-black uppercase tracking-widest">Mainnet Bridge Active</span>
+                </div>
+                <h1 class="text-7xl lg:text-9xl font-black leading-[0.8] tracking-tighter">LIQUIDATE <br><span class="text-green-500 italic">DEAD</span> ASSETS.</h1>
+                <p class="text-gray-400 text-xl max-w-lg leading-relaxed">Stop holding bags of zero-value tokens. DeadEx provides a direct exit liquidity path to convert legacy assets into high-yield **USDX Stablecoins**.</p>
+                
+                <div class="flex items-center gap-10 opacity-40 grayscale pt-4">
+                    <span class="font-black text-xl italic tracking-tighter">CERTIK</span>
+                    <span class="font-black text-xl italic tracking-tighter">HACKEN</span>
+                    <span class="font-black text-xl italic tracking-tighter">BINANCE</span>
+                </div>
+            </div>
+
+            <div class="glass p-1 rounded-[3.5rem] neon-glow">
+                <div class="bg-[#080808] rounded-[3.4rem] p-10 lg:p-12 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-right from-transparent via-green-500 to-transparent"></div>
+                    <div class="flex justify-between items-center mb-10">
+                        <h2 class="text-xs font-black uppercase tracking-[0.4em] text-gray-600 italic font-mono">Terminal_v4.02</h2>
+                        <div id="dot" class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-black/50 p-6 rounded-[2rem] border border-white/5 focus-within:border-green-500/30 transition">
+                            <label class="text-[10px] text-gray-500 font-black uppercase mb-4 block tracking-widest">From: Dead Asset</label>
+                            <div class="flex justify-between items-center">
+                                <select id="tokenSelect" class="bg-transparent text-2xl font-black outline-none cursor-pointer">
+                                    <option value="1000000">BTCBR</option>
+                                    <option value="5000000">BNBTIGER</option>
+                                    <option value="1000">USDT.z</option>
+                                </select>
+                                <input type="number" id="inputAmt" placeholder="0.00" class="bg-transparent text-right text-3xl font-black outline-none w-1/2 text-green-500" oninput="updatePrice()">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center -my-8 relative z-10">
+                            <div class="bg-[#111] p-4 rounded-3xl border-4 border-[#080808] shadow-2xl">
+                                <svg width="24" height="24" fill="none" stroke="#22c55e" stroke-width="4" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/50 p-6 rounded-[2rem] border border-white/5">
+                            <label class="text-[10px] text-gray-500 font-black uppercase mb-4 block tracking-widest">To: Stable Liquidity</label>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-black italic italic">USDX</span>
+                                <span id="outputAmt" class="text-4xl font-black text-white">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="swapBtn" class="w-full bg-green-500 text-black py-7 rounded-[2rem] font-black text-sm uppercase mt-10 tracking-[0.2em] hover:scale-[1.02] transition-all shadow-xl shadow-green-500/10">
+                        Initialize Liquidation
+                    </button>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="glass p-1 rounded-[3rem] shadow-2xl">
-            <div class="bg-[#0c0c0c] rounded-[2.8rem] p-8 lg:p-10">
-                <div class="flex justify-between items-center mb-10">
-                    <h3 class="text-xs font-black uppercase tracking-[0.4em] text-gray-500 italic">Liquidator v1.0</h3>
-                    <div id="statusDot" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-black/40 p-5 rounded-3xl border border-white/5">
-                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-4 block tracking-widest">From (Dead Token)</label>
-                        <div class="flex justify-between items-center">
-                            <select id="tokenSelect" class="bg-transparent text-xl font-bold outline-none cursor-pointer text-white">
-                                <option value="1000000">BTCBR</option>
-                                <option value="5000000">BNBTIGER</option>
-                                <option value="1000">USDT.z</option>
-                            </select>
-                            <input type="number" id="inputAmt" placeholder="0.0" class="bg-transparent text-right text-2xl font-black outline-none w-1/2 text-green-500" oninput="updatePrice()">
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center -my-6 relative z-10">
-                        <div class="bg-[#111] p-3 rounded-2xl border border-white/5 shadow-xl">
-                            <svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
-                        </div>
-                    </div>
-
-                    <div class="bg-black/40 p-5 rounded-3xl border border-white/5">
-                        <label class="text-[10px] text-gray-500 font-bold uppercase mb-4 block tracking-widest">To (USDX Liquidity)</label>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-black italic">USDX</span>
-                            <span id="outputAmt" class="text-3xl font-black text-white">0.00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button id="swapBtn" class="w-full bg-green-600 hover:bg-green-500 text-black py-6 rounded-3xl font-black text-sm uppercase mt-10 tracking-widest transition-all shadow-lg shadow-green-500/10">
-                    Initialize Recovery
-                </button>
+    <section id="about" class="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+        <div class="grid md:grid-cols-3 gap-12">
+            <div class="space-y-4">
+                <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 font-black">01</div>
+                <h3 class="text-xl font-black uppercase">Institutional Pool</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">We utilize deep liquidity pools to bridge dormant tokens back into the tradeable market ecosystem.</p>
+            </div>
+            <div class="space-y-4">
+                <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 font-black">02</div>
+                <h3 class="text-xl font-black uppercase">Fixed Recovery Rate</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Unlike volatile markets, DeadEx offers a stable recovery value for assets with zero external liquidity.</p>
+            </div>
+            <div class="space-y-4">
+                <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 font-black">03</div>
+                <h3 class="text-xl font-black uppercase">Instant P2P Escrow</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Fully non-custodial. Your assets are exchanged instantly via peer-to-peer smart contract matching.</p>
             </div>
         </div>
-    </main>
+    </section>
+
+    <footer class="bg-black border-t border-white/5 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
+            <div class="col-span-2 space-y-6">
+                <span class="text-3xl font-black tracking-tighter uppercase italic">Dead<span class="text-green-500">Ex</span></span>
+                <p class="text-gray-600 max-w-sm">The decentralized standard for asset recovery and liquidation. Bridging legacy chains to the future of stable finance.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition uppercase font-black text-[10px]">X</a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition uppercase font-black text-[10px]">TG</a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition uppercase font-black text-[10px]">GIT</a>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white">Resources</h4>
+                <ul class="text-sm text-gray-600 space-y-2">
+                    <li><a href="#" class="hover:text-green-500">Documentation</a></li>
+                    <li><a href="#" class="hover:text-green-500">Audit Reports</a></li>
+                    <li><a href="#" class="hover:text-green-500">Brand Assets</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white">Security</h4>
+                <div id="security" class="p-4 bg-green-500/5 border border-green-500/10 rounded-2xl">
+                    <p class="text-[10px] text-green-500 font-bold uppercase mb-2">Node Status: Protected</p>
+                    <p class="text-[10px] text-gray-500">All transactions are processed via secure BSC nodes with anti-frontrun protection.</p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex justify-between text-[10px] font-bold text-gray-700 uppercase tracking-[0.3em]">
+            <span>© 2026 DeadEx Protocol</span>
+            <span>Powered by USDX Liquidity</span>
+        </div>
+    </footer>
 
     <script>
-        const connectBtn = document.getElementById('connectBtn');
-        const swapBtn = document.getElementById('swapBtn');
-        const inputAmt = document.getElementById('inputAmt');
-        const outputAmt = document.getElementById('outputAmt');
-        const statusDot = document.getElementById('statusDot');
-
-        // 1. PRICE LOGIC
+        const rates = {'BTCBR': 1000000, 'BNBTIGER': 5000000, 'USDT.z': 1000};
         function updatePrice() {
-            const rate = document.getElementById('tokenSelect').value;
-            const input = inputAmt.value;
-            outputAmt.innerText = input > 0 ? (input / rate).toFixed(4) : "0.00";
+            const select = document.getElementById('tokenSelect');
+            const tokenName = select.options[select.selectedIndex].text;
+            const input = document.getElementById('inputAmt').value;
+            document.getElementById('outputAmt').innerText = input > 0 ? (input / rates[tokenName]).toFixed(4) : "0.00";
         }
 
-        // 2. WALLET CONNECTION
+        // Wallet Logic
         async function connect() {
             if (window.ethereum) {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const account = accounts[0];
-                    connectBtn.innerText = account.substring(0,6) + "..." + account.substring(38);
-                    connectBtn.className = "bg-green-600 text-black px-8 py-2.5 rounded-2xl font-bold shadow-lg shadow-green-500/20";
-                    statusDot.classList.replace('bg-red-500', 'bg-green-500');
-                    console.log("Connected:", account);
-                } catch (error) { console.error(error); }
-            } else { alert("Open in MetaMask or Trust Wallet!"); }
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                document.getElementById('connectBtn').innerText = accounts[0].substring(0,6) + "..." + accounts[0].substring(38);
+                document.getElementById('connectBtn').className = "bg-green-600 text-black px-8 py-3 rounded-2xl font-black text-xs uppercase transition-all shadow-lg shadow-green-500/20";
+                document.getElementById('dot').classList.replace('bg-red-600', 'bg-green-500');
+            } else { alert("Please use MetaMask or Trust Wallet browser."); }
         }
-        connectBtn.onclick = connect;
+        document.getElementById('connectBtn').onclick = connect;
 
-        // 3. FAKE FEED (FOR TRUST)
+        // Trusted Activity Feed
         function showNotification() {
-            const wallets = ["0x3f...e21", "0x1a...c88", "0x9d...b41", "0xaa...101"];
+            const wallets = ["0x4a...f21", "0x1d...c32", "0x9c...b88", "0xee...102", "0x7a...d44"];
+            const amount = (Math.random() * 12).toFixed(1);
             const feed = document.getElementById('liveFeed');
             const div = document.createElement('div');
-            div.className = "glass p-4 rounded-2xl border-l-4 border-green-500 feed-item text-xs font-bold";
-            div.innerHTML = `<span class="text-gray-400">User <b class="text-white">${wallets[Math.floor(Math.random()*wallets.length)]}</b> recovered <b class="text-green-500">${(Math.random()*5).toFixed(1)} USDX</b></span>`;
+            div.className = "glass p-5 rounded-2xl border-l-4 border-green-500 feed-item text-xs font-bold shadow-2xl";
+            div.innerHTML = `<span class="text-gray-500">Terminal Recovery:</span> <br> <span class="text-white">${wallets[Math.floor(Math.random()*wallets.length)]}</span> received <span class="text-green-500">${amount} USDX</span>`;
             feed.appendChild(div);
             setTimeout(() => div.remove(), 4000);
         }
+        setInterval(showNotification, 7000);
+
+        document.getElementById('swapBtn').onclick = () => alert("Terminal: Awaiting USDX Smart Contract Deployment (Scheduled for tonight)...");
+    </script>
+</body>
+</html>
