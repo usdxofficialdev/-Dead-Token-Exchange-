@@ -52,37 +52,15 @@ body {
     wagmiConfig,
     projectId,
     chains,
-    themeMode: 'dark',
-    featuredWalletIds: [
-      'c53b210c8b3a4a9562e40554c04918e3', // MetaMask
-      '4622a2b2d6ad1397af761c01a4533D72', // Trust Wallet
-      'fd20dc426fb37566d803205b19bbc1d40'  // Coinbase
-    ],
-    themeVariables: {
-      '--w3m-accent': '#22c55e',
-      '--w3m-background-color': '#020202'
-    }
-  })
-66: </script> 
-67: 
-68:  64:     } 
-69:  65:   }) 
-70:  66: </script> 
-71:  67: 
-72:  68: </head> 
-73:  69: <body> 
-74:      window.modal = createWeb3Modal({
-75:        wagmiConfig, 
-76:        projectId, 
-77:        chains, 
-78:        themeMode: 'dark', 
-79:        themeVariables: {
-80:          '--w3m-accent': '#22c55e' 
-81:        } 
-82:      }) 
-83:    </script>
+  themeVariables: {
+            '--w3m-accent': '#22c55e',
+            '--w3m-background-color': '#020202'
+        }
+    })
+</script>
 </head>
-
+<body>
+    <div class="scan"></div>  
 <body>
 
 <div class="scan"></div>
