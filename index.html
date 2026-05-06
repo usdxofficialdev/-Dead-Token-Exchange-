@@ -3,86 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dead Token Exchange | Pro</title>
+    <title>Dead Token Exchange | Demo Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .neon-glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
+    </style>
 </head>
-<body class="bg-[#050505] text-white min-h-screen flex flex-col items-center justify-center p-4">
+<body id="mainBody" class="bg-[#050505] text-white min-h-screen flex flex-col items-center justify-center p-4 transition-all duration-500">
+
+    <div class="fixed top-20 bg-gray-800 p-2 rounded-full flex gap-2 z-50 border border-white/10">
+        <button onclick="setDesign(1)" class="px-4 py-1 rounded-full bg-gray-700 text-xs hover:bg-white hover:text-black transition">Demo 1</button>
+        <button onclick="setDesign(2)" class="px-4 py-1 rounded-full bg-gray-700 text-xs hover:bg-white hover:text-black transition">Demo 2</button>
+        <button onclick="setDesign(3)" class="px-4 py-1 rounded-full bg-gray-700 text-xs hover:bg-white hover:text-black transition">Demo 3</button>
+    </div>
 
     <nav class="fixed top-0 w-full p-6 flex justify-between items-center max-w-6xl">
-        <h1 class="text-2xl font-black tracking-tighter text-green-500">DEAD TOKEN <span class="text-white">EXCHANGE</span></h1>
-        <button id="connectWallet" class="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-green-500 transition-all">
-            Connect Wallet
-        </button>
+        <h1 id="logo" class="text-2xl font-black tracking-tighter text-green-500 uppercase">Dead Token Ex</h1>
+        <button id="connectWallet" class="bg-white text-black px-6 py-2 rounded-full font-bold">Connect Wallet</button>
     </nav>
 
-    <main class="w-full max-w-md mt-10">
-        <div class="bg-[#111] border border-green-500/20 rounded-3xl p-6 shadow-2xl">
-            
-            <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                Asset Recovery
-            </h2>
-
-            <div class="bg-black/50 p-4 rounded-2xl border border-white/5 mb-4">
-                <label class="text-[10px] text-gray-500 uppercase font-bold">Select Dead Token</label>
-                <select id="tokenSelect" class="w-full bg-transparent text-lg font-bold outline-none cursor-pointer text-green-400 mt-2" onchange="handleTokenChange()">
-                    <option value="0x0cF8e180350253271f4b917CcFb0aCCc4862F262">BTCBR</option>
-                    <option value="0xAC68931B666E086E9de380CFDb0Fb5704a35dc2D">BNBTIGER</option>
-                    <option value="0x4BE35Ec329343d7d9F548d42B0F8c17FFfe07db4">USDT.z</option>
-                    <option value="custom">ADD NEW TOKEN +</option>
+    <main id="swapCard" class="w-full max-w-md mt-10 p-8 rounded-3xl border transition-all duration-500 shadow-2xl">
+        <h2 id="cardTitle" class="text-xl font-bold mb-6 italic">RECOVERY PORTAL</h2>
+        
+        <div class="space-y-4">
+            <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                <label class="text-[10px] text-gray-500 uppercase font-bold">From (Dead Token)</label>
+                <select id="tokenSelect" class="w-full bg-transparent text-lg font-bold outline-none mt-2 text-green-400 cursor-pointer">
+                    <option value="btcbr">BTCBR</option>
+                    <option value="tiger">BNBTIGER</option>
+                    <option value="usdtz">USDT.z</option>
                 </select>
             </div>
 
-            <div id="customTokenBox" class="hidden bg-black/50 p-4 rounded-2xl border border-blue-500/30 mb-4 transition-all">
-                <label class="text-[10px] text-blue-400 uppercase font-bold">Paste Contract Address (CA)</label>
-                <input type="text" id="customAddress" placeholder="0x..." class="w-full bg-transparent text-sm font-mono mt-2 outline-none border-b border-gray-700 focus:border-blue-500 pb-1">
+            <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                <label class="text-[10px] text-gray-500 uppercase font-bold">Amount</label>
+                <input type="number" placeholder="0.00" class="w-full bg-transparent text-xl font-bold outline-none mt-2">
             </div>
 
-            <div class="bg-black/50 p-4 rounded-2xl border border-white/5 mb-2">
-                <label class="text-[10px] text-gray-500 uppercase font-bold">Amount to Swap</label>
-                <input type="number" id="inputAmount" placeholder="0.0" class="w-full bg-transparent text-xl font-bold outline-none mt-2">
+            <div class="p-4 rounded-2xl bg-green-500/10 border border-green-500/20 flex justify-between items-center">
+                <span class="text-sm font-medium">Receive:</span>
+                <span class="text-green-500 font-black text-xl">0.00 USDX</span>
             </div>
 
-            <div class="bg-green-900/10 p-4 rounded-2xl border border-green-500/10 mt-4">
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-400 font-medium">You Receive:</span>
-                    <span class="text-green-500 font-bold">~ <span id="outVal">0.00</span> USDX</span>
-                </div>
-            </div>
-
-            <button id="swapBtn" class="w-full bg-green-600 hover:bg-green-500 text-black font-black py-4 rounded-2xl mt-6 text-sm uppercase tracking-widest transition-all">
-                Swap Assets
+            <button id="actionBtn" class="w-full py-4 rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95">
+                Exchange Now
             </button>
         </div>
     </main>
 
     <script>
-        // Token Change Logic
-        function handleTokenChange() {
-            const select = document.getElementById('tokenSelect');
-            const customBox = document.getElementById('customTokenBox');
-            if (select.value === 'custom') {
-                customBox.classList.remove('hidden');
-            } else {
-                customBox.classList.add('hidden');
+        function setDesign(num) {
+            const body = document.getElementById('mainBody');
+            const card = document.getElementById('swapCard');
+            const btn = document.getElementById('actionBtn');
+            const logo = document.getElementById('logo');
+
+            if(num === 1) { // Dark Pro
+                body.className = "bg-[#0a0a0a] text-white min-h-screen flex flex-col items-center justify-center p-4 transition-all";
+                card.className = "w-full max-w-md p-8 rounded-[40px] border border-white/10 bg-[#111] shadow-2xl transition-all";
+                btn.className = "w-full py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest mt-4 hover:bg-green-500 transition-all";
+                logo.className = "text-2xl font-bold text-white tracking-widest";
+            } 
+            else if(num === 2) { // Neon Tech
+                body.className = "bg-black text-white min-h-screen flex flex-col items-center justify-center p-4 transition-all font-mono";
+                card.className = "w-full max-w-md p-8 rounded-none border-2 border-green-500 bg-black neon-glow transition-all";
+                btn.className = "w-full py-4 rounded-none bg-green-500 text-black font-black uppercase mt-4 hover:bg-green-400 transition-all";
+                logo.className = "text-2xl font-black text-green-500 uppercase italic";
+            }
+            else { // Clean Portal
+                body.className = "bg-[#f4f4f4] text-black min-h-screen flex flex-col items-center justify-center p-4 transition-all";
+                card.className = "w-full max-w-md p-8 rounded-3xl border border-black/5 bg-white shadow-xl transition-all";
+                btn.className = "w-full py-4 rounded-2xl bg-blue-600 text-white font-black uppercase mt-4 shadow-lg shadow-blue-200";
+                logo.className = "text-2xl font-black text-blue-600";
+                document.getElementById('connectWallet').className = "bg-blue-600 text-white px-6 py-2 rounded-full font-bold";
             }
         }
-
-        // Wallet Logic
-        async function connect() {
-            if (window.ethereum) {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                document.getElementById('connectWallet').innerText = accounts[0].substring(0,6) + "...";
-            } else { alert("MetaMask Install Karein!"); }
-        }
-        document.getElementById('connectWallet').onclick = connect;
-
-        // Exchange Logic Placeholder
-        document.getElementById('swapBtn').onclick = () => {
-            const token = document.getElementById('tokenSelect').value;
-            const address = token === 'custom' ? document.getElementById('customAddress').value : token;
-            alert("Exchanging Token: " + address + "\nStatus: Waiting for USDX Contract...");
-        };
+        // Default set to 1
+        setDesign(1);
     </script>
 </body>
 </html>
