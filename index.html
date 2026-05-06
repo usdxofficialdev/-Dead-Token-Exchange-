@@ -24,25 +24,41 @@ body {
 .scan {
     position:fixed;
     width:100%;
-    height:2px;
-    background:#22c55e;
-    top:0;
-    animation:scan 6s linear infinite;
-}
-@keyframes scan {
-    0%{top:0}
-    100%{top:100%}
-}
-a { color:#22c55e; }
-</style>
-
-<!-- WALLET CONNECT (FIXED + MULTI WALLET) -->
 <script type="module">
-import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi'
+import { createWeb3Modal } from 'https://unpkg.com/@web3modal/wagmi@4.0.0/dist/index.js'
+import { defaultWagmiConfig } from 'https://unpkg.com/@web3modal/wagmi@4.0.0/dist/index.js'
 import { mainnet, bsc, polygon, arbitrum } from 'https://esm.sh/@wagmi/core/chains'
 
+// IMPORTANT: your project id
 const projectId = '3106e2f5010a30340d51257097ffc140'
 
+// metadata
+const metadata = {
+  name: 'DeadEx',
+  description: 'Recovery Terminal',
+  url: 'https://dead-token-exchange.vercel.app/'
+}
+
+// chains
+const chains = [mainnet, bsc, polygon, arbitrum]
+
+// wagmi config
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata
+})
+
+// create modal
+window.modal = createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  themeMode: 'dark'
+})
+
+console.log("Wallet ready")
+</script>
 const metadata = {
   name: 'DeadEx Protocol',
   description: 'Recovery Terminal',
