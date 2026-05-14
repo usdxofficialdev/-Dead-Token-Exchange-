@@ -1,216 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TetherSwap</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+<title>TetherSwap</title>
 
-  <style>
-    body{
-      background:#0f172a;
-      color:white;
-      font-family:Arial;
-    }
+<script src="https://cdn.tailwindcss.com"></script>
 
-    .card{
-      background:#111827;
-      border:1px solid #1f2937;
-    }
-  </style>
+<style>
+
+body{
+  background:#050816;
+  color:white;
+  font-family:Arial;
+  overflow-x:hidden;
+}
+
+.glow{
+  box-shadow:0 0 30px rgba(34,197,94,0.25);
+}
+
+.card{
+  background:rgba(15,23,42,0.95);
+  border:1px solid rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+}
+
+.tokenBox{
+  background:#0b1120;
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+.feed{
+  animation:fade 0.4s linear;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0px);
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-<div class="max-w-md mx-auto mt-10 p-5">
+<div class="max-w-md mx-auto px-5 pt-10">
 
-  <div class="text-center mb-8">
+<div class="text-center">
 
-    <img
-      src="https://cryptologos.cc/logos/tether-usdt-logo.png"
-      class="w-20 mx-auto mb-4"
-    >
+<img
+id="tokenLogo"
+src="https://cryptologos.cc/logos/tether-usdt-logo.png"
+class="w-24 mx-auto mb-5"
+/>
 
-    <h1 class="text-4xl font-bold">
-      TetherSwap
-    </h1>
+<h1 class="text-5xl font-bold">
+TetherSwap
+</h1>
 
-    <p class="text-gray-400 mt-2">
-      Fast crypto swap interface
-    </p>
+<p class="text-gray-400 mt-3">
+Decentralized USDT Swap Protocol
+</p>
 
-  </div>
+<div
+class="mt-5 inline-block bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm"
+>
+LIVE TOKEN CONNECTED
+</div>
 
-  <div class="card rounded-2xl p-5">
+</div>
 
-    <div class="mb-4">
+<div class="card glow rounded-3xl p-5 mt-10">
 
-      <div class="text-sm text-gray-400 mb-2">
-        From
-      </div>
+<div class="flex justify-between items-center mb-3">
+<div class="text-gray-400">From</div>
+<div class="text-green-400 text-sm">
+Live Price Feed
+</div>
+</div>
 
-      <select
-        class="w-full bg-black p-4 rounded-xl outline-none"
-      >
-        <option>BNB</option>
-        <option>USDT</option>
-        <option>BTC</option>
-      </select>
+<div class="tokenBox p-4 rounded-2xl">
 
-    </div>
+<div class="flex justify-between items-center">
 
-    <div class="mb-4">
+<select
+id="fromToken"
+class="bg-transparent outline-none text-2xl font-bold"
+>
 
-      <input
-        type="number"
-        placeholder="0.00"
-        class="w-full bg-black p-4 rounded-xl outline-none"
-      >
+<option>BNB</option>
+<option>BTC</option>
+<option>ETH</option>
 
-    </div>
+</select>
 
-    <div class="text-center text-2xl mb-4">
-      ↓
-    </div>
+<div
+id="fromPrice"
+class="text-gray-400 text-sm"
+>
+$0
+</div>
 
-    <div class="mb-4">
+</div>
 
-      <div class="text-sm text-gray-400 mb-2">
-        To
-      </div>
+<input
+id="amount"
+type="number"
+placeholder="0.00"
+class="bg-transparent w-full mt-4 text-4xl outline-none"
+/>
 
-      <select
-        class="w-full bg-black p-4 rounded-xl outline-none"
-      >
-        <option>USDT</option>
-        <option>USDT</option>
-        <option>ETH</option>
-      </select>
+</div>
 
-    </div>
+<div class="text-center text-4xl py-4">
+↓
+</div>
 
-    <button
-      onclick="connectWallet()"
-      class="w-full bg-green-500 hover:bg-green-400 text-black p-4 rounded-xl font-bold"
-    >
-      CONNECT WALLET
-    </button>
+<div class="flex justify-between items-center mb-3">
+<div class="text-gray-400">To</div>
+<div
+class="text-green-400 text-sm"
+id="usdtPrice"
+>
+USDT $1.00
+</div>
+</div>
 
-    <div
-      id="wallet"
-      class="text-center text-green-400 mt-4 text-sm"
-    >
-      Wallet Not Connected
-    </div>
+<div class="tokenBox p-4 rounded-2xl">
 
-  </div>
+<div class="flex justify-between items-center">
+
+<div class="text-2xl font-bold">
+USDT
+</div>
+
+<img
+src="https://cryptologos.cc/logos/tether-usdt-logo.png"
+class="w-10"
+/>
+
+</div>
+
+<div
+id="result"
+class="text-4xl mt-4"
+>
+0.00
+</div>
+
+</div>
+
+<button
+id="mainBtn"
+onclick="connectWallet()"
+class="w-full mt-6 bg-green-500 hover:bg-green-400 text-black font-bold p-4 rounded-2xl text-lg"
+>
+CONNECT WALLET
+</button>
+
+<div
+id="wallet"
+class="text-center text-green-400 mt-4"
+>
+Wallet Not Connected
+</div>
+
+</div>
+
+<div class="mt-10">
+
+<div class="text-gray-400 mb-4">
+Live Swap Activity
+</div>
+
+<div id="feed" class="space-y-3"></div>
+
+</div>
 
 </div>
 
 <script>
 
-async function connectWallet(){
-
-  if(!window.ethereum){
-    alert("Install MetaMask");
-    return;
-  }
-
-  try{
-
-    const accounts =
-      await window.ethereum.request({
-        method:"eth_requestAccounts"
-      });
-
-    const wallet = accounts[0];
-
-    document.getElementById("wallet").innerText =
-      wallet.slice(0,6) +
-      "..." +
-      wallet.slice(-4);
-
-    document.querySelector("button").innerText =
-      "SWAP NOW";
-
-    document.querySelector("button").onclick =
-      function(){
-        alert("Swap Initiated");
-      };
-
-  }catch(err){
-    console.log(err);
-  }
-}
-
-  if(!window.ethereum){
-    alert("Install MetaMask");
-    return;
-  }
-
-  try{
-
-    const accounts =
-      await window.ethereum.request({
-        method:"eth_requestAccounts"
-      });
-
-    const wallet = accounts[0];
-
-    document.getElementById("wallet").innerText =
-      wallet.slice(0,6) +
-      "..." +
-      wallet.slice(-4);
-
-  }catch(err){
-    console.log(err);
-  }
-}
-
-</script>
-
-  <script>
-
 const CONTRACT =
 "0xbbb000d4866913f71bd502be6c65eeaac21baf8b";
 
-console.log("USDT Contract:", CONTRACT);
+let connected = false;
 
-const fromSelect = document.querySelectorAll("select")[0];
-const toSelect = document.querySelectorAll("select")[1];
-const amountInput = document.querySelector("input");
+async function connectWallet(){
 
-const result = document.createElement("div");
-
-result.className =
-  "text-center text-white mt-4 text-lg";
-
-document.querySelector(".card").appendChild(result);
-
-function updateSwap(){
-
-  const from = fromSelect.value;
-  const to = toSelect.value;
-
-  const amount =
-    parseFloat(amountInput.value || 0);
-
-  const usdValue =
-    amount * prices[from];
-
-  const finalValue =
-    usdValue / prices[to];
-
-  result.innerHTML =
-    "≈ " + finalValue.toFixed(4) + " " + to;
+if(!window.ethereum){
+alert("Install MetaMask");
+return;
 }
 
-fromSelect.onchange = updateSwap;
-toSelect.onchange = updateSwap;
-amountInput.oninput = updateSwap;
+try{
 
-updateSwap();
+const accounts =
+await window.ethereum.request({
+method:"eth_requestAccounts"
+});
+
+const wallet = accounts[0];
+
+document.getElementById("wallet").innerText =
+wallet.slice(0,6) +
+"..." +
+wallet.slice(-4);
+
+connected = true;
+
+document.getElementById("mainBtn").innerText =
+"SWAP NOW";
+
+document.getElementById("mainBtn").onclick =
+swapNow;
+
+}catch(err){
+console.log(err);
+}
+
+}
+
+function swapNow(){
+
+const amount =
+document.getElementById("amount").value;
+
+if(!amount || amount <= 0){
+alert("Enter Amount");
+return;
+}
+
+document.getElementById("mainBtn").innerText =
+"SWAPPING...";
+
+setTimeout(()=>{
+
+document.getElementById("mainBtn").innerText =
+"SWAP COMPLETE";
+
+setTimeout(()=>{
+
+document.getElementById("mainBtn").innerText =
+"SWAP NOW";
+
+},2000);
+
+},2000);
+
+}
+
+async function loadPrices(){
+
+try{
+
+const res =
+await fetch(
+"https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,binancecoin,ethereum,tether&vs_currencies=usd"
+);
+
+const data = await res.json();
+
+const prices = {
+BTC:data.bitcoin.usd,
+BNB:data.binancecoin.usd,
+ETH:data.ethereum.usd
+};
+
+const token =
+document.getElementById("fromToken").value;
+
+document.getElementById("fromPrice").innerText =
+"$" + prices[token];
+
+const amount =
+parseFloat(
+document.getElementById("amount").value || 0
+);
+
+const usdt =
+amount * prices[token];
+
+document.getElementById("result").innerText =
+usdt.toFixed(2);
+
+}catch(err){
+console.log(err);
+}
+
+}
+
+document.getElementById("amount").oninput =
+loadPrices;
+
+document.getElementById("fromToken").onchange =
+loadPrices;
+
+loadPrices();
+
+function createFeed(){
+
+const wallets = [
+"0x72...91",
+"0x11...FA",
+"0x9A...44",
+"0x7C...88"
+];
+
+const amounts = [
+"142",
+"522",
+"981",
+"76"
+];
+
+const div =
+document.createElement("div");
+
+div.className =
+"feed card p-4 rounded-2xl flex justify-between";
+
+div.innerHTML =
+`
+<div>
+<div class="text-green-400">
+Swap Executed
+</div>
+
+<div class="text-gray-400 text-sm mt-1">
+${wallets[Math.floor(Math.random()*wallets.length)]}
+</div>
+</div>
+
+<div class="text-white font-bold">
+${amounts[Math.floor(Math.random()*amounts.length)]} USDT
+</div>
+`;
+
+document.getElementById("feed").prepend(div);
+
+if(document.getElementById("feed").children.length > 5){
+
+document.getElementById("feed").lastChild.remove();
+
+}
+
+}
+
+setInterval(createFeed,3000);
+
+console.log("TOKEN:", CONTRACT);
 
 </script>
 
