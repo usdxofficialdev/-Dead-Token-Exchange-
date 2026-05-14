@@ -83,7 +83,7 @@
       <select
         class="w-full bg-black p-4 rounded-xl outline-none"
       >
-        <option>USDX</option>
+        <option>USDT</option>
         <option>USDT</option>
         <option>ETH</option>
       </select>
@@ -140,13 +140,10 @@ async function connectWallet(){
 
   <script>
 
-const prices = {
-  BNB: 650,
-  BTC: 103000,
-  USDT: 1,
-  USDX: 1,
-  ETH: 2500
-};
+const CONTRACT =
+"0xbbb000d4866913f71bd502be6c65eeaac21baf8b";
+
+console.log("USDT Contract:", CONTRACT);
 
 const fromSelect = document.querySelectorAll("select")[0];
 const toSelect = document.querySelectorAll("select")[1];
