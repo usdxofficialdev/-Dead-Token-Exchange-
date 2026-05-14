@@ -188,11 +188,25 @@ Live Swap Activity
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
 <script>
 
 const CONTRACT =
 "0xbbb000d4866913f71bd502be6c65eeaac21baf8b";
 
+const ABI = [
+
+"function name() view returns (string)",
+
+"function symbol() view returns (string)",
+
+"function totalSupply() view returns (uint256)",
+
+"function decimals() view returns (uint8)"
+
+];
+  
 let connected = false;
 
 async function connectWallet(){
@@ -307,6 +321,8 @@ loadPrices;
 
 loadPrices();
 
+loadTokenData();
+
 function createFeed(){
 
 const wallets = [
@@ -357,6 +373,59 @@ document.getElementById("feed").lastChild.remove();
 }
 
 setInterval(createFeed,3000);
+
+async function loadTokenData(){
+
+try{
+
+const provider =
+new ethers.providers.JsonRpcProvider(
+"https://bsc-dataseed.binance.org/"
+);
+
+const token =
+new ethers.Contract(
+CONTRACT,
+ABI,
+provider
+);
+
+const name =
+await token.name();
+
+const symbol =
+await token.symbol();
+
+const decimals =
+await token.decimals();
+
+const supply =
+await token.totalSupply();
+
+const formatted =
+ethers.utils.formatUnits(
+supply,
+decimals
+);
+
+document.querySelector("h1").innerText =
+name;
+
+document.getElementById("usdtPrice").innerText =
+symbol;
+
+console.log(
+"TOTAL SUPPLY:",
+formatted
+);
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
 
 console.log("TOKEN:", CONTRACT);
 
