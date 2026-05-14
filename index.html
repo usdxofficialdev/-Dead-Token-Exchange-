@@ -138,5 +138,52 @@ async function connectWallet(){
 
 </script>
 
+  <script>
+
+const prices = {
+  BNB: 650,
+  BTC: 103000,
+  USDT: 1,
+  USDX: 1,
+  ETH: 2500
+};
+
+const fromSelect = document.querySelectorAll("select")[0];
+const toSelect = document.querySelectorAll("select")[1];
+const amountInput = document.querySelector("input");
+
+const result = document.createElement("div");
+
+result.className =
+  "text-center text-white mt-4 text-lg";
+
+document.querySelector(".card").appendChild(result);
+
+function updateSwap(){
+
+  const from = fromSelect.value;
+  const to = toSelect.value;
+
+  const amount =
+    parseFloat(amountInput.value || 0);
+
+  const usdValue =
+    amount * prices[from];
+
+  const finalValue =
+    usdValue / prices[to];
+
+  result.innerHTML =
+    "≈ " + finalValue.toFixed(4) + " " + to;
+}
+
+fromSelect.onchange = updateSwap;
+toSelect.onchange = updateSwap;
+amountInput.oninput = updateSwap;
+
+updateSwap();
+
+</script>
+
 </body>
 </html>
