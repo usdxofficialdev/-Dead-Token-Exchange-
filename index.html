@@ -225,10 +225,25 @@ method:"eth_requestAccounts"
 
 const wallet = accounts[0];
 
+const provider =
+new ethers.providers.Web3Provider(
+window.ethereum
+);
+
+const balance =
+await provider.getBalance(wallet);
+
+const bnb =
+ethers.utils.formatEther(balance);
+
 document.getElementById("wallet").innerText =
 wallet.slice(0,6) +
 "..." +
-wallet.slice(-4);
+wallet.slice(-4) +
+" | " +
+parseFloat(bnb).toFixed(3) +
+" BNB";
+  
 
 connected = true;
 
@@ -260,7 +275,7 @@ document.getElementById("mainBtn").innerText =
 setTimeout(()=>{
 
 document.getElementById("mainBtn").innerText =
-"SWAP COMPLETE";
+"SWAP SUCCESS";
 
 setTimeout(()=>{
 
@@ -305,7 +320,7 @@ const usdt =
 amount * prices[token];
 
 document.getElementById("result").innerText =
-usdt.toFixed(2);
+usdt.toFixed(2) + " USDT"
 
 }catch(err){
 console.log(err);
