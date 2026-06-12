@@ -7,11 +7,11 @@ import { Footer } from '@/components/Footer';
 import { Settings, LogOut } from 'lucide-react';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'john@example.com',
-    wallet: '0x742d35Cc6634C0532925a3b844Bc724e5c0AE924',
-    joinDate: '2024-01-15',
+const [profile] = useState({
+  name: 'John Doe',
+  email: 'john@example.com',
+  wallet: '0x742d35Cc6634C0532925a3b844Bc724e5c0AE924',
+  joinDate: '2024-01-15',
   });
 
   const [isEditing, setIsEditing] = useState(false);
