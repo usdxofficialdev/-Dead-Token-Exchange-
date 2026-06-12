@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { Check } from 'lucide-react';
-import Link from 'next/link';
+
 
 const plans = [
   {
