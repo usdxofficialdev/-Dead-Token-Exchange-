@@ -1,48 +1,43 @@
 "use client";
 
 import React, { ReactNode } from 'react';
-import { createAppKit } from '@reown/appkit/react';
-import { mainnet, bsc } from '@reown/appkit/networks';
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
 import { WagmiProvider } from 'wagmi';
+import { mainnet, bsc } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // 1. Setup Query Client
 const queryClient = new QueryClient();
 
-// 2. Project ID (Demo ID)
+// 2. Project ID
 const projectId = 'b56e18d47c72ab683b11a21d4d29bf39'; 
 
 // 3. Configure networks
-const networks = [mainnet, bsc] as const;
+const metadata = {
+  name: 'USDX Rewards',
+  description: 'Premium staking and rewards platform',
+  url: 'https://dead-token-exchange.vercel.app',
+  icons: ['https://avatars.githubusercontent.com/u/179241852']
+};
 
-// 4. Create Wagmi Adapter (Naye version ke mutabik correct structure)
-const wagmiAdapter = new WagmiAdapter({
-  projectId,
-  networks: [mainnet, bsc],
-  ssr: true
-});
+const chains = [mainnet, bsc] as const;
+const config = defaultWagmiConfig({ chains, projectId, metadata });
 
-// 5. Create AppKit Instance
-createAppKit({
-  adapters: [wagmiAdapter],
-  networks,
+// 4. Create Web3Modal Instance
+createWeb3Modal({
+  wagmiConfig: config,
   projectId,
-  features: {
-    analytics: true,
-    email: true, // Email login enabled
-    socials: ['google', 'apple', 'x'],
-  },
+  enableAnalytics: true,
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-accent': '#f59e0b', // Gold color
+    '--w3m-accent': '#f59e0b',
     '--w3m-background': '#111111',
   }
 });
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>
