@@ -20,28 +20,14 @@
     "react-dom": "^19.0.0",
 
     "framer-motion": "^12.23.6",
-    "recharts": "^2.10.0",
     "lucide-react": "^0.525.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.3.1",
     "@tailwindcss/forms": "^0.5.10",
 
-    "wagmi": "2.19.5",
-    "viem": "2.21.54",
-    "@web3modal/wagmi": "4.2.3",
-    "@tanstack/react-query": "5.62.7"
-  },
-
-  "overrides": {
-    "@wagmi/connectors": "8.0.15",
-    "@wagmi/core": "3.5.0",
-    "accounts": "0.10.0",
-    "uuid": "11.0.5"
-  },
-
-  "resolutions": {
-    "accounts": "0.10.0",
-    "@wagmi/connectors": "8.0.15"
+    "wagmi": "^2.19.5",
+    "viem": "^2.21.54",
+    "@tanstack/react-query": "^5.62.7"
   },
 
   "devDependencies": {
