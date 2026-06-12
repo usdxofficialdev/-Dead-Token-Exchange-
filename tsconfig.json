@@ -18,9 +18,10 @@
     "declarationMap": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./app/*", "./components/*"]
-    }
+"baseUrl": ".",
+"paths": {
+  "@/*": ["./*"]
+}
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
