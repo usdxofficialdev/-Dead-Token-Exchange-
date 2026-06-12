@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Navigation } from '@/components/shared/Navigation';
-import { Footer } from '@/components/shared/Footer';
+import { Navigation } from '@/components/Navigation';
+import { Footer } from '@/components/Footer';
 import { motion } from 'framer-motion';
 
 export default function AboutPage() {
