@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { Medal, TrendingUp } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 
 const leaderboardData = [
   { rank: 1, name: 'Alex Johnson', earned: '125,000 USDX', members: 234, medal: '🥇' },
