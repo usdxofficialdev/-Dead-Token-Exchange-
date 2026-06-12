@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { Calendar, Award } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 const rewardsHistory = [
   { date: '2024-06-12', type: 'Daily Reward', amount: '234 USDX', status: 'Claimed' },
