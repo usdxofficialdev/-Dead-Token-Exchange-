@@ -10,32 +10,32 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // 1. Setup Query Client
 const queryClient = new QueryClient();
 
-// 2. Project ID (Abhi ke liye demo ID hai, baad mein aap apni badal sakte hain)
+// 2. Project ID (Demo ID)
 const projectId = 'b56e18d47c72ab683b11a21d4d29bf39'; 
 
-// 3. Configure networks (Mainnet aur BSC)
-const networks = [mainnet, bsc];
+// 3. Configure networks
+const networks = [mainnet, bsc] as const;
 
-// 4. Create Wagmi Adapter
+// 4. Create Wagmi Adapter (Naye version ke mutabik correct structure)
 const wagmiAdapter = new WagmiAdapter({
-  networks,
   projectId,
+  networks: [mainnet, bsc],
   ssr: true
 });
 
-// 5. Create AppKit Instance (Isme Email true rakha hai)
+// 5. Create AppKit Instance
 createAppKit({
   adapters: [wagmiAdapter],
   networks,
   projectId,
   features: {
     analytics: true,
-    email: true, // Isse Email login enable ho jayega
+    email: true, // Email login enabled
     socials: ['google', 'apple', 'x'],
   },
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-accent': '#f59e0b', // Gold color for your premium theme
+    '--w3m-accent': '#f59e0b', // Gold color
     '--w3m-background': '#111111',
   }
 });
