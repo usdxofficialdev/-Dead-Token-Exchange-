@@ -14,7 +14,7 @@ const [profile] = useState({
   joinDate: '2024-01-15',
   });
 
-  const [isEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <main className="min-h-screen bg-black">
