@@ -24,7 +24,7 @@ const teamData = [
 
 export default function DashboardPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [stats, setStats] = useState([
+  const [stats] = useState([
     { label: 'Total Stake', value: '$45,230', change: '+12.5%' },
     { label: 'Daily Rewards', value: '234 USDX', change: '+8.3%' },
     { label: 'Team Members', value: '1,234', change: '+45%' },
