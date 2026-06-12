@@ -5,15 +5,6 @@
 :root {
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
-  --gold-primary: 45 93% 50%;
-  --gold-dark: 32 95% 44%;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-  }
 }
 
 * {

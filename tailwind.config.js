@@ -22,13 +22,6 @@ module.exports = {
           900: '#78350f',
         },
       },
-      fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
       boxShadow: {
         'glow-gold': '0 0 20px rgba(245, 158, 11, 0.3)',
         'glow-gold-lg': '0 0 40px rgba(245, 158, 11, 0.4)',
