@@ -33,6 +33,14 @@
   },
 
   "overrides": {
+    "@wagmi/connectors": "8.0.15",
+    "@wagmi/core": "3.5.0",
+    "accounts": "0.10.0",
+    "uuid": "11.0.5"
+  },
+
+  "resolutions": {
+    "accounts": "0.10.0",
     "@wagmi/connectors": "8.0.15"
   },
 
