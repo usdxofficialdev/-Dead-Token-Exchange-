@@ -59,8 +59,14 @@ export function Navigation() {
           </div>
 
           {/* Wallet Button */}
-          <div className="hidden md:block">
-          </div>
+         <div className="hidden md:block">
+  <Link
+    href="/login"
+    className="px-5 py-2 rounded-lg bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition"
+  >
+    Login
+  </Link>
+</div>
 
           {/* Mobile Menu Button */}
           <button
