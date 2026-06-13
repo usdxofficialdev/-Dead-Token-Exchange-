@@ -13,6 +13,10 @@ export default function Dashboard() {
   const [userName, setUserName] = useState("User");
   const [membership, setMembership] = useState<string | null>(null);
 
+  // ✅ STAKE STATES
+  const [stakeAmount, setStakeAmount] = useState("");
+  const [staked, setStaked] = useState(0);
+
   useEffect(() => {
     const w = localStorage.getItem("wallet");
     if (w) setWallet(w);
@@ -49,14 +53,14 @@ export default function Dashboard() {
     fontWeight: 600
   };
 
-  // ✅ RECEIVE (copy wallet)
+  // RECEIVE
   const receiveUSDX = () => {
     if (!wallet) return alert("Wallet not connected");
     navigator.clipboard.writeText(wallet);
-    alert("Wallet address copied!");
+    alert("Wallet copied!");
   };
 
-  // ⚡ SEND (MetaMask tx)
+  // SEND
   const sendUSDX = async () => {
     if (!window.ethereum) return alert("MetaMask install karo");
 
@@ -71,11 +75,22 @@ export default function Dashboard() {
       params: [
         {
           from,
-          to: from, // demo transfer (later real address input hoga)
+          to: from,
           value: "0x0"
         }
       ]
     });
+  };
+
+  // ✅ STAKE LOGIC
+  const stakeTokens = () => {
+    if (!stakeAmount) return alert("Amount enter karo");
+
+    const value = Number(stakeAmount);
+    if (isNaN(value) || value <= 0) return alert("Valid amount daalo");
+
+    setStaked(prev => prev + value);
+    setStakeAmount("");
   };
 
   return (
@@ -116,7 +131,7 @@ export default function Dashboard() {
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "15px"
         }}>
-          <div style={card}>💰 Staking <h2>{data.staking}</h2></div>
+          <div style={card}>💰 Staking <h2>{data.staking + staked}</h2></div>
           <div style={card}>🎁 Rewards <h2>{data.rewards}</h2></div>
           <div style={card}>🔗 Referral <h2>{data.referral}</h2></div>
           <div style={card}>📤 Sent <h2>{data.sent}</h2></div>
@@ -130,23 +145,50 @@ export default function Dashboard() {
           display: "flex",
           gap: "10px"
         }}>
-          <button
-            style={{ ...btn, background: "#00ffcc" }}
-            onClick={sendUSDX}
-          >
+          <button style={{ ...btn, background: "#00ffcc" }} onClick={sendUSDX}>
             Send USDX
           </button>
 
-          <button
-            style={{ ...btn, background: "#00aaff" }}
-            onClick={receiveUSDX}
-          >
+          <button style={{ ...btn, background: "#00aaff" }} onClick={receiveUSDX}>
             Receive USDX
           </button>
 
           <button style={{ ...btn, background: "#ffcc00" }}>
             Stake Tokens
           </button>
+        </div>
+
+        {/* STAKE PANEL */}
+        <div style={{
+          marginTop: "20px",
+          padding: "20px",
+          borderRadius: "16px",
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)"
+        }}>
+          <h3>💎 Stake Panel</h3>
+
+          <input
+            value={stakeAmount}
+            onChange={(e) => setStakeAmount(e.target.value)}
+            placeholder="Enter stake amount"
+            style={{
+              padding: "10px",
+              borderRadius: "10px",
+              marginRight: "10px"
+            }}
+          />
+
+          <button
+            onClick={stakeTokens}
+            style={{ ...btn, background: "#ffcc00" }}
+          >
+            Stake Now
+          </button>
+
+          <p style={{ marginTop: "10px" }}>
+            Total Staked: {staked}
+          </p>
         </div>
 
         {/* ACTIVITY */}
