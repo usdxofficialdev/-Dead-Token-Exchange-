@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, CSSProperties } from "react";
 
 export default function Dashboard() {
   const [wallet, setWallet] = useState<string | null>(null);
@@ -14,6 +14,14 @@ export default function Dashboard() {
     staking: 0,
     rewards: 0,
     referral: 0
+  };
+
+  const cardStyle: CSSProperties = {
+    padding: "20px",
+    borderRadius: "15px",
+    background: "rgba(255,255,255,0.07)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    textAlign: "center"
   };
 
   return (
@@ -34,15 +42,12 @@ export default function Dashboard() {
         backdropFilter: "blur(12px)"
       }}>
         
-        {/* HEADER */}
         <h1>USDX Dashboard</h1>
 
-        {/* WALLET INFO */}
         <p style={{ opacity: 0.8 }}>
           Wallet: {wallet || "Not Connected"}
         </p>
 
-        {/* MAIN CARDS */}
         <div style={{
           marginTop: "20px",
           display: "grid",
@@ -67,23 +72,8 @@ export default function Dashboard() {
 
         </div>
 
-        {/* SUMMARY */}
-        <div style={{ marginTop: "25px" }}>
-          <p>Total Staked: {data.staking}</p>
-          <p>Rewards Earned: {data.rewards}</p>
-          <p>Referral Earnings: {data.referral}</p>
-        </div>
-
       </div>
 
     </div>
   );
 }
-
-const cardStyle = {
-  padding: "20px",
-  borderRadius: "15px",
-  background: "rgba(255,255,255,0.07)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  textAlign: "center"
-};
