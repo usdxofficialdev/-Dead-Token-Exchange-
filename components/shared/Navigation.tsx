@@ -88,9 +88,8 @@ export function Navigation() {
                 {item.label}
               </Link>
             ))}
-            <div className="pt-3 border-t border-gold-500/20">
-              <ConnectButton />
-            </div>
+           <div className="pt-3 border-t border-gold-500/20">
+</div>
           </motion.div>
         )}
       </div>
