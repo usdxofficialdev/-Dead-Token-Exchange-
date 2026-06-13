@@ -1,3 +1,5 @@
+"use client";
+
 export default function Dashboard() {
   return (
     <div style={{
@@ -28,7 +30,7 @@ export default function Dashboard() {
           
           <div>💰 Staking</div>
           <div>🎁 Rewards</div>
-          <div🔗 Referral</div>
+          <div>🔗 Referral</div>
 
         </div>
 
