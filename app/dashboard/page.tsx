@@ -2,6 +2,12 @@
 
 import { useEffect, useState, CSSProperties } from "react";
 
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 export default function Dashboard() {
   const [wallet, setWallet] = useState<string | null>(null);
   const [userName, setUserName] = useState("User");
@@ -18,7 +24,6 @@ export default function Dashboard() {
     if (m) setMembership(m);
   }, []);
 
-  // MOCK DATA (replace later with backend)
   const data = {
     balance: 1250,
     staking: 500,
@@ -42,6 +47,35 @@ export default function Dashboard() {
     border: "none",
     cursor: "pointer",
     fontWeight: 600
+  };
+
+  // ✅ RECEIVE (copy wallet)
+  const receiveUSDX = () => {
+    if (!wallet) return alert("Wallet not connected");
+    navigator.clipboard.writeText(wallet);
+    alert("Wallet address copied!");
+  };
+
+  // ⚡ SEND (MetaMask tx)
+  const sendUSDX = async () => {
+    if (!window.ethereum) return alert("MetaMask install karo");
+
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+
+    const from = accounts[0];
+
+    await window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from,
+          to: from, // demo transfer (later real address input hoga)
+          value: "0x0"
+        }
+      ]
+    });
   };
 
   return (
@@ -96,11 +130,17 @@ export default function Dashboard() {
           display: "flex",
           gap: "10px"
         }}>
-          <button style={{ ...btn, background: "#00ffcc" }}>
+          <button
+            style={{ ...btn, background: "#00ffcc" }}
+            onClick={sendUSDX}
+          >
             Send USDX
           </button>
 
-          <button style={{ ...btn, background: "#00aaff" }}>
+          <button
+            style={{ ...btn, background: "#00aaff" }}
+            onClick={receiveUSDX}
+          >
             Receive USDX
           </button>
 
