@@ -1,45 +1,24 @@
-:root {
-  --bg: #0a0a0a;
-  --card: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: #ffffff;
-  --muted: rgba(255, 255, 255, 0.7);
-
-  --primary: #00ffcc;
-  --secondary: #00aaff;
-  --warning: #ffcc00;
-}
-
 body {
   margin: 0;
   padding: 0;
-  background: radial-gradient(circle at top, #111, #000);
-  color: var(--text);
+  background: #0a0a0a;
+  color: #fff;
   font-family: Arial, sans-serif;
 }
 
-/* ===== LAYOUT ===== */
 .container {
   max-width: 1100px;
   margin: auto;
   padding: 20px;
 }
 
-/* ===== CARD SYSTEM ===== */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 16px;
   padding: 18px;
-  backdrop-filter: blur(12px);
-  transition: 0.2s;
 }
 
-.card:hover {
-  transform: translateY(-3px);
-}
-
-/* ===== BUTTON SYSTEM ===== */
 .btn {
   padding: 10px 14px;
   border-radius: 10px;
@@ -48,33 +27,13 @@ body {
   font-weight: 600;
 }
 
-.btn-primary {
-  background: var(--primary);
-}
-
-.btn-secondary {
-  background: var(--secondary);
-}
-
-.btn-warning {
-  background: var(--warning);
-}
-
-/* ===== GRID SYSTEM ===== */
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
 
-/* ===== FLEX ===== */
 .flex {
   display: flex;
   gap: 10px;
-  align-items: center;
-}
-
-/* ===== TEXT ===== */
-.muted {
-  color: var(--muted);
 }
