@@ -3,7 +3,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 
 export function Hero() {
@@ -56,7 +55,6 @@ export function Hero() {
           className="flex flex-col md:flex-row items-center justify-center gap-4 mb-12"
         >
           <div className="w-full md:w-auto">
-            <ConnectButton />
           </div>
           <Link
             href="/membership"
