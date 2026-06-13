@@ -1,15 +1,26 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+/* Fix TypeScript window.ethereum */
 declare global {
   interface Window {
     ethereum?: any;
   }
 }
 
-"use client";
-
-import { useState } from "react";
-
 export default function LoginWallet() {
-  const [wallet, setWallet] = useState(null);
+  const [wallet, setWallet] = useState<string | null>(null);
+
+  // load saved wallet on refresh
+  useEffect(() => {
+    const saved = localStorage.getItem("wallet");
+    if (saved) setWallet(saved);
+  }, []);
+
+  const saveWallet = (address: string) => {
+    localStorage.setItem("wallet", address);
+  };
 
   const connectWallet = async () => {
     if (!window.ethereum) {
@@ -21,7 +32,14 @@ export default function LoginWallet() {
       method: "eth_requestAccounts",
     });
 
-    setWallet(accounts[0]);
+    const addr = accounts[0];
+    setWallet(addr);
+    saveWallet(addr);
+  };
+
+  const disconnectWallet = () => {
+    localStorage.removeItem("wallet");
+    setWallet(null);
   };
 
   return (
@@ -31,7 +49,12 @@ export default function LoginWallet() {
           Connect Wallet
         </button>
       ) : (
-        <p>{wallet}</p>
+        <div>
+          <p>{wallet}</p>
+          <button onClick={disconnectWallet}>
+            Disconnect
+          </button>
+        </div>
       )}
     </div>
   );
