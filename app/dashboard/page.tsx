@@ -4,18 +4,18 @@ import { useEffect, useState, CSSProperties } from "react";
 
 export default function Dashboard() {
   const [wallet, setWallet] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string>("User");
+  const [userName, setUserName] = useState("User");
 
   useEffect(() => {
-    const savedWallet = localStorage.getItem("wallet");
-    if (savedWallet) setWallet(savedWallet);
+    const w = localStorage.getItem("wallet");
+    if (w) setWallet(w);
 
-    const savedName = localStorage.getItem("username");
-    if (savedName) setUserName(savedName);
+    const n = localStorage.getItem("username");
+    if (n) setUserName(n);
   }, []);
 
   const data = {
-    usdxBalance: 1250,
+    balance: 1250,
     sent: 320,
     received: 980,
     staking: 500,
@@ -23,17 +23,16 @@ export default function Dashboard() {
     referral: 75
   };
 
-  const cardStyle: CSSProperties = {
+  const card: CSSProperties = {
     padding: "18px",
-    borderRadius: "15px",
-    background: "rgba(255,255,255,0.07)",
+    borderRadius: "16px",
+    background: "rgba(255,255,255,0.06)",
     border: "1px solid rgba(255,255,255,0.1)",
-    textAlign: "center"
+    backdropFilter: "blur(10px)"
   };
 
-  const actionBtn: CSSProperties = {
-    marginTop: "8px",
-    padding: "8px 12px",
+  const btn: CSSProperties = {
+    padding: "10px 14px",
     borderRadius: "10px",
     border: "none",
     cursor: "pointer"
@@ -41,95 +40,58 @@ export default function Dashboard() {
 
   return (
     <div style={{
+      minHeight: "100vh",
       padding: "20px",
-      display: "flex",
-      justifyContent: "center",
-      color: "#fff"
+      color: "#fff",
+      background: "#0a0a0a"
     }}>
       
-      <div style={{
-        width: "100%",
-        maxWidth: "950px",
-        padding: "25px",
-        borderRadius: "20px",
-        background: "rgba(255,255,255,0.05)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        backdropFilter: "blur(12px)"
-      }}>
+      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         
         {/* HEADER */}
         <h1>USDX Dashboard</h1>
-
         <h3>Welcome, {userName}</h3>
+        <p>Wallet: {wallet || "Not Connected"}</p>
 
-        <p style={{ opacity: 0.8 }}>
-          Wallet: {wallet || "Not Connected"}
-        </p>
+        {/* HERO BALANCE */}
+        <div style={{
+          marginTop: "20px",
+          padding: "25px",
+          borderRadius: "20px",
+          background: "linear-gradient(135deg, #1a1a1a, #111)",
+          border: "1px solid rgba(255,255,255,0.1)"
+        }}>
+          <h2>Total Balance</h2>
+          <h1>{data.balance} USDX</h1>
+        </div>
 
-        {/* MAIN STATS */}
+        {/* STATS GRID */}
         <div style={{
           marginTop: "20px",
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "15px"
         }}>
-          
-          <div style={cardStyle}>
-            💰 USDX Balance
-            <h2>{data.usdxBalance}</h2>
-          </div>
-
-          <div style={cardStyle}>
-            📤 Sent
-            <h2>{data.sent}</h2>
-          </div>
-
-          <div style={cardStyle}>
-            📥 Received
-            <h2>{data.received}</h2>
-          </div>
-
-          <div style={cardStyle}>
-            🪙 Staking
-            <h2>{data.staking}</h2>
-          </div>
-
-          <div style={cardStyle}>
-            🎁 Rewards
-            <h2>{data.rewards}</h2>
-          </div>
-
-          <div style={cardStyle}>
-            🔗 Referral
-            <h2>{data.referral}</h2>
-          </div>
-
+          <div style={card}>💰 Staking <h3>{data.staking}</h3></div>
+          <div style={card}>🎁 Rewards <h3>{data.rewards}</h3></div>
+          <div style={card}>🔗 Referral <h3>{data.referral}</h3></div>
+          <div style={card}>📤 Sent <h3>{data.sent}</h3></div>
+          <div style={card}>📥 Received <h3>{data.received}</h3></div>
+          <div style={card}>⚡ Wallet Status <h3>{wallet ? "Active" : "Inactive"}</h3></div>
         </div>
 
-        {/* ACTIONS */}
+        {/* ACTION BAR */}
         <div style={{
           marginTop: "25px",
           display: "flex",
-          gap: "10px",
-          justifyContent: "center"
+          gap: "10px"
         }}>
-          
-          <button style={actionBtn}>
-            Send USDX
-          </button>
-
-          <button style={actionBtn}>
-            Receive USDX
-          </button>
-
-          <button style={actionBtn}>
-            Stake Tokens
-          </button>
-
+          <button style={{ ...btn, background: "#00ffcc" }}>Send</button>
+          <button style={{ ...btn, background: "#00aaff" }}>Receive</button>
+          <button style={{ ...btn, background: "#ffcc00" }}>Stake</button>
         </div>
 
       </div>
-
     </div>
   );
 }
