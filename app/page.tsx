@@ -1,22 +1,25 @@
-import LoginWallet from "./components/LoginWallet";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div style={{ padding: "20px" }}>
-      
-      {/* HEADER (old UI feel) */}
+    <main style={{ padding: "20px" }}>
       <h1>USDX Network</h1>
       <p>DeFi Staking & Rewards Platform</p>
 
-      {/* WALLET */}
-      <LoginWallet />
+      <div style={{ marginTop: "20px" }}>
+        <h2>Navigate</h2>
 
-      {/* PLACEHOLDER FOR OLD UI */}
-      <div style={{ marginTop: "40px" }}>
-        <h2>Dashboard</h2>
-        <p>Staking • Rewards • Referral system will appear here</p>
+        <ul>
+          <li><Link href="/dashboard">Dashboard</Link></li>
+          <li><Link href="/membership">Staking</Link></li>
+          <li><Link href="/rewards">Rewards</Link></li>
+          <li><Link href="/referral">Referral</Link></li>
+          <li><Link href="/profile">Profile</Link></li>
+          <li><Link href="/leaderboard">Leaderboard</Link></li>
+          <li><Link href="/login">Login</Link></li>
+          <li><Link href="/admin">Admin</Link></li>
+        </ul>
       </div>
-
-    </div>
+    </main>
   );
 }
