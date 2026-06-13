@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 "use client";
 
 import { useState } from "react";
