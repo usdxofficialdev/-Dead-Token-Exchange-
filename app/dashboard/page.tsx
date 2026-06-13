@@ -5,6 +5,7 @@ import { useEffect, useState, CSSProperties } from "react";
 export default function Dashboard() {
   const [wallet, setWallet] = useState<string | null>(null);
   const [userName, setUserName] = useState("User");
+  const [membership, setMembership] = useState<string | null>(null);
 
   useEffect(() => {
     const w = localStorage.getItem("wallet");
@@ -12,8 +13,12 @@ export default function Dashboard() {
 
     const n = localStorage.getItem("username");
     if (n) setUserName(n);
+
+    const m = localStorage.getItem("membership");
+    if (m) setMembership(m);
   }, []);
 
+  // MOCK DATA (replace later with backend)
   const data = {
     balance: 1250,
     staking: 500,
@@ -28,13 +33,7 @@ export default function Dashboard() {
     borderRadius: "16px",
     background: "rgba(255,255,255,0.06)",
     border: "1px solid rgba(255,255,255,0.1)",
-    backdropFilter: "blur(12px)",
-    transition: "0.3s"
-  };
-
-  const glowCard: CSSProperties = {
-    ...card,
-    boxShadow: "0 0 25px rgba(0,255,200,0.15)"
+    backdropFilter: "blur(12px)"
   };
 
   const btn: CSSProperties = {
@@ -54,18 +53,17 @@ export default function Dashboard() {
     }}>
       
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        
+
         {/* HEADER */}
-        <div style={glowCard}>
+        <div style={card}>
           <h1>⚡ USDX NETWORK</h1>
           <h3>Welcome, {userName}</h3>
 
-          <p>
-            Wallet: {wallet ? "🟢 Connected" : "🔴 Not Connected"}
-          </p>
+          <p>Wallet: {wallet || "Not Connected"}</p>
+          <p>Membership: {membership || "None"}</p>
         </div>
 
-        {/* HERO BALANCE */}
+        {/* BALANCE */}
         <div style={{
           marginTop: "20px",
           padding: "25px",
@@ -77,7 +75,7 @@ export default function Dashboard() {
           <h1>{data.balance} USDX</h1>
         </div>
 
-        {/* STATS GRID */}
+        {/* STATS */}
         <div style={{
           marginTop: "20px",
           display: "grid",
@@ -89,21 +87,29 @@ export default function Dashboard() {
           <div style={card}>🔗 Referral <h2>{data.referral}</h2></div>
           <div style={card}>📤 Sent <h2>{data.sent}</h2></div>
           <div style={card}>📥 Received <h2>{data.received}</h2></div>
-          <div style={glowCard}>⚡ Status <h2>Active</h2></div>
+          <div style={card}>⚡ Status <h2>Active</h2></div>
         </div>
 
-        {/* ACTION PANEL */}
+        {/* ACTIONS */}
         <div style={{
           marginTop: "25px",
           display: "flex",
           gap: "10px"
         }}>
-          <button style={{ ...btn, background: "#00ffcc" }}>Send</button>
-          <button style={{ ...btn, background: "#00aaff" }}>Receive</button>
-          <button style={{ ...btn, background: "#ffcc00" }}>Stake</button>
+          <button style={{ ...btn, background: "#00ffcc" }}>
+            Send USDX
+          </button>
+
+          <button style={{ ...btn, background: "#00aaff" }}>
+            Receive USDX
+          </button>
+
+          <button style={{ ...btn, background: "#ffcc00" }}>
+            Stake Tokens
+          </button>
         </div>
 
-        {/* ACTIVITY PANEL */}
+        {/* ACTIVITY */}
         <div style={{
           marginTop: "25px",
           padding: "20px",
@@ -111,7 +117,7 @@ export default function Dashboard() {
           background: "rgba(255,255,255,0.04)",
           border: "1px solid rgba(255,255,255,0.08)"
         }}>
-          <h3>📊 Recent Activity</h3>
+          <h3>📊 Activity</h3>
           <p>• Sent 50 USDX</p>
           <p>• Received 120 USDX</p>
           <p>• Staked 200 USDX</p>
