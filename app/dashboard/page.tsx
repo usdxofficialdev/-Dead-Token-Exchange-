@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, CSSProperties } from "react";
+import { useEffect, useState } from "react";
 
 declare global {
   interface Window {
@@ -13,7 +13,6 @@ export default function Dashboard() {
   const [userName, setUserName] = useState("User");
   const [membership, setMembership] = useState<string | null>(null);
 
-  // ✅ STAKE STATES
   const [stakeAmount, setStakeAmount] = useState("");
   const [staked, setStaked] = useState(0);
 
@@ -37,30 +36,12 @@ export default function Dashboard() {
     received: 980
   };
 
-  const card: CSSProperties = {
-    padding: "18px",
-    borderRadius: "16px",
-    background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    backdropFilter: "blur(12px)"
-  };
-
-  const btn: CSSProperties = {
-    padding: "10px 14px",
-    borderRadius: "10px",
-    border: "none",
-    cursor: "pointer",
-    fontWeight: 600
-  };
-
-  // RECEIVE
   const receiveUSDX = () => {
     if (!wallet) return alert("Wallet not connected");
     navigator.clipboard.writeText(wallet);
     alert("Wallet copied!");
   };
 
-  // SEND
   const sendUSDX = async () => {
     if (!window.ethereum) return alert("MetaMask install karo");
 
@@ -72,17 +53,10 @@ export default function Dashboard() {
 
     await window.ethereum.request({
       method: "eth_sendTransaction",
-      params: [
-        {
-          from,
-          to: from,
-          value: "0x0"
-        }
-      ]
+      params: [{ from, to: from, value: "0x0" }]
     });
   };
 
-  // ✅ STAKE LOGIC
   const stakeTokens = () => {
     if (!stakeAmount) return alert("Amount enter karo");
 
@@ -94,118 +68,80 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      padding: "20px",
-      color: "#fff",
-      background: "radial-gradient(circle at top, #111, #000)"
-    }}>
-      
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    <div className="container">
 
-        {/* HEADER */}
-        <div style={card}>
-          <h1>⚡ USDX NETWORK</h1>
-          <h3>Welcome, {userName}</h3>
+      {/* HEADER */}
+      <div className="card">
+        <h1>⚡ USDX NETWORK</h1>
+        <h3>Welcome, {userName}</h3>
 
-          <p>Wallet: {wallet || "Not Connected"}</p>
-          <p>Membership: {membership || "None"}</p>
-        </div>
-
-        {/* BALANCE */}
-        <div style={{
-          marginTop: "20px",
-          padding: "25px",
-          borderRadius: "20px",
-          background: "linear-gradient(135deg,#111,#1a1a1a)",
-          border: "1px solid rgba(255,255,255,0.1)"
-        }}>
-          <h2>Total Balance</h2>
-          <h1>{data.balance} USDX</h1>
-        </div>
-
-        {/* STATS */}
-        <div style={{
-          marginTop: "20px",
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "15px"
-        }}>
-          <div style={card}>💰 Staking <h2>{data.staking + staked}</h2></div>
-          <div style={card}>🎁 Rewards <h2>{data.rewards}</h2></div>
-          <div style={card}>🔗 Referral <h2>{data.referral}</h2></div>
-          <div style={card}>📤 Sent <h2>{data.sent}</h2></div>
-          <div style={card}>📥 Received <h2>{data.received}</h2></div>
-          <div style={card}>⚡ Status <h2>Active</h2></div>
-        </div>
-
-        {/* ACTIONS */}
-        <div style={{
-          marginTop: "25px",
-          display: "flex",
-          gap: "10px"
-        }}>
-          <button style={{ ...btn, background: "#00ffcc" }} onClick={sendUSDX}>
-            Send USDX
-          </button>
-
-          <button style={{ ...btn, background: "#00aaff" }} onClick={receiveUSDX}>
-            Receive USDX
-          </button>
-
-          <button style={{ ...btn, background: "#ffcc00" }}>
-            Stake Tokens
-          </button>
-        </div>
-
-        {/* STAKE PANEL */}
-        <div style={{
-          marginTop: "20px",
-          padding: "20px",
-          borderRadius: "16px",
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.08)"
-        }}>
-          <h3>💎 Stake Panel</h3>
-
-          <input
-            value={stakeAmount}
-            onChange={(e) => setStakeAmount(e.target.value)}
-            placeholder="Enter stake amount"
-            style={{
-              padding: "10px",
-              borderRadius: "10px",
-              marginRight: "10px"
-            }}
-          />
-
-          <button
-            onClick={stakeTokens}
-            style={{ ...btn, background: "#ffcc00" }}
-          >
-            Stake Now
-          </button>
-
-          <p style={{ marginTop: "10px" }}>
-            Total Staked: {staked}
-          </p>
-        </div>
-
-        {/* ACTIVITY */}
-        <div style={{
-          marginTop: "25px",
-          padding: "20px",
-          borderRadius: "16px",
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.08)"
-        }}>
-          <h3>📊 Activity</h3>
-          <p>• Sent 50 USDX</p>
-          <p>• Received 120 USDX</p>
-          <p>• Staked 200 USDX</p>
-        </div>
-
+        <p className="muted">Wallet: {wallet || "Not Connected"}</p>
+        <p className="muted">Membership: {membership || "None"}</p>
       </div>
+
+      {/* BALANCE */}
+      <div className="card" style={{ marginTop: "20px" }}>
+        <h2>Total Balance</h2>
+        <h1>{data.balance} USDX</h1>
+      </div>
+
+      {/* STATS */}
+      <div className="grid-3" style={{ marginTop: "20px" }}>
+        <div className="card">💰 Staking <h2>{data.staking + staked}</h2></div>
+        <div className="card">🎁 Rewards <h2>{data.rewards}</h2></div>
+        <div className="card">🔗 Referral <h2>{data.referral}</h2></div>
+        <div className="card">📤 Sent <h2>{data.sent}</h2></div>
+        <div className="card">📥 Received <h2>{data.received}</h2></div>
+        <div className="card">⚡ Status <h2>Active</h2></div>
+      </div>
+
+      {/* ACTIONS */}
+      <div className="flex" style={{ marginTop: "25px" }}>
+        <button className="btn btn-primary" onClick={sendUSDX}>
+          Send USDX
+        </button>
+
+        <button className="btn btn-secondary" onClick={receiveUSDX}>
+          Receive USDX
+        </button>
+
+        <button className="btn btn-warning">
+          Stake Tokens
+        </button>
+      </div>
+
+      {/* STAKE PANEL */}
+      <div className="card" style={{ marginTop: "20px" }}>
+        <h3>💎 Stake Panel</h3>
+
+        <input
+          value={stakeAmount}
+          onChange={(e) => setStakeAmount(e.target.value)}
+          placeholder="Enter stake amount"
+          style={{
+            padding: "10px",
+            borderRadius: "10px",
+            marginRight: "10px"
+          }}
+        />
+
+        <button className="btn btn-warning" onClick={stakeTokens}>
+          Stake Now
+        </button>
+
+        <p className="muted" style={{ marginTop: "10px" }}>
+          Total Staked: {staked}
+        </p>
+      </div>
+
+      {/* ACTIVITY */}
+      <div className="card" style={{ marginTop: "25px" }}>
+        <h3>📊 Activity</h3>
+        <p>• Sent 50 USDX</p>
+        <p>• Received 120 USDX</p>
+        <p>• Staked 200 USDX</p>
+      </div>
+
     </div>
   );
 }
