@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -61,7 +60,6 @@ export function Navigation() {
 
           {/* Wallet Button */}
           <div className="hidden md:block">
-            <ConnectButton />
           </div>
 
           {/* Mobile Menu Button */}
