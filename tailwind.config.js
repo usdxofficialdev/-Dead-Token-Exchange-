@@ -28,7 +28,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [], // Crash se bachne ke liye forms plugin hata diya hai
 };
