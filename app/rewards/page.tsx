@@ -1,129 +1,119 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
-import { Calendar } from 'lucide-react';
-
-const rewardsHistory = [
-  { date: '2024-06-12', type: 'Daily Reward', amount: '234 USDX', status: 'Claimed' },
-  { date: '2024-06-11', type: 'Referral Bonus', amount: '50 USDX', status: 'Claimed' },
-  { date: '2024-06-10', type: 'Team Bonus', amount: '75 USDX', status: 'Claimed' },
-  { date: '2024-06-09', type: 'Daily Reward', amount: '234 USDX', status: 'Claimed' },
-  { date: '2024-06-08', type: 'Referral Bonus', amount: '45 USDX', status: 'Claimed' },
-  { date: '2024-06-07', type: 'Daily Reward', amount: '234 USDX', status: 'Claimed' },
-  { date: '2024-06-06', type: 'VIP Bonus', amount: '100 USDX', status: 'Claimed' },
-  { date: '2024-06-05', type: 'Daily Reward', amount: '234 USDX', status: 'Claimed' },
-];
+import { useRouter } from "next/navigation";
 
 export default function RewardsPage() {
-  const [filter, setFilter] = useState('all');
+  const router = useRouter();
 
-  const filteredRewards = filter === 'all' 
-    ? rewardsHistory 
-    : rewardsHistory.filter(r => r.type.toLowerCase().includes(filter.toLowerCase()));
+  // Dashboard aur Membership se bilkul same matching Sidebar items
+  const menuItems = [
+    { name: "Dashboard", route: "/dashboard", active: false },
+    { name: "Membership Plans", route: "/membership", active: false },
+    { name: "Rewards History", route: "/rewards", active: true }, // Yeh active hai
+    { name: "Referral Program", route: "/referral", active: false },
+    { name: "Leaderboard", route: "/leaderboard", active: false },
+    { name: "Profile Settings", route: "/profile", active: false },
+    { name: "Admin Panel", route: "/admin", active: false },
+  ];
+
+  // Dummy Rewards History Data
+  const rewardsLog = [
+    { id: "#REW-4091", date: "2026-06-15", type: "Daily Staking Interest", amount: "+45.50 USDX", status: "Claimed" },
+    { id: "#REW-3982", date: "2026-06-14", type: "Daily Staking Interest", amount: "+45.50 USDX", status: "Claimed" },
+    { id: "#REW-3811", date: "2026-06-12", type: "Referral Milestone Bonus", amount: "+150.00 USDX", status: "Claimed" },
+    { id: "#REW-3720", date: "2026-06-11", type: "Daily Staking Interest", amount: "+32.12 USDX", status: "Claimed" },
+  ];
 
   return (
-    <main className="min-h-screen bg-black">
-      <Navigation isLoggedIn={true} onLogout={() => {}} />
+    <div className="flex min-h-screen bg-[#0B0B0F] text-white">
       
-      <section className="py-20 px-4 md:px-8 pt-32">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="text-5xl font-black mb-12">
-              Rewards <span className="text-gold-400">History</span>
-            </h1>
-
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              {[
-                { label: 'Total Claimed', value: '12,450 USDX', icon: '🎯' },
-                { label: 'This Month', value: '5,234 USDX', icon: '📅' },
-                { label: 'Pending', value: '567 USDX', icon: '⏳' },
-              ].map((card, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="glass rounded-2xl p-6 text-center"
-                >
-                  <p className="text-3xl mb-2">{card.icon}</p>
-                  <p className="text-gray-400 mb-2 text-sm">{card.label}</p>
-                  <p className="text-3xl font-black text-gold-400">{card.value}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Filters */}
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-              {['all', 'Daily Reward', 'Referral Bonus', 'Team Bonus'].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-4 py-2 rounded-lg font-bold whitespace-nowrap transition ${
-                    filter === f
-                      ? 'bg-gradient-to-r from-gold-400 to-gold-600 text-black'
-                      : 'border border-gold-400 text-gold-400 hover:bg-gold-400/10'
-                  }`}
-                >
-                  {f === 'all' ? 'All Rewards' : f}
-                </button>
-              ))}
-            </div>
-
-            {/* History Table */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="glass rounded-2xl p-6 overflow-x-auto"
-            >
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gold-500/20">
-                    <th className="text-left py-4 px-6 text-gray-400 font-bold">Date</th>
-                    <th className="text-left py-4 px-6 text-gray-400 font-bold">Type</th>
-                    <th className="text-left py-4 px-6 text-gray-400 font-bold">Amount</th>
-                    <th className="text-left py-4 px-6 text-gray-400 font-bold">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredRewards.map((reward, idx) => (
-                    <motion.tr
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="border-b border-gold-500/10 hover:bg-gold-500/5 transition"
-                    >
-                      <td className="py-4 px-6 flex items-center gap-2">
-                        <Calendar size={16} className="text-gold-400" />
-                        {reward.date}
-                      </td>
-                      <td className="py-4 px-6 font-bold">{reward.type}</td>
-                      <td className="py-4 px-6">
-                        <span className="text-gold-400 font-bold">{reward.amount}</span>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm font-bold">
-                          {reward.status}
-                        </span>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
-            </motion.div>
-          </motion.div>
+      {/* 1. MATCHING SIDEBAR */}
+      <aside className="w-64 border-r border-gray-800 bg-[#121218] p-6 hidden md:block">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-amber-500 tracking-wider">USDX NETWORK</h1>
+          <p className="text-xs text-gray-500">Premium Token Exchange</p>
         </div>
-      </section>
-      
-      <Footer />
-    </main>
+        <nav className="space-y-2">
+          {menuItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => router.push(item.route)}
+              className={`w-full text-left px-4 p-3 rounded-xl text-sm font-medium transition-all ${
+                item.active 
+                  ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" 
+                  : "text-gray-400 hover:bg-[#1A1A24] hover:text-white"
+              }`}
+            >
+              {item.name}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* 2. MAIN CONTENT AREA */}
+      <main className="flex-1 p-8">
+        
+        {/* Top Header */}
+        <header className="flex items-center justify-between border-b border-gray-800 pb-6 mb-8">
+          <div>
+            <h2 className="text-3xl font-bold">Rewards History</h2>
+            <p className="text-sm text-gray-400">Track all your daily staking returns and community bonuses.</p>
+          </div>
+          <button className="rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-bold text-black shadow-lg shadow-amber-500/10 hover:bg-amber-600 transition-all">
+            Claim All Rewards
+          </button>
+        </header>
+
+        {/* 3. REWARDS SUMMARY CARDS */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+          <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6">
+            <p className="text-sm font-medium text-gray-400">Total Rewards Distributed</p>
+            <p className="mt-2 text-3xl font-bold text-amber-500">273.12 USDX</p>
+          </div>
+          <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6">
+            <p className="text-sm font-medium text-gray-400">Unclaimed Balance</p>
+            <p className="mt-2 text-3xl font-bold text-emerald-400">0.00 USDX</p>
+          </div>
+          <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6">
+            <p className="text-sm font-medium text-gray-400">Last Payout Date</p>
+            <p className="mt-2 text-3xl font-bold text-white">Today, 00:00 UTC</p>
+          </div>
+        </div>
+
+        {/* 4. PREMIUM ACTIVITY LOG TABLE */}
+        <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6 shadow-xl">
+          <h3 className="text-xl font-bold mb-4">Earnings Log</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-400">
+              <thead className="border-b border-gray-800 text-xs uppercase text-gray-500">
+                <tr>
+                  <th className="py-3 px-4">Reward ID</th>
+                  <th className="py-3 px-4">Date</th>
+                  <th className="py-3 px-4">Description</th>
+                  <th className="py-3 px-4">Amount</th>
+                  <th className="py-3 px-4">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                {rewardsLog.map((log, index) => (
+                  <tr key={index}>
+                    <td className="py-4 px-4 font-mono text-amber-500">{log.id}</td>
+                    <td className="py-4 px-4 text-gray-300">{log.date}</td>
+                    <td className="py-4 px-4 text-white">{log.type}</td>
+                    <td className="py-4 px-4 text-emerald-400 font-semibold">{log.amount}</td>
+                    <td className="py-4 px-4">
+                      <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs text-emerald-400 border border-emerald-500/10 font-medium">
+                        {log.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
   );
 }
