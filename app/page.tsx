@@ -29,15 +29,9 @@ export default function CompleteDashboard() {
   });
 
   const [transactions, setTransactions] = useState([
-    { id: "#TXN-90812", type: "Token Staking", amount: "+$1,200.00", status: "Completed", date: "2026-06-18" },
-    { id: "#TXN-87123", type: "Referral Bonus", amount: "+$50.00", status: "Completed", date: "2026-06-17" },
+    { id: "#TXN-90812", type: "Token Staking", amount: "+$1,200.00", status: "Succeed", date: "2026-06-18" },
+    { id: "#TXN-87123", type: "Referral Bonus", amount: "+$50.00", status: "Succeed", date: "2026-06-17" },
   ]);
-
-  // Membership Modal States
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
-  const [userWallet, setUserWallet] = useState("");
-  const [txnHash, setTxnHash] = useState("");
 
   // Handler for Claiming Specific Rewards
   const handleClaim = (type: "staking" | "referral") => {
@@ -49,7 +43,7 @@ export default function CompleteDashboard() {
         id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
         type: type === "staking" ? "Staking Reward Claim" : "Referral Comm. Claim",
         amount: `+$${amountToClaim.toFixed(2)}`,
-        status: "Completed",
+        status: "Succeed",
         date: new Date().toISOString().split('T')[0],
       };
       setTransactions([newTxn, ...transactions]);
@@ -74,7 +68,7 @@ export default function CompleteDashboard() {
       id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
       type: "Asset Staking",
       amount: `-$${amount.toFixed(2)}`,
-      status: "Completed",
+      status: "Succeed",
       date: new Date().toISOString().split('T')[0],
     };
     setTransactions([newTxn, ...transactions]);
@@ -82,7 +76,7 @@ export default function CompleteDashboard() {
     alert(`👍 $${amount} successfully staked!`);
   };
 
-  // Withdraw Logic
+  // NEW UPDATED: Withdraw Logic with Waiting -> Succeed states
   const handleWithdraw = (e: React.FormEvent) => {
     e.preventDefault();
     const amount = parseFloat(withdrawInput);
@@ -90,16 +84,30 @@ export default function CompleteDashboard() {
     if (amount > availableBalance) return alert("Insufficient balance to withdraw!");
 
     setAvailableBalance((prev) => prev - amount);
+    
+    const targetTxnId = `#TXN-${Math.floor(10000 + Math.random() * 90000)}`;
+    
+    // Initial state: Waiting / Processing status
     const newTxn = {
-      id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
+      id: targetTxnId,
       type: "Withdrawal Request",
       amount: `-$${amount.toFixed(2)}`,
-      status: "Processing",
+      status: "Waiting",
       date: new Date().toISOString().split('T')[0],
     };
-    setTransactions([newTxn, ...transactions]);
+    
+    setTransactions((prevTxns) => [newTxn, ...prevTxns]);
     setWithdrawInput("");
-    alert(`🚀 Withdrawal request for $${amount} submitted! Processing shortly.`);
+    alert(`🚀 Withdrawal request for $${amount} submitted! Status: Waiting...`);
+
+    // Mock Timer: Automatically convert "Waiting" to "Succeed" after 5 seconds
+    setTimeout(() => {
+      setTransactions((prevTxns) =>
+        prevTxns.map((txn) =>
+          txn.id === targetTxnId ? { ...txn, status: "Succeed" } : txn
+        )
+      );
+    }, 5000);
   };
 
   // Send Tokens Logic
@@ -115,7 +123,7 @@ export default function CompleteDashboard() {
       id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
       type: `Sent to ${sendAddress.substring(0,6)}...`,
       amount: `-$${amount.toFixed(2)}`,
-      status: "Completed",
+      status: "Succeed",
       date: new Date().toISOString().split('T')[0],
     };
     setTransactions([newTxn, ...transactions]);
@@ -135,6 +143,11 @@ export default function CompleteDashboard() {
     setIsModalOpen(true);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
+  const [userWallet, setUserWallet] = useState("");
+  const [txnHash, setTxnHash] = useState("");
+
   const handleActivatePlanSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!userWallet.trim() || !txnHash.trim()) {
@@ -144,7 +157,7 @@ export default function CompleteDashboard() {
       id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
       type: `Membership (${selectedPlan.name})`,
       amount: `-${selectedPlan.price}`,
-      status: "Processing",
+      status: "Waiting",
       date: new Date().toISOString().split('T')[0],
     };
     setTransactions([newTxn, ...transactions]);
@@ -217,7 +230,7 @@ export default function CompleteDashboard() {
                 <span className="text-xs text-green-400 block mt-2">▲ +14.5% up from last week</span>
               </div>
 
-              {/* Card 2: Active vs Inactive State Control */}
+              {/* Card 2 */}
               <div className={`p-6 rounded-2xl border transition-all ${stakedAssets > 0 ? 'bg-[#1F2833]/50 border-gray-800' : 'bg-red-950/10 border-red-900/30'}`}>
                 <div className="flex justify-between items-start">
                   <p className="text-sm text-gray-400 mb-1">Active Staked Assets</p>
@@ -257,9 +270,8 @@ export default function CompleteDashboard() {
                 </div>
               </div>
 
-              {/* Advanced Intersected Terminals: Stake + New Wallet Console (Withdraw, Send, Receive) */}
+              {/* Advanced Intersected Terminals */}
               <div className="bg-gradient-to-b from-[#1F2833]/90 to-[#1F2833]/30 border border-gray-800 p-6 rounded-2xl flex flex-col justify-between gap-4">
-                {/* Upper Module: Staking Quick entry */}
                 <div>
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Staking Core Engine</h4>
                   <form onSubmit={handleStake} className="flex gap-2">
@@ -329,7 +341,6 @@ export default function CompleteDashboard() {
                   {activeWalletTab === "receive" && (
                     <div className="bg-black/20 p-3 rounded-xl border border-gray-800 text-center space-y-2">
                       <div className="w-20 h-20 bg-white mx-auto rounded-lg flex items-center justify-center p-1">
-                        {/* Realistic Mock QR Block */}
                         <div className="w-full h-full bg-gradient-to-br from-black to-gray-800 rounded"></div>
                       </div>
                       <p className="text-[10px] font-mono text-gray-400 select-all truncate">{profile.wallet}</p>
@@ -366,7 +377,11 @@ export default function CompleteDashboard() {
                         <td className="py-4 px-4 font-medium">{txn.type}</td>
                         <td className={`py-4 px-4 font-semibold ${txn.amount.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>{txn.amount}</td>
                         <td className="py-4 px-4">
-                          <span className={`text-xs px-2.5 py-1 rounded-full border ${txn.status === "Processing" ? "bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse" : "bg-green-500/10 text-green-400 border-green-500/20"}`}>
+                          <span className={`text-xs px-2.5 py-1 rounded-full border ${
+                            txn.status === "Waiting" 
+                              ? "bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse" 
+                              : "bg-green-500/10 text-green-400 border-green-500/20"
+                          }`}>
                             {txn.status}
                           </span>
                         </td>
@@ -415,7 +430,7 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: REWARDS (BIFURCATED CLAIMS) ================= */}
+        {/* ================= VIEW: REWARDS ================= */}
         {activeTab === "rewards" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -424,7 +439,6 @@ export default function CompleteDashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Box 1 */}
               <div className="bg-[#1F2833]/40 border border-gray-800 p-6 rounded-2xl flex flex-col justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">Staking Core Yield</h3>
@@ -436,7 +450,6 @@ export default function CompleteDashboard() {
                 </button>
               </div>
 
-              {/* Box 2 */}
               <div className="bg-[#1F2833]/40 border border-gray-800 p-6 rounded-2xl flex flex-col justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">Referral Affiliate Commissions</h3>
@@ -451,7 +464,7 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: REFERRAL (LEVEL 1 & 2 SYSTEMS) ================= */}
+        {/* ================= VIEW: REFERRAL ================= */}
         {activeTab === "referral" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -459,7 +472,6 @@ export default function CompleteDashboard() {
               <p className="text-sm text-gray-400">Invite connections to earn massive tiered downstream commission distribution.</p>
             </div>
 
-            {/* Statistics */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-[#1F2833]/50 border border-gray-800 p-4 rounded-xl">
                 <p className="text-xs text-gray-400">Total Network Invites</p>
@@ -492,7 +504,7 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: PROFILE SECTION (NEW INTERACTIVE) ================= */}
+        {/* ================= VIEW: PROFILE SECTION ================= */}
         {activeTab === "profile" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -501,7 +513,6 @@ export default function CompleteDashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-              {/* Left Column Avatar Summary */}
               <div className="bg-[#1F2833]/40 border border-gray-800 rounded-2xl p-6 text-center space-y-4">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#FF9F1C] to-orange-500 mx-auto flex items-center justify-center font-black text-black text-3xl shadow-xl">
                   {profile.name.substring(0,2).toUpperCase()}
@@ -516,7 +527,6 @@ export default function CompleteDashboard() {
                 </div>
               </div>
 
-              {/* Right Column Editable Profile Forms */}
               <div className="bg-[#1F2833]/40 border border-gray-800 rounded-2xl p-6 lg:col-span-2">
                 <h3 className="text-sm font-bold uppercase text-[#FF9F1C] tracking-wide mb-4">Edit Core Identification Credentials</h3>
                 <form onSubmit={handleSaveProfile} className="space-y-4">
