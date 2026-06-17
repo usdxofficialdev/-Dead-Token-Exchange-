@@ -1,131 +1,129 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
-import { Check } from 'lucide-react';
-
-
-const plans = [
-  {
-    name: 'Bronze',
-    price: '100',
-    icon: '🥉',
-    description: 'Perfect for beginners',
-    features: [
-      'Daily rewards (5% APY)',
-      '2 team members allowed',
-      'Email support',
-      'Basic analytics',
-    ],
-    popular: false,
-  },
-  {
-    name: 'Silver',
-    price: '500',
-    icon: '🥈',
-    description: 'Best for active traders',
-    features: [
-      'Daily rewards (10% APY)',
-      '10 team members allowed',
-      '24/7 Priority support',
-      'Advanced analytics',
-      'Monthly bonus rewards',
-    ],
-    popular: true,
-  },
-  {
-    name: 'Gold',
-    price: '2000',
-    icon: '🏆',
-    description: 'For serious investors',
-    features: [
-      'Daily rewards (15% APY)',
-      'Unlimited team members',
-      'VIP support',
-      'Premium analytics',
-      'Monthly bonus + extra perks',
-      'Exclusive events access',
-    ],
-    popular: false,
-  },
-];
+import { useRouter } from "next/navigation";
 
 export default function MembershipPage() {
+  const router = useRouter();
+
+  // Dashboard se bilkul same matching Sidebar items
+  const menuItems = [
+    { name: "Dashboard", route: "/dashboard", active: false },
+    { name: "Membership Plans", route: "/membership", active: true }, // Yeh active hai
+    { name: "Rewards History", route: "/rewards", active: false },
+    { name: "Referral Program", route: "/referral", active: false },
+    { name: "Leaderboard", route: "/leaderboard", active: false },
+    { name: "Profile Settings", route: "/profile", active: false },
+    { name: "Admin Panel", route: "/admin", active: false },
+  ];
+
+  const plans = [
+    {
+      name: "Bronze Plan",
+      price: "100 USDX",
+      apy: "5% APY Daily",
+      features: ["2 Team Members Allowed", "Email Support", "Basic Live Analytics"],
+      color: "border-amber-500/20",
+      btnBg: "bg-[#1A1A24] text-amber-500 border border-amber-500/30 hover:bg-amber-500/10",
+    },
+    {
+      name: "Silver Plan",
+      price: "500 USDX",
+      apy: "10% APY Daily",
+      features: ["10 Team Members Allowed", "24/7 Priority Support", "Advanced Analytics", "Monthly Bonus Rewards"],
+      color: "border-amber-500 shadow-xl shadow-amber-500/5",
+      btnBg: "bg-amber-500 text-black hover:bg-amber-600 font-bold",
+      popular: true,
+    },
+    {
+      name: "Gold Plan",
+      price: "2,000 USDX",
+      apy: "15% APY Daily",
+      features: ["Unlimited Members", "VIP Personal Support", "Premium Analytics", "Exclusive Platform Events"],
+      color: "border-gray-800",
+      btnBg: "bg-[#1A1A24] text-white border border-gray-700 hover:bg-gray-800",
+    },
+  ];
+
   return (
-    <main className="min-h-screen bg-black">
-      <Navigation isLoggedIn={true} onLogout={() => {}} />
+    <div className="flex min-h-screen bg-[#0B0B0F] text-white">
       
-      <section className="py-20 px-4 md:px-8 pt-32">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
-          >
-            <h1 className="text-5xl md:text-6xl font-black mb-6">
-              Membership <span className="text-gold-400">Plans</span>
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Choose your perfect plan and start earning today
-            </p>
-          </motion.div>
+      {/* 1. MATCHING SIDEBAR */}
+      <aside className="w-64 border-r border-gray-800 bg-[#121218] p-6 hidden md:block">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-amber-500 tracking-wider">USDX NETWORK</h1>
+          <p className="text-xs text-gray-500">Premium Token Exchange</p>
+        </div>
+        <nav className="space-y-2">
+          {menuItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => router.push(item.route)}
+              className={`w-full text-left px-4 p-3 rounded-xl text-sm font-medium transition-all ${
+                item.active 
+                  ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" 
+                  : "text-gray-400 hover:bg-[#1A1A24] hover:text-white"
+              }`}
+            >
+              {item.name}
+            </button>
+          ))}
+        </nav>
+      </aside>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map((plan, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -10 }}
-                className={`relative rounded-2xl p-8 transition duration-300 ${
-                  plan.popular
-                    ? 'glass border-gold-500 shadow-glow-gold-lg'
-                    : 'glass border-white/10 hover:border-gold-400/30'
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <span className="bg-gradient-to-r from-gold-400 to-gold-600 text-black px-4 py-1 rounded-full text-sm font-bold">Most Popular</span>
-                  </div>
-                )}
+      {/* 2. MAIN CONTENT AREA */}
+      <main className="flex-1 p-8">
+        
+        {/* Top Header */}
+        <header className="flex items-center justify-between border-b border-gray-800 pb-6 mb-8">
+          <div>
+            <h2 className="text-3xl font-bold">Membership Plans</h2>
+            <p className="text-sm text-gray-400">Choose your premium staking tier to boost earnings.</p>
+          </div>
+          <div className="rounded-full bg-emerald-500/10 px-4 py-2 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+            Status: Active
+          </div>
+        </header>
 
-                <div className="text-4xl mb-4">{plan.icon}</div>
-                <h3 className="text-2xl font-bold mb-2 text-gold-400">{plan.name}</h3>
-                <p className="text-gray-400 mb-6 text-sm">{plan.description}</p>
-                
-                <div className="mb-6">
-                  <span className="text-4xl font-black">{plan.price}</span>
-                  <span className="text-gray-400 ml-2">USDX</span>
-                </div>
+        {/* 3. STYLISH MATCHING PREMIUM CARDS */}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+          {plans.map((plan, index) => (
+            <div 
+              key={index} 
+              className={`relative rounded-2xl border bg-[#121218] p-6 flex flex-col justify-between transition-transform hover:scale-[1.01] ${plan.color}`}
+            >
+              {plan.popular && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                  Most Popular
+                </span>
+              )}
 
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, fidx) => (
-                    <li key={fidx} className="flex items-center gap-3">
-                      <Check size={20} className="text-gold-400 flex-shrink-0" />
-                      <span className="text-gray-300 text-sm">{feature}</span>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">{plan.name}</h3>
+                <p className="text-3xl font-extrabold text-amber-500 my-3">{plan.price}</p>
+                <span className="inline-block bg-amber-500/10 text-amber-400 text-xs font-semibold px-2 py-1 rounded-lg border border-amber-500/10 mb-6">
+                  {plan.apy}
+                </span>
+
+                <ul className="space-y-3 border-t border-gray-800/60 pt-4">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-3 text-sm text-gray-400">
+                      <svg className="h-4 w-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {feature}
                     </li>
                   ))}
                 </ul>
+              </div>
 
-                <button
-                  className={`w-full py-3 rounded-lg font-bold transition duration-300 ${
-                    plan.popular
-                      ? 'bg-gradient-to-r from-gold-400 to-gold-600 text-black hover:shadow-glow-gold-lg'
-                      : 'border border-gold-400 text-gold-400 hover:bg-gold-400/10'
-                  }`}
-                >
-                  Get Started
-                </button>
-              </motion.div>
-            ))}
-          </div>
+              <button className={`w-full mt-8 p-3 rounded-xl font-medium transition-all ${plan.btnBg}`}>
+                Activate Plan
+              </button>
+            </div>
+          ))}
         </div>
-      </section>
-      
-      <Footer />
-    </main>
+
+      </main>
+    </div>
   );
 }
