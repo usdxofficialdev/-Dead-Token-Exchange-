@@ -6,34 +6,44 @@ import { useRouter } from "next/navigation";
 export default function SimpleAuthPage() {
   const router = useRouter();
   
-  // Isse hum track karenge ki user Login screen dekh raha hai ya Signup
   const [isSignup, setIsSignup] = useState(false);
-  
-  // Form fields ke liye state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isConnecting, setIsConnecting] = useState(false);
 
+  // Email/Password Submit Handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // Signup validation check
     if (isSignup && password !== confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
 
-    // Abhi ke liye temporary bypass: Koi bhi email/password dalo, direct dashboard khulega
+    // Temporary Bypass: Direct Dashboard
     router.push("/dashboard");
+  };
+
+  // Web3 Wallet Connect Handler (Bypass for now)
+  const handleWalletConnect = () => {
+    setIsConnecting(true);
+    setError("");
+
+    // 2 second ka fake loading animation taaki premium feel aaye
+    setTimeout(() => {
+      setIsConnecting(false);
+      router.push("/dashboard");
+    }, 1500);
   };
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-[#0B0B0F] text-white px-4">
       <div className="w-full max-w-md rounded-2xl border border-gray-800 bg-[#121218] p-8 shadow-2xl">
         
-        {/* Dynamic Header */}
+        {/* Header */}
         <h2 className="text-3xl font-bold text-center text-amber-500 mb-2">
           {isSignup ? "Create Account" : "Welcome Back"}
         </h2>
@@ -48,7 +58,7 @@ export default function SimpleAuthPage() {
           </div>
         )}
 
-        {/* Form */}
+        {/* Email Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
@@ -74,7 +84,6 @@ export default function SimpleAuthPage() {
             />
           </div>
 
-          {/* Agar Signup mode hai to extra Confirm Password field dikhegi */}
           {isSignup && (
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-1">Confirm Password</label>
@@ -97,7 +106,26 @@ export default function SimpleAuthPage() {
           </button>
         </form>
 
-        {/* Switcher Button */}
+        {/* --- OR SEPARATOR --- */}
+        <div className="relative my-6 flex items-center justify-center">
+          <div className="absolute w-full border-t border-gray-800"></div>
+          <span className="relative bg-[#121218] px-3 text-xs text-gray-500 uppercase tracking-wider">Or Connect With</span>
+        </div>
+
+        {/* --- WEB3 WALLET BUTTON --- */}
+        <button
+          type="button"
+          onClick={handleWalletConnect}
+          disabled={isConnecting}
+          className="flex w-full items-center justify-center gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 font-medium text-amber-400 transition hover:bg-amber-500/10 disabled:opacity-50"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+          </svg>
+          {isConnecting ? "Connecting Wallet..." : "Connect Web3 Wallet"}
+        </button>
+
+        {/* Switcher */}
         <div className="mt-6 text-center text-xs text-gray-400 border-t border-gray-800 pt-4">
           <button 
             onClick={() => { setIsSignup(!isSignup); setError(""); }} 
