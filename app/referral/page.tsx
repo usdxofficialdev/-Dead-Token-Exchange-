@@ -1,111 +1,138 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
-import { Copy, Users, TrendingUp, Award } from 'lucide-react';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ReferralPage() {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
-  const referralLink = 'https://usdx-rewards.vercel.app?ref=USER12345';
+  const referralLink = "https://dead-token-exchange.vercel.app/signup?ref=USDX99";
 
-  const copyToClipboard = () => {
+  // Sabhi pages se matching Sidebar items
+  const menuItems = [
+    { name: "Dashboard", route: "/dashboard", active: false },
+    { name: "Membership Plans", route: "/membership", active: false },
+    { name: "Rewards History", route: "/rewards", active: false },
+    { name: "Referral Program", route: "/referral", active: true }, // Yeh active hai
+    { name: "Leaderboard", route: "/leaderboard", active: false },
+    { name: "Profile Settings", route: "/profile", active: false },
+    { name: "Admin Panel", route: "/admin", active: false },
+  ];
+
+  const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const referralStats = [
-    { icon: <Users size={32} />, label: 'Direct Referrals', value: '234' },
-    { icon: <TrendingUp size={32} />, label: 'Team Size', value: '5,678' },
-    { icon: <Award size={32} />, label: 'Earned', value: '42,500 USDX' },
-    { icon: <Users size={32} />, label: 'Active Members', value: '3,456' },
-  ];
-
   return (
-    <main className="min-h-screen bg-black">
-      <Navigation isLoggedIn={true} onLogout={() => {}} />
+    <div className="flex min-h-screen bg-[#0B0B0F] text-white">
       
-      <section className="py-20 px-4 md:px-8 pt-32">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="text-5xl font-black mb-12 text-center">
-              Referral <span className="text-gold-400">Program</span>
-            </h1>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {referralStats.map((stat, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="glass rounded-2xl p-6 text-center"
-                >
-                  <div className="text-gold-400 mb-4 flex justify-center">{stat.icon}</div>
-                  <p className="text-gray-400 mb-2 text-sm">{stat.label}</p>
-                  <p className="text-3xl font-black">{stat.value}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Referral Link */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 20 }}
-              transition={{ delay: 0.4 }}
-              className="glass rounded-2xl p-8 mb-12"
-            >
-              <h2 className="text-2xl font-bold mb-6 text-gold-400">Your Referral Link</h2>
-              <div className="flex items-center gap-4 bg-black/50 rounded-lg p-4 mb-4">
-                <input
-                  type="text"
-                  value={referralLink}
-                  readOnly
-                  className="flex-1 bg-transparent text-white outline-none font-mono text-sm"
-                />
-                <button
-                  onClick={copyToClipboard}
-                  className="p-2 hover:bg-gold-500/20 rounded-lg transition text-gold-400"
-                >
-                  <Copy size={20} />
-                </button>
-              </div>
-              <p className="text-sm text-gray-400">{copied ? '✅ Copied to clipboard!' : 'Click to copy your unique referral link'}</p>
-            </motion.div>
-
-            {/* Commission Tiers */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="glass rounded-2xl p-8"
-            >
-              <h2 className="text-2xl font-bold mb-6 text-gold-400">Commission Tiers</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { level: 'Level 1', commission: '10%', description: 'Direct referrals' },
-                  { level: 'Level 2', commission: '5%', description: 'Their referrals' },
-                  { level: 'Level 3', commission: '2%', description: 'Third generation' },
-                ].map((tier, idx) => (
-                  <div key={idx} className="border border-gold-500/20 rounded-lg p-6 text-center">
-                    <p className="text-gold-400 font-bold mb-2">{tier.level}</p>
-                    <p className="text-4xl font-black mb-2">{tier.commission}</p>
-                    <p className="text-gray-400 text-sm">{tier.description}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
+      {/* 1. MATCHING SIDEBAR */}
+      <aside className="w-64 border-r border-gray-800 bg-[#121218] p-6 hidden md:block">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-amber-500 tracking-wider">USDX NETWORK</h1>
+          <p className="text-xs text-gray-500">Premium Token Exchange</p>
         </div>
-      </section>
-      
-      <Footer />
-    </main>
+        <nav className="space-y-2">
+          {menuItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => router.push(item.route)}
+              className={`w-full text-left px-4 p-3 rounded-xl text-sm font-medium transition-all ${
+                item.active 
+                  ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" 
+                  : "text-gray-400 hover:bg-[#1A1A24] hover:text-white"
+              }`}
+            >
+              {item.name}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* 2. MAIN CONTENT AREA */}
+      <main className="flex-1 p-8">
+        
+        {/* Top Header */}
+        <header className="flex items-center justify-between border-b border-gray-800 pb-6 mb-8">
+          <div>
+            <h2 className="text-3xl font-bold">Referral Program</h2>
+            <p className="text-sm text-gray-400">Invite your friends and earn a 10% bonus on their premium staking deposits.</p>
+          </div>
+        </header>
+
+        {/* 3. DYNAMIC LINK GENERATOR & STATS */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-10">
+          
+          {/* Link Box (Spans 2 columns) */}
+          <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6 lg:col-span-2 flex flex-col justify-between">
+            <div>
+              <h4 className="text-sm font-medium text-gray-400 mb-2">Your Unique Referral Link</h4>
+              <p className="text-xs text-amber-500/70 mb-4">Share this code with your community to start earning.</p>
+            </div>
+            <div className="flex items-center gap-3 bg-[#1A1A24] p-3 rounded-xl border border-gray-800">
+              <input 
+                type="text" 
+                readOnly 
+                value={referralLink}
+                className="bg-transparent text-sm w-full outline-none text-gray-300 font-mono"
+              />
+              <button 
+                onClick={handleCopy}
+                className="bg-amber-500 text-black text-xs font-bold px-4 py-2 rounded-lg shrink-0 hover:bg-amber-600 transition-all"
+              >
+                {copied ? "Copied!" : "Copy Link"}
+              </button>
+            </div>
+          </div>
+
+          {/* Stats Box */}
+          <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6 flex flex-col justify-between">
+            <div>
+              <h4 className="text-sm font-medium text-gray-400 mb-1">Total Affiliates</h4>
+              <p className="text-4xl font-extrabold text-white mt-2">12 Users</p>
+            </div>
+            <div className="border-t border-gray-800/60 pt-3 mt-4 flex justify-between text-xs text-gray-400">
+              <span>Active Stakers: <strong className="text-emerald-400">5</strong></span>
+              <span>Pending: <strong className="text-amber-500">7</strong></span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* 4. PREMIUM AFFILIATE TRACKING TABLE */}
+        <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6 shadow-xl">
+          <h3 className="text-xl font-bold mb-4">Referred Friends List</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-400">
+              <thead className="border-b border-gray-800 text-xs uppercase text-gray-500">
+                <tr>
+                  <th className="py-3 px-4">User Address / Email</th>
+                  <th className="py-3 px-4">Joined Date</th>
+                  <th className="py-3 px-4">Tier Status</th>
+                  <th className="py-3 px-4">Your Bonus</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                <tr>
+                  <td className="py-4 px-4 font-mono text-white">ali***@gmail.com</td>
+                  <td className="py-4 px-4 text-gray-400">2026-06-14</td>
+                  <td className="py-4 px-4"><span className="text-amber-500 text-xs bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">Silver Tier</span></td>
+                  <td className="py-4 px-4 text-emerald-400 font-semibold">+50.00 USDX</td>
+                </tr>
+                <tr>
+                  <td className="py-4 px-4 font-mono text-white">rah***@gmail.com</td>
+                  <td className="py-4 px-4 text-gray-400">2026-06-12</td>
+                  <td className="py-4 px-4"><span className="text-gray-400 text-xs bg-gray-800 border border-gray-700 px-2 py-0.5 rounded">Bronze Tier</span></td>
+                  <td className="py-4 px-4 text-emerald-400 font-semibold">+10.00 USDX</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
   );
 }
