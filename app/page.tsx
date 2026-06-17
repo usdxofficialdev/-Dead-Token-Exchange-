@@ -18,6 +18,10 @@ export default function CompleteDashboard() {
   const [sendAmount, setSendAmount] = useState("");
   const [activeWalletTab, setActiveWalletTab] = useState("withdraw"); // withdraw | send | receive
 
+  // Admin Credit/Debit Tools State
+  const [adminTargetUser, setAdminTargetUser] = useState("Premium_User_90812");
+  const [adminAmountInput, setAdminAmountInput] = useState("");
+
   // User Profile States
   const [profile, setProfile] = useState({
     name: "Jordan Dev",
@@ -31,14 +35,15 @@ export default function CompleteDashboard() {
   // Global Transactions History
   const [transactions, setTransactions] = useState([
     { id: "#TXN-90812", type: "Token Staking", amount: "+$1,200.00", status: "Succeed", date: "2026-06-18" },
-    { id: "#TXN-87123", type: "Referral Bonus", amount: "+$50.00", status: "Succeed", date: "2026-06-17" },
+    { id: "#TXN-87123", type: "Withdrawal Request", amount: "-$250.00", status: "Waiting", date: "2026-06-18" },
+    { id: "#TXN-85112", type: "Referral Bonus", amount: "+$50.00", status: "Succeed", date: "2026-06-17" },
   ]);
 
-  // Admin Dashboard State (Mock Registered Users)
+  // Admin Dashboard State (Registered Users Control Data)
   const [adminUsers, setAdminUsers] = useState([
-    { username: "Premium_User_90812", email: "jordan@usdx.network", balance: "$12,960.97", kyc: "Tier 2" },
-    { username: "Crypto_King_22", email: "king@crypto.org", balance: "$45,210.00", kyc: "Tier 1" },
-    { username: "Alex_S12", email: "alex@network.io", balance: "$850.50", kyc: "Unverified" },
+    { username: "Premium_User_90812", email: "jordan@usdx.network", balance: 12960.97, kyc: "Tier 2 Verified" },
+    { username: "Crypto_King_22", email: "king@crypto.org", balance: 45210.00, kyc: "Tier 1 Verified" },
+    { username: "Alex_S12", email: "alex@network.io", balance: 850.50, kyc: "Unverified" },
   ]);
 
   // Modal State for Plan Activation
@@ -110,16 +115,7 @@ export default function CompleteDashboard() {
     
     setTransactions((prevTxns) => [newTxn, ...prevTxns]);
     setWithdrawInput("");
-    alert(`🚀 Withdrawal request for $${amount} submitted! Status: Waiting...`);
-
-    // Auto convert from Waiting to Succeed after 5 seconds
-    setTimeout(() => {
-      setTransactions((prevTxns) =>
-        prevTxns.map((txn) =>
-          txn.id === targetTxnId ? { ...txn, status: "Succeed" } : txn
-        )
-      );
-    }, 5000);
+    alert(`🚀 Withdrawal request for $${amount} submitted! Status set to Waiting.`);
   };
 
   // Send Tokens Logic
@@ -173,14 +169,61 @@ export default function CompleteDashboard() {
     setIsModalOpen(false);
     setUserWallet("");
     setTxnHash("");
-    alert(`🚀 Verification request for ${selectedPlan.name} submitted!`);
+    alert(`🚀 Verification request for ${selectedPlan.name} submitted! Check Admin Panel to Approve.`);
   };
 
-  // Admin Console Action
-  const handleApproveTxn = (id: string) => {
-    setTransactions(prev => prev.map(t => t.id === id ? { ...t, status: "Succeed" } : t));
-    alert(`Transaction ${id} Approved successfully by Admin!`);
+
+  // ====================================================
+  // 🔒 CORE ADMIN ACTIONS (THE 3 CORE ADMIN REQUIREMENT IMPLEMENTATIONS)
+  // ====================================================
+
+  // 1. Transaction State Modifier (Approve / Reject Requests)
+  const handleAdminTxnStatus = (id: string, newStatus: "Succeed" | "Rejected") => {
+    setTransactions(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    alert(`Transaction ${id} status updated to ${newStatus} by Admin!`);
   };
+
+  // 2. Direct Balance Engine (Credit/Debit System)
+  const handleAdminModifyBalance = (actionType: "CREDIT" | "DEBIT") => {
+    const value = parseFloat(adminAmountInput);
+    if (!value || value <= 0) return alert("Enter a valid numeric amount.");
+
+    // Update inside Admin Users Table list
+    setAdminUsers(prev => prev.map(u => {
+      if (u.username === adminTargetUser) {
+        const revisedBalance = actionType === "CREDIT" ? u.balance + value : Math.max(0, u.balance - value);
+        return { ...u, balance: revisedBalance };
+      }
+      return u;
+    }));
+
+    // If target is current active dashboard user, sync view state balance
+    if (adminTargetUser === profile.username) {
+      setAvailableBalance(prev => actionType === "CREDIT" ? prev + value : Math.max(0, prev - value));
+    }
+
+    // Append standard audit logging transaction
+    const logTxn = {
+      id: `#ADM-${Math.floor(10000 + Math.random() * 90000)}`,
+      type: `Admin ${actionType === "CREDIT" ? "Manual Credit" : "Manual Debit"}`,
+      amount: `${actionType === "CREDIT" ? "+" : "-"}$${value.toFixed(2)}`,
+      status: "Succeed" as const,
+      date: new Date().toISOString().split('T')[0]
+    };
+    setTransactions([logTxn, ...transactions]);
+    setAdminAmountInput("");
+    alert(`✅ User @${adminTargetUser} system balance updated via ${actionType}!`);
+  };
+
+  // 3. User KYC State Modifier Switch
+  const handleAdminKycChange = (username: string, newKyc: string) => {
+    setAdminUsers(prev => prev.map(u => u.username === username ? { ...u, kyc: newKyc } : u));
+    if (username === profile.username) {
+      setProfile(prev => ({ ...prev, kycStatus: newKyc }));
+    }
+    alert(`KYC Status for @${username} changed to ${newKyc}`);
+  };
+
 
   return (
     <div className="min-h-screen bg-[#0B0C10] text-white flex flex-col md:flex-row pb-24 md:pb-0 font-sans selection:bg-[#FF9F1C] selection:text-black">
@@ -208,7 +251,7 @@ export default function CompleteDashboard() {
       {/* 2. MAIN CONTENT AREA */}
       <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto overflow-y-auto space-y-6">
         
-        {/* GLOBAL HEADER HEADER */}
+        {/* GLOBAL HEADER */}
         <div className="bg-[#1F2833]/40 border border-gray-800 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FF9F1C] to-amber-500 flex items-center justify-center font-bold text-black text-lg shadow-lg">
@@ -241,7 +284,7 @@ export default function CompleteDashboard() {
                   <span className="text-[10px] font-bold bg-green-500/10 text-green-400 px-2 py-0.5 rounded border border-green-500/20">Liquid</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-[#FF9F1C] mt-1">${availableBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</h3>
-                <span className="text-xs text-green-400 block mt-2">▲ +14.5% up from last week</span>
+                <span className="text-xs text-green-400 block mt-2">▲ Live synced with account state</span>
               </div>
 
               <div className={`p-6 rounded-2xl border transition-all ${stakedAssets > 0 ? 'bg-[#1F2833]/50 border-gray-800' : 'bg-red-950/10 border-red-900/30'}`}>
@@ -264,7 +307,7 @@ export default function CompleteDashboard() {
               </div>
             </div>
 
-            {/* Graph + Terminals Layout */}
+            {/* Form Console Tabs */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="bg-[#1F2833]/20 border border-gray-800 p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between">
                 <div className="flex justify-between items-center mb-6">
@@ -281,7 +324,7 @@ export default function CompleteDashboard() {
                 </div>
               </div>
 
-              {/* Right Sidebar Multi-Tab Form Console */}
+              {/* Wallet actions */}
               <div className="bg-gradient-to-b from-[#1F2833]/90 to-[#1F2833]/30 border border-gray-800 p-6 rounded-2xl flex flex-col justify-between gap-4">
                 <div>
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Staking Core Engine</h4>
@@ -387,7 +430,7 @@ export default function CompleteDashboard() {
                         <td className="py-4 px-4 font-medium">{txn.type}</td>
                         <td className={`py-4 px-4 font-semibold ${txn.amount.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>{txn.amount}</td>
                         <td className="py-4 px-4">
-                          <span className={`text-xs px-2.5 py-1 rounded-full border ${txn.status === "Waiting" ? "bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse" : "bg-green-500/10 text-green-400 border-green-500/20"}`}>
+                          <span className={`text-xs px-2.5 py-1 rounded-full border ${txn.status === "Waiting" ? "bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse" : txn.status === "Rejected" ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-green-500/10 text-green-400 border-green-500/20"}`}>
                             {txn.status}
                           </span>
                         </td>
@@ -561,12 +604,12 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: 🔒 ADMIN PANEL ================= */}
+        {/* ================= VIEW: 🔒 FULLY FUNCTIONAL ADMIN PANEL ================= */}
         {activeTab === "admin" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-red-400 tracking-tight">System Admin Console</h1>
-              <p className="text-sm text-gray-400 mt-1">Manage global user accounts, update statuses, and verify pending pool actions.</p>
+              <p className="text-sm text-gray-400 mt-1">Manage global user accounts, update balances, and verify pending pool requests live.</p>
             </div>
 
             {/* Admin Stats Grid */}
@@ -577,28 +620,71 @@ export default function CompleteDashboard() {
               </div>
               <div className="bg-red-950/20 border border-red-900/30 p-4 rounded-xl">
                 <p className="text-xs text-gray-400">System Core Volume</p>
-                <h4 className="text-2xl font-bold text-[#FF9F1C] mt-1">$59,021.47</h4>
+                <h4 className="text-2xl font-bold text-[#FF9F1C] mt-1">
+                  ${adminUsers.reduce((sum, u) => sum + u.balance, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </h4>
               </div>
               <div className="bg-red-950/20 border border-red-900/30 p-4 rounded-xl">
-                <p className="text-xs text-gray-400">Pending Actions</p>
+                <p className="text-xs text-gray-400">Pending Requests</p>
                 <h4 className="text-2xl font-bold text-red-400 mt-1">
-                  {transactions.filter(t => t.status === "Waiting").length} Requests
+                  {transactions.filter(t => t.status === "Waiting").length} Actions
                 </h4>
               </div>
             </div>
 
-            {/* Pending Requests Section */}
+            {/* ACTION 1 & 2: BALANCE & KYC CONTROL PANEL */}
+            <div className="bg-[#1F2833]/80 p-6 rounded-2xl border border-red-900/40 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider">1 & 2. User Balance Modification Panel</h3>
+                <p className="text-xs text-gray-400">Select any active registration username node to apply automated Credit or Debit flows directly into their wallet.</p>
+                
+                <div className="space-y-2">
+                  <select 
+                    value={adminTargetUser} 
+                    onChange={(e) => setAdminTargetUser(e.target.value)}
+                    className="w-full bg-black/50 border border-gray-800 rounded-xl px-3 py-2 text-xs text-[#FF9F1C]"
+                  >
+                    {adminUsers.map((u, i) => (
+                      <option key={i} value={u.username}>@{u.username} (Current: ${u.balance.toFixed(2)})</option>
+                    ))}
+                  </select>
+
+                  <div className="flex gap-2">
+                    <input 
+                      type="number" 
+                      placeholder="Amount ($)" 
+                      value={adminAmountInput}
+                      onChange={(e) => setAdminAmountInput(e.target.value)}
+                      className="flex-1 bg-black/50 border border-gray-800 rounded-xl px-3 py-2 text-xs font-mono text-white"
+                    />
+                    <button onClick={() => handleAdminModifyBalance("CREDIT")} className="bg-green-600 text-black font-bold px-4 py-2 rounded-xl text-xs">Credit</button>
+                    <button onClick={() => handleAdminModifyBalance("DEBIT")} className="bg-red-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Debit</button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 bg-black/20 p-4 rounded-xl border border-gray-800/60">
+                <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wide">Admin Audit Activity Status</h3>
+                <div className="text-[11px] space-y-1 font-mono text-gray-400">
+                  <p>• Root Admin Session Status: <span className="text-green-400">Authenticated</span></p>
+                  <p>• Node Client ID: <span className="text-[#FF9F1C]">#SECURE-901X</span></p>
+                  <p>• Override Capability: <span className="text-blue-400">Fully Enabled</span></p>
+                </div>
+              </div>
+            </div>
+
+            {/* ACTION 3: PENDING APPROVALS MANAGER TABLE */}
             <div className="bg-[#1F2833]/50 rounded-2xl border border-gray-800 p-4 md:p-6 shadow-sm">
-              <h2 className="text-lg font-bold mb-4 text-red-400">Pending Verification Requests</h2>
+              <h2 className="text-lg font-bold mb-4 text-red-400">3. Verification & Withdrawal Approvals Manager</h2>
               <div className="overflow-x-auto w-full rounded-xl">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
                     <tr className="border-b border-gray-800 text-xs text-gray-400 uppercase tracking-wider bg-[#1F2833]/50">
                       <th className="py-3 px-4">Txn ID</th>
-                      <th className="py-3 px-4">Type</th>
+                      <th className="py-3 px-4">Request Type</th>
                       <th className="py-3 px-4">Amount</th>
-                      <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4">Action</th>
+                      <th className="py-3 px-4">State</th>
+                      <th className="py-3 px-4 text-right">System Action Overrides</th>
                     </tr>
                   </thead>
                   <tbody className="text-sm divide-y divide-gray-800/40">
@@ -608,20 +694,28 @@ export default function CompleteDashboard() {
                         <td className="py-4 px-4">{txn.type}</td>
                         <td className="py-4 px-4 font-semibold text-white">{txn.amount}</td>
                         <td className="py-4 px-4">
-                          <span className={`text-xs px-2.5 py-1 rounded-full border ${txn.status === "Waiting" ? "bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse" : "bg-green-500/10 text-green-400 border-green-500/20"}`}>
+                          <span className={`text-xs px-2.5 py-1 rounded-full border ${txn.status === "Waiting" ? "bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse" : txn.status === "Rejected" ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-green-500/10 text-green-400 border-green-500/20"}`}>
                             {txn.status}
                           </span>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="py-4 px-4 text-right space-x-2">
                           {txn.status === "Waiting" ? (
-                            <button 
-                              onClick={() => handleApproveTxn(txn.id)}
-                              className="bg-green-500 hover:bg-green-600 text-black font-bold px-3 py-1 rounded-lg text-xs"
-                            >
-                              Approve
-                            </button>
+                            <>
+                              <button 
+                                onClick={() => handleAdminTxnStatus(txn.id, "Succeed")}
+                                className="bg-green-500 hover:bg-green-600 text-black font-bold px-3 py-1 rounded-lg text-xs"
+                              >
+                                Approve
+                              </button>
+                              <button 
+                                onClick={() => handleAdminTxnStatus(txn.id, "Rejected")}
+                                className="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded-lg text-xs"
+                              >
+                                Reject
+                              </button>
+                            </>
                           ) : (
-                            <span className="text-gray-500 text-xs">Processed</span>
+                            <span className="text-gray-500 text-xs italic">Audit Closed</span>
                           )}
                         </td>
                       </tr>
@@ -631,29 +725,35 @@ export default function CompleteDashboard() {
               </div>
             </div>
 
-            {/* Registered Users Section */}
+            {/* REGISTERED USERS MANAGEMENT & KYC UPDATER */}
             <div className="bg-[#1F2833]/50 rounded-2xl border border-gray-800 p-4 md:p-6 shadow-sm">
-              <h2 className="text-lg font-bold mb-4">Registered Network Accounts</h2>
+              <h2 className="text-lg font-bold mb-4">Registered Accounts & KYC Control</h2>
               <div className="overflow-x-auto w-full rounded-xl">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
                     <tr className="border-b border-gray-800 text-xs text-gray-400 uppercase tracking-wider bg-[#1F2833]/50">
                       <th className="py-3 px-4">Username</th>
-                      <th className="py-3 px-4">Email</th>
+                      <th className="py-3 px-4">Email Address</th>
                       <th className="py-3 px-4">Liquid Balance</th>
-                      <th className="py-3 px-4">KYC Status</th>
+                      <th className="py-3 px-4 text-right">Modify KYC Status Vector</th>
                     </tr>
                   </thead>
                   <tbody className="text-sm divide-y divide-gray-800/40">
                     {adminUsers.map((user, idx) => (
                       <tr key={idx} className="hover:bg-gray-900/30 transition-colors">
-                        <td className="py-4 px-4 font-bold text-[#FF9F1C]">{user.username}</td>
+                        <td className="py-4 px-4 font-bold text-[#FF9F1C]">@{user.username}</td>
                         <td className="py-4 px-4 text-gray-300">{user.email}</td>
-                        <td className="py-4 px-4 font-mono">{user.balance}</td>
-                        <td className="py-4 px-4">
-                          <span className="text-xs bg-gray-800 px-2 py-1 rounded text-white border border-gray-700">
-                            {user.kyc}
-                          </span>
+                        <td className="py-4 px-4 font-mono text-green-400">${user.balance.toFixed(2)}</td>
+                        <td className="py-4 px-4 text-right">
+                          <select 
+                            value={user.kyc}
+                            onChange={(e) => handleAdminKycChange(user.username, e.target.value)}
+                            className="bg-black/40 border border-gray-700 rounded-lg px-2 py-1 text-xs text-white outline-none"
+                          >
+                            <option value="Tier 2 Verified">Tier 2 Verified</option>
+                            <option value="Tier 1 Verified">Tier 1 Verified</option>
+                            <option value="Unverified">Unverified</option>
+                          </select>
                         </td>
                       </tr>
                     ))}
@@ -673,7 +773,7 @@ export default function CompleteDashboard() {
             <h3 className="text-lg font-bold text-[#FF9F1C]">Activate {selectedPlan.name}</h3>
             <form onSubmit={handleActivatePlanSubmit} className="space-y-4">
               <input type="text" required placeholder="0x..." value={userWallet} onChange={(e) => setUserWallet(e.target.value)} className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-sm outline-none text-white font-mono" />
-              <input type="text" required placeholder="Paste hash" value={txnHash} onChange={(e) => setTxnHash(e.target.value)} className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-sm outline-none text-white font-mono" />
+              <input type="text" required placeholder="Paste Txn hash" value={txnHash} onChange={(e) => setTxnHash(e.target.value)} className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-sm outline-none text-white font-mono" />
               <div className="flex gap-3">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-gray-800 text-white py-2.5 rounded-xl">Cancel</button>
                 <button type="submit" className="flex-1 bg-[#FF9F1C] text-black font-bold py-2.5 rounded-xl">Submit</button>
