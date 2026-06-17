@@ -1,24 +1,80 @@
+## Refactoring Review & Optimization
+
+The provided Next.js client component (`page.tsx`) implements a unified dashboard interface with tabs for overview, memberships, rewards, referrals, and profiles. Here is a breakdown of optimization points, security improvements, and clean code enhancements.
+
+---
+
+### Key Observations & Refactoring Points
+
+1. **State Cohesion:**
+The layout manages over 10 independent `useState` hooks. Consolidating related sub-states (e.g., combining `stakeInput`, `withdrawInput`, `sendAddress`, and `sendAmount` into a single `formInputs` object) reduces component rerender overhead and clarifies data streams.
+2. **Transaction Status Transitions:**
+The component uses a `setTimeout` inside `handleWithdraw` to transition status from `"Waiting"` to `"Succeed"`. When doing this, relying on the previous state functional update array mapping ensures that asynchronous state snapshots do not overwrite intermediate updates:
+```tsx
+setTransactions((prevTxns) =>
+  prevTxns.map((txn) =>
+    txn.id === targetTxnId ? { ...txn, status: "Succeed" } : txn
+  )
+);
+
+```
+
+
+
+```
+
+3. **Input Validation & Formatting:**
+   * Parsed inputs via `parseFloat()` should also be checked against `isNaN()` to prevent unhandled conditions when an empty or broken value bypasses simple checks.
+   * Hardcoded values inside lists (`transactions` or `plans`) can be moved out of the main render pipeline into localized constants to keep the JSX clean.
+
+4. **Accessibility (a11y) & Semantic Elements:**
+   The view transitions rely heavily on simple structural elements. Adding proper labels to form fields and providing hidden descriptive helper texts can elevate assistive screen-reader friendliness.
+
+---
+
+### Optimized Code Implementation
+
+Below is the structured, production-ready version of your dashboard layout:
+
+```tsx
 "use client";
 
 import React, { useState } from "react";
+
+// Static Definitions Moved Outside Render Loop
+const MEMBERSHIP_PLANS = [
+  { name: "Bronze Plan", price: "100 USDX", yield: "5% APY Daily", features: ["✔ 2 Team Members Allowed", "✔ Email Support"] },
+  { name: "Silver Plan", price: "500 USDX", yield: "10% APY Daily", features: ["✔ 10 Team Members Allowed", "✔ 24/7 Priority Support", "✔ Advanced Analytics"], highlight: true },
+  { name: "Gold Plan", price: "2,000 USDX", yield: "15% APY Daily", features: ["✔ Unlimited Members", "✔ VIP Personal Account Executive"] }
+];
+
+interface Transaction {
+  id: string;
+  type: string;
+  amount: string;
+  status: "Succeed" | "Waiting";
+  date: string;
+}
 
 export default function CompleteDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [availableBalance, setAvailableBalance] = useState(12960.97);
   const [stakedAssets, setStakedAssets] = useState(5000.00);
   
-  // Rewards Split (Staking + Referral)
+  // Rewards Split
   const [stakingRewards, setStakingRewards] = useState(340.50);
   const [referralRewards, setReferralRewards] = useState(79.62);
   
-  // Quick Wallet Inputs
-  const [stakeInput, setStakeInput] = useState("");
-  const [withdrawInput, setWithdrawInput] = useState("");
-  const [sendAddress, setSendAddress] = useState("");
-  const [sendAmount, setSendAmount] = useState("");
-  const [activeWalletTab, setActiveWalletTab] = useState("withdraw"); // withdraw | send | receive
+  // Consolidated Terminal Form Inputs
+  const [inputs, setInputs] = useState({
+    stake: "",
+    withdraw: "",
+    sendAddress: "",
+    sendAmount: "",
+  });
+  const [activeWalletTab, setActiveWalletTab] = useState("withdraw");
 
-  // User Profile States
+  // User Profile
   const [profile, setProfile] = useState({
     name: "Jordan Dev",
     username: "Premium_User_90812",
@@ -28,25 +84,34 @@ export default function CompleteDashboard() {
     kycStatus: "Tier 2 Verified"
   });
 
-  const [transactions, setTransactions] = useState([
+  const [transactions, setTransactions] = useState<Transaction[]>([
     { id: "#TXN-90812", type: "Token Staking", amount: "+$1,200.00", status: "Succeed", date: "2026-06-18" },
     { id: "#TXN-87123", type: "Referral Bonus", amount: "+$50.00", status: "Succeed", date: "2026-06-17" },
   ]);
 
-  // Handler for Claiming Specific Rewards
+  // Modal Configuration States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
+  const [modalWallet, setModalWallet] = useState("");
+  const [modalTxnHash, setModalTxnHash] = useState("");
+
+  const handleInputChange = (field: keyof typeof inputs, value: string) => {
+    setInputs((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleClaim = (type: "staking" | "referral") => {
     const amountToClaim = type === "staking" ? stakingRewards : referralRewards;
     
     if (amountToClaim > 0) {
       setAvailableBalance((prev) => prev + amountToClaim);
-      const newTxn = {
+      const newTxn: Transaction = {
         id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
         type: type === "staking" ? "Staking Reward Claim" : "Referral Comm. Claim",
         amount: `+$${amountToClaim.toFixed(2)}`,
         status: "Succeed",
         date: new Date().toISOString().split('T')[0],
       };
-      setTransactions([newTxn, ...transactions]);
+      setTransactions((prev) => [newTxn, ...prev]);
       if (type === "staking") setStakingRewards(0);
       else setReferralRewards(0);
       alert(`🎉 $${amountToClaim.toFixed(2)} claimed successfully!`);
@@ -55,40 +120,37 @@ export default function CompleteDashboard() {
     }
   };
 
-  // Deposit Stake Logic
   const handleStake = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = parseFloat(stakeInput);
-    if (!amount || amount <= 0) return alert("Please enter a valid amount");
+    const amount = parseFloat(inputs.stake);
+    if (isNaN(amount) || amount <= 0) return alert("Please enter a valid amount");
     if (amount > availableBalance) return alert("Insufficient balance!");
 
     setAvailableBalance((prev) => prev - amount);
     setStakedAssets((prev) => prev + amount);
-    const newTxn = {
+    
+    const newTxn: Transaction = {
       id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
       type: "Asset Staking",
       amount: `-$${amount.toFixed(2)}`,
       status: "Succeed",
       date: new Date().toISOString().split('T')[0],
     };
-    setTransactions([newTxn, ...transactions]);
-    setStakeInput("");
+    setTransactions((prev) => [newTxn, ...prev]);
+    handleInputChange("stake", "");
     alert(`👍 $${amount} successfully staked!`);
   };
 
-  // NEW UPDATED: Withdraw Logic with Waiting -> Succeed states
   const handleWithdraw = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = parseFloat(withdrawInput);
-    if (!amount || amount <= 0) return alert("Please enter a valid amount");
+    const amount = parseFloat(inputs.withdraw);
+    if (isNaN(amount) || amount <= 0) return alert("Please enter a valid amount");
     if (amount > availableBalance) return alert("Insufficient balance to withdraw!");
 
     setAvailableBalance((prev) => prev - amount);
-    
     const targetTxnId = `#TXN-${Math.floor(10000 + Math.random() * 90000)}`;
     
-    // Initial state: Waiting / Processing status
-    const newTxn = {
+    const newTxn: Transaction = {
       id: targetTxnId,
       type: "Withdrawal Request",
       amount: `-$${amount.toFixed(2)}`,
@@ -96,43 +158,40 @@ export default function CompleteDashboard() {
       date: new Date().toISOString().split('T')[0],
     };
     
-    setTransactions((prevTxns) => [newTxn, ...prevTxns]);
-    setWithdrawInput("");
+    setTransactions((prev) => [newTxn, ...prev]);
+    handleInputChange("withdraw", "");
     alert(`🚀 Withdrawal request for $${amount} submitted! Status: Waiting...`);
 
-    // Mock Timer: Automatically convert "Waiting" to "Succeed" after 5 seconds
     setTimeout(() => {
       setTransactions((prevTxns) =>
         prevTxns.map((txn) =>
-          txn.id === targetTxnId ? { ...txn, status: "Succeed" } : txn
+          txn.id === targetTxnId ? { ...txn, status: "Succeed" as const } : txn
         )
       );
     }, 5000);
   };
 
-  // Send Tokens Logic
   const handleSendTokens = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = parseFloat(sendAmount);
-    if (!sendAddress.trim()) return alert("Please enter a valid recipient address");
-    if (!amount || amount <= 0) return alert("Please enter a valid amount");
+    const amount = parseFloat(inputs.sendAmount);
+    if (!inputs.sendAddress.trim()) return alert("Please enter a valid recipient address");
+    if (isNaN(amount) || amount <= 0) return alert("Please enter a valid amount");
     if (amount > availableBalance) return alert("Insufficient balance to send!");
 
     setAvailableBalance((prev) => prev - amount);
-    const newTxn = {
+    const newTxn: Transaction = {
       id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
-      type: `Sent to ${sendAddress.substring(0,6)}...`,
+      type: `Sent to ${inputs.sendAddress.substring(0, 6)}...`,
       amount: `-$${amount.toFixed(2)}`,
       status: "Succeed",
       date: new Date().toISOString().split('T')[0],
     };
-    setTransactions([newTxn, ...transactions]);
-    setSendAddress("");
-    setSendAmount("");
-    alert(`🚀 Successfully sent $${amount} to ${sendAddress}`);
+    setTransactions((prev) => [newTxn, ...prev]);
+    handleInputChange("sendAddress", "");
+    handleInputChange("sendAmount", "");
+    alert(`🚀 Successfully sent $${amount} to ${inputs.sendAddress}`);
   };
 
-  // Save Profile Details
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     alert("💾 Profile details updated locally successfully!");
@@ -143,34 +202,29 @@ export default function CompleteDashboard() {
     setIsModalOpen(true);
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
-  const [userWallet, setUserWallet] = useState("");
-  const [txnHash, setTxnHash] = useState("");
-
   const handleActivatePlanSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userWallet.trim() || !txnHash.trim()) {
+    if (!modalWallet.trim() || !modalTxnHash.trim()) {
       return alert("Please fill in all verification details.");
     }
-    const newTxn = {
+    const newTxn: Transaction = {
       id: `#TXN-${Math.floor(10000 + Math.random() * 90000)}`,
       type: `Membership (${selectedPlan.name})`,
       amount: `-${selectedPlan.price}`,
       status: "Waiting",
       date: new Date().toISOString().split('T')[0],
     };
-    setTransactions([newTxn, ...transactions]);
+    setTransactions((prev) => [newTxn, ...prev]);
     setIsModalOpen(false);
-    setUserWallet("");
-    setTxnHash("");
+    setModalWallet("");
+    setModalTxnHash("");
     alert(`🚀 Verification request for ${selectedPlan.name} submitted!`);
   };
 
   return (
     <div className="min-h-screen bg-[#0B0C10] text-white flex flex-col md:flex-row pb-24 md:pb-0 font-sans selection:bg-[#FF9F1C] selection:text-black">
       
-      {/* 1. SIDEBAR FOR DESKTOP & BOTTOM NAVIGATION FOR MOBILE */}
+      {/* SIDEBAR NAVIGATION */}
       <aside className="w-full md:w-64 bg-[#1F2833] p-4 md:p-6 flex flex-row md:flex-col justify-between md:justify-start gap-4 fixed bottom-0 md:sticky md:top-0 md:h-screen z-50 border-t md:border-t-0 md:border-r border-gray-800 shadow-2xl shrink-0">
         <div className="hidden md:block mb-8">
           <h2 className="text-xl font-bold text-[#FF9F1C] tracking-wider">USDX NETWORK</h2>
@@ -190,14 +244,14 @@ export default function CompleteDashboard() {
         </nav>
       </aside>
 
-      {/* 2. MAIN CONTENT AREA */}
+      {/* MAIN CONTENT WORKSPACE */}
       <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto overflow-y-auto space-y-6">
         
-        {/* GLOBAL HEADER */}
+        {/* TOP INTERACTIVE METRICS HEADER */}
         <div className="bg-[#1F2833]/40 border border-gray-800 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FF9F1C] to-amber-500 flex items-center justify-center font-bold text-black text-lg shadow-lg">
-              {profile.name.substring(0,2).toUpperCase()}
+              {profile.name.substring(0, 2).toUpperCase()}
             </div>
             <div>
               <h4 className="font-bold text-sm tracking-wide text-white">{profile.username}</h4>
@@ -205,12 +259,12 @@ export default function CompleteDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2 bg-[#1F2833] px-4 py-2 rounded-xl border border-green-500/30 shadow-inner">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-xs text-green-400 font-semibold tracking-wide">Connected</span>
           </div>
         </div>
 
-        {/* ================= VIEW: DASHBOARD ================= */}
+        {/* VIEW CONTEXT SWITCHERS */}
         {activeTab === "dashboard" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -218,19 +272,16 @@ export default function CompleteDashboard() {
               <p className="text-sm text-gray-400 mt-1 font-light">Overview of your real-time ecosystem capital asset standing.</p>
             </div>
 
-            {/* Premium Dynamic Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {/* Card 1 */}
               <div className="bg-[#1F2833]/50 p-6 rounded-2xl border border-gray-800 relative group transition-all">
                 <div className="flex justify-between items-start">
                   <p className="text-sm text-gray-400 mb-1">Total Available Balance</p>
                   <span className="text-[10px] font-bold bg-green-500/10 text-green-400 px-2 py-0.5 rounded border border-green-500/20">Liquid</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-[#FF9F1C] mt-1">${availableBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-[#FF9F1C] mt-1">${availableBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</h3>
                 <span className="text-xs text-green-400 block mt-2">▲ +14.5% up from last week</span>
               </div>
 
-              {/* Card 2 */}
               <div className={`p-6 rounded-2xl border transition-all ${stakedAssets > 0 ? 'bg-[#1F2833]/50 border-gray-800' : 'bg-red-950/10 border-red-900/30'}`}>
                 <div className="flex justify-between items-start">
                   <p className="text-sm text-gray-400 mb-1">Active Staked Assets</p>
@@ -238,11 +289,10 @@ export default function CompleteDashboard() {
                     ● {stakedAssets > 0 ? "Active (Yielding)" : "Inactive"}
                   </span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white mt-1">${stakedAssets.toLocaleString(undefined, {minimumFractionDigits: 2})}</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-white mt-1">${stakedAssets.toLocaleString(undefined, { minimumFractionDigits: 2 })}</h3>
                 <span className="text-xs text-gray-500 block mt-2">🔒 Base Lockup Protocol active</span>
               </div>
 
-              {/* Card 3 */}
               <div className="bg-[#1F2833]/50 p-6 rounded-2xl border border-orange-500/10 flex flex-col justify-between gap-2">
                 <div>
                   <p className="text-sm text-gray-400 mb-1">Total Accrued Earnings</p>
@@ -252,25 +302,22 @@ export default function CompleteDashboard() {
               </div>
             </div>
 
-            {/* Quick Actions & Live Trend Panel */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Market Trend */}
               <div className="bg-[#1F2833]/20 border border-gray-800 p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">USDX Live Market Trend</h3>
                   <span className="text-xs bg-gray-800 px-2 py-1 rounded text-[#FF9F1C] font-mono">Live 24h</span>
                 </div>
                 <div className="h-32 flex items-end gap-2 md:gap-3 pt-4 border-b border-gray-800/60">
-                  <div className="bg-gray-800/40 w-full h-12 rounded-t-md"></div>
-                  <div className="bg-gray-800/60 w-full h-20 rounded-t-md"></div>
-                  <div className="bg-gray-800/40 w-full h-16 rounded-t-md"></div>
-                  <div className="bg-[#FF9F1C]/40 w-full h-24 rounded-t-md animate-pulse"></div>
-                  <div className="bg-green-500/40 w-full h-20 rounded-t-md"></div>
-                  <div className="bg-green-500/80 w-full h-32 rounded-t-md"></div>
+                  <div className="bg-gray-800/40 w-full h-12 rounded-t-md" />
+                  <div className="bg-gray-800/60 w-full h-20 rounded-t-md" />
+                  <div className="bg-gray-800/40 w-full h-16 rounded-t-md" />
+                  <div className="bg-[#FF9F1C]/40 w-full h-24 rounded-t-md animate-pulse" />
+                  <div className="bg-green-500/40 w-full h-20 rounded-t-md" />
+                  <div className="bg-green-500/80 w-full h-32 rounded-t-md" />
                 </div>
               </div>
 
-              {/* Advanced Intersected Terminals */}
               <div className="bg-gradient-to-b from-[#1F2833]/90 to-[#1F2833]/30 border border-gray-800 p-6 rounded-2xl flex flex-col justify-between gap-4">
                 <div>
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Staking Core Engine</h4>
@@ -278,8 +325,8 @@ export default function CompleteDashboard() {
                     <input 
                       type="number" 
                       placeholder="Amount to Stake"
-                      value={stakeInput}
-                      onChange={(e) => setStakeInput(e.target.value)}
+                      value={inputs.stake}
+                      onChange={(e) => handleInputChange("stake", e.target.value)}
                       className="w-full bg-black/40 border border-gray-800 rounded-xl px-3 py-2 text-xs outline-none text-[#FF9F1C] font-mono"
                     />
                     <button type="submit" className="bg-[#FF9F1C] text-black font-extrabold px-4 py-2 rounded-xl text-xs whitespace-nowrap">Stake</button>
@@ -288,12 +335,12 @@ export default function CompleteDashboard() {
 
                 <hr className="border-gray-800" />
 
-                {/* Bottom Module: Multi-Tab Wallet Console */}
                 <div className="space-y-3">
                   <div className="flex bg-black/40 p-1 rounded-xl border border-gray-800 justify-between text-center">
                     {["withdraw", "send", "receive"].map((wTab) => (
                       <button
                         key={wTab}
+                        type="button"
                         onClick={() => setActiveWalletTab(wTab)}
                         className={`flex-1 text-[11px] py-1.5 font-bold rounded-lg transition-all capitalize ${activeWalletTab === wTab ? 'bg-[#1F2833] text-[#FF9F1C]' : 'text-gray-400'}`}
                       >
@@ -308,8 +355,8 @@ export default function CompleteDashboard() {
                         type="number" 
                         required
                         placeholder="Amount to Withdraw"
-                        value={withdrawInput}
-                        onChange={(e) => setWithdrawInput(e.target.value)}
+                        value={inputs.withdraw}
+                        onChange={(e) => handleInputChange("withdraw", e.target.value)}
                         className="w-full bg-black/20 border border-gray-800 rounded-xl px-3 py-2 text-xs outline-none font-mono"
                       />
                       <button type="submit" className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-xl text-xs">Confirm Withdrawal</button>
@@ -322,16 +369,16 @@ export default function CompleteDashboard() {
                         type="text" 
                         required
                         placeholder="Recipient Address (0x...)"
-                        value={sendAddress}
-                        onChange={(e) => setSendAddress(e.target.value)}
+                        value={inputs.sendAddress}
+                        onChange={(e) => handleInputChange("sendAddress", e.target.value)}
                         className="w-full bg-black/20 border border-gray-800 rounded-xl px-3 py-2 text-xs outline-none font-mono"
                       />
                       <input 
                         type="number" 
                         required
                         placeholder="Amount USDX"
-                        value={sendAmount}
-                        onChange={(e) => setSendAmount(e.target.value)}
+                        value={inputs.sendAmount}
+                        onChange={(e) => handleInputChange("sendAmount", e.target.value)}
                         className="w-full bg-black/20 border border-gray-800 rounded-xl px-3 py-2 text-xs outline-none font-mono"
                       />
                       <button type="submit" className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl text-xs">Broadcast Assets</button>
@@ -341,7 +388,7 @@ export default function CompleteDashboard() {
                   {activeWalletTab === "receive" && (
                     <div className="bg-black/20 p-3 rounded-xl border border-gray-800 text-center space-y-2">
                       <div className="w-20 h-20 bg-white mx-auto rounded-lg flex items-center justify-center p-1">
-                        <div className="w-full h-full bg-gradient-to-br from-black to-gray-800 rounded"></div>
+                        <div className="w-full h-full bg-gradient-to-br from-black to-gray-800 rounded" />
                       </div>
                       <p className="text-[10px] font-mono text-gray-400 select-all truncate">{profile.wallet}</p>
                       <button 
@@ -357,7 +404,7 @@ export default function CompleteDashboard() {
               </div>
             </div>
 
-            {/* History Table */}
+            {/* EXCHANGE RECORD TABLE */}
             <div className="bg-[#1F2833]/30 rounded-2xl border border-gray-800 p-4 md:p-6 shadow-sm">
               <h2 className="text-lg font-bold mb-4">Recent Exchange History</h2>
               <div className="overflow-x-auto w-full rounded-xl">
@@ -371,8 +418,8 @@ export default function CompleteDashboard() {
                     </tr>
                   </thead>
                   <tbody className="text-sm divide-y divide-gray-800/40">
-                    {transactions.map((txn, index) => (
-                      <tr key={index} className="hover:bg-gray-900/30 transition-colors">
+                    {transactions.map((txn) => (
+                      <tr key={txn.id} className="hover:bg-gray-900/30 transition-colors">
                         <td className="py-4 px-4 text-[#FF9F1C] font-mono">{txn.id}</td>
                         <td className="py-4 px-4 font-medium">{txn.type}</td>
                         <td className={`py-4 px-4 font-semibold ${txn.amount.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>{txn.amount}</td>
@@ -394,7 +441,6 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: MEMBERSHIP ================= */}
         {activeTab === "membership" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -403,11 +449,7 @@ export default function CompleteDashboard() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-              {[
-                { name: "Bronze Plan", price: "100 USDX", yield: "5% APY Daily", features: ["✔ 2 Team Members Allowed", "✔ Email Support"] },
-                { name: "Silver Plan", price: "500 USDX", yield: "10% APY Daily", features: ["✔ 10 Team Members Allowed", "✔ 24/7 Priority Support", "✔ Advanced Analytics"], highlight: true },
-                { name: "Gold Plan", price: "2,000 USDX", yield: "15% APY Daily", features: ["✔ Unlimited Members", "✔ VIP Personal Account Executive"] }
-              ].map((plan, i) => (
+              {MEMBERSHIP_PLANS.map((plan, i) => (
                 <div key={i} className={`p-6 rounded-2xl flex flex-col justify-between relative shadow-xl ${plan.highlight ? 'bg-[#1F2833]/80 border-2 border-[#FF9F1C] shadow-[#FF9F1C]/5' : 'bg-[#1F2833]/40 border border-gray-800'}`}>
                   {plan.highlight && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF9F1C] text-black text-xs font-bold px-3 py-1 rounded-full tracking-wider">MOST POPULAR</span>}
                   <div>
@@ -419,6 +461,7 @@ export default function CompleteDashboard() {
                     </ul>
                   </div>
                   <button 
+                    type="button"
                     onClick={() => openActivationModal(plan.name, plan.price)}
                     className={`w-full font-bold py-3 rounded-xl transition-all mt-8 ${plan.highlight ? 'bg-[#FF9F1C] hover:bg-[#e08b14] text-black' : 'bg-gray-800 text-white hover:bg-gray-700'}`}
                   >
@@ -430,7 +473,6 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: REWARDS ================= */}
         {activeTab === "rewards" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -445,7 +487,7 @@ export default function CompleteDashboard() {
                   <p className="text-xs text-gray-400 mt-1">Accrued yield processing from committed liquidity.</p>
                   <h2 className="text-3xl font-extrabold text-green-400 mt-4">${stakingRewards.toFixed(2)}</h2>
                 </div>
-                <button onClick={() => handleClaim("staking")} className="w-full bg-green-500 hover:bg-green-600 text-black font-extrabold py-3 rounded-xl text-xs tracking-wider">
+                <button type="button" onClick={() => handleClaim("staking")} className="w-full bg-green-500 hover:bg-green-600 text-black font-extrabold py-3 rounded-xl text-xs tracking-wider">
                   CLAIM STAKING YIELD
                 </button>
               </div>
@@ -456,7 +498,7 @@ export default function CompleteDashboard() {
                   <p className="text-xs text-gray-400 mt-1">Earnings fetched from Level 1 and Level 2 tier invites.</p>
                   <h2 className="text-3xl font-extrabold text-green-400 mt-4">${referralRewards.toFixed(2)}</h2>
                 </div>
-                <button onClick={() => handleClaim("referral")} className="w-full bg-[#FF9F1C] hover:bg-[#e08b14] text-black font-extrabold py-3 rounded-xl text-xs tracking-wider">
+                <button type="button" onClick={() => handleClaim("referral")} className="w-full bg-[#FF9F1C] hover:bg-[#e08b14] text-black font-extrabold py-3 rounded-xl text-xs tracking-wider">
                   CLAIM COMMISSIONS NOW
                 </button>
               </div>
@@ -464,7 +506,6 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: REFERRAL ================= */}
         {activeTab === "referral" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -496,7 +537,7 @@ export default function CompleteDashboard() {
                   value="https://usdx.network/ref?id=90812" 
                   className="bg-black/40 border border-gray-800 rounded-xl px-4 py-3 flex-1 text-xs text-gray-300 outline-none font-mono select-all"
                 />
-                <button type="button" onClick={() => {navigator.clipboard.writeText("https://usdx.network/ref?id=90812"); alert("Copied!");}} className="bg-[#FF9F1C] text-black font-extrabold px-6 py-3 rounded-xl text-xs tracking-wider">
+                <button type="button" onClick={() => { navigator.clipboard.writeText("https://usdx.network/ref?id=90812"); alert("Copied!"); }} className="bg-[#FF9F1C] text-black font-extrabold px-6 py-3 rounded-xl text-xs tracking-wider">
                   Copy Link
                 </button>
               </div>
@@ -504,7 +545,6 @@ export default function CompleteDashboard() {
           </div>
         )}
 
-        {/* ================= VIEW: PROFILE SECTION ================= */}
         {activeTab === "profile" && (
           <div className="space-y-6 animate-fadeIn">
             <div>
@@ -515,7 +555,7 @@ export default function CompleteDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
               <div className="bg-[#1F2833]/40 border border-gray-800 rounded-2xl p-6 text-center space-y-4">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#FF9F1C] to-orange-500 mx-auto flex items-center justify-center font-black text-black text-3xl shadow-xl">
-                  {profile.name.substring(0,2).toUpperCase()}
+                  {profile.name.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
                   <h3 className="text-lg font-bold">{profile.name}</h3>
@@ -536,7 +576,7 @@ export default function CompleteDashboard() {
                       <input 
                         type="text" 
                         value={profile.name} 
-                        onChange={(e) => setProfile({...profile, name: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                         className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none text-white focus:border-[#FF9F1C]"
                       />
                     </div>
@@ -545,7 +585,7 @@ export default function CompleteDashboard() {
                       <input 
                         type="email" 
                         value={profile.email} 
-                        onChange={(e) => setProfile({...profile, email: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                         className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none text-white focus:border-[#FF9F1C]"
                       />
                     </div>
@@ -554,7 +594,7 @@ export default function CompleteDashboard() {
                       <input 
                         type="text" 
                         value={profile.phone} 
-                        onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                         className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none text-white focus:border-[#FF9F1C]"
                       />
                     </div>
@@ -563,7 +603,7 @@ export default function CompleteDashboard() {
                       <input 
                         type="text" 
                         value={profile.wallet} 
-                        onChange={(e) => setProfile({...profile, wallet: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, wallet: e.target.value })}
                         className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none text-gray-400 font-mono focus:border-[#FF9F1C]"
                       />
                     </div>
@@ -576,10 +616,9 @@ export default function CompleteDashboard() {
             </div>
           </div>
         )}
-
       </main>
 
-      {/* POPUP RE-VERIFICATION MEMBERSHIP MODAL STRUCTURE */}
+      {/* RE-VERIFICATION MEMBERSHIP MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100] animate-fadeIn">
           <div className="bg-[#1F2833] border border-gray-800 rounded-3xl p-6 w-full max-w-md space-y-4 relative shadow-2xl">
@@ -595,8 +634,8 @@ export default function CompleteDashboard() {
                   type="text" 
                   required
                   placeholder="0x..." 
-                  value={userWallet}
-                  onChange={(e) => setUserWallet(e.target.value)}
+                  value={modalWallet}
+                  onChange={(e) => setModalWallet(e.target.value)}
                   className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FF9F1C] font-mono"
                 />
               </div>
@@ -607,8 +646,8 @@ export default function CompleteDashboard() {
                   type="text" 
                   required
                   placeholder="Paste transaction signature hash" 
-                  value={txnHash}
-                  onChange={(e) => setTxnHash(e.target.value)}
+                  value={modalTxnHash}
+                  onChange={(e) => setModalTxnHash(e.target.value)}
                   className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#FF9F1C] font-mono"
                 />
               </div>
@@ -625,7 +664,8 @@ export default function CompleteDashboard() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
+
+```
