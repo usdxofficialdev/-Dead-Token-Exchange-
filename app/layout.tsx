@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import "./globals.css"; // Yeh line CSS connect karegi
-import { Providers } from "./providers";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Navbar from "./components/Navbar"; // <-- Sahi folder se navbar import kiya
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "USDX Network",
-  description: "Dead Token Exchange Dashboard",
+  description: "Premium Token Exchange",
 };
 
 export default function RootLayout({
@@ -14,8 +17,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-[#0a0a0a]">
-        <Providers>{children}</Providers>
+      <body className={inter.className} style={{ margin: 0, background: "#0b0f17", color: "#fff" }}>
+        {/* Isse navbar poori website par upar dikhega */}
+        <Navbar /> 
+        
+        <main style={{ padding: "20px" }}>
+          {children}
+        </main>
       </body>
     </html>
   );
