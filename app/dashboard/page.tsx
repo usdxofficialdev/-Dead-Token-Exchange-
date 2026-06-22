@@ -114,18 +114,20 @@ export default function Dashboard() {
     alert("Assets successfully broadcasted to target blockchain node!");
   };
 
+  // EXACT ROUTE MATCHING AS SEEN LIVE ON REWARDS PAGE
   const menuItems = [
     { name: "Dashboard", route: "/dashboard", active: true },
-    { name: "Membership", route: "/membership", active: false },
-    { name: "Rewards", route: "/rewards", active: false },
-    { name: "Referral", route: "/referral", active: false },
-    { name: "Profile", route: "/profile", active: false },
+    { name: "Membership Plans", route: "/membership", active: false },
+    { name: "Rewards History", route: "/rewards", active: false },
+    { name: "Referral Program", route: "/referral", active: false },
+    { name: "Leaderboard", route: "/leaderboard", active: false },
+    { name: "Profile Settings", route: "/profile", active: false },
   ];
 
   return (
     <div className="flex min-h-screen bg-[#07080B] text-white font-sans selection:bg-amber-500 selection:text-black">
       
-      {/* SIDEBAR NAVIGATION */}
+      {/* SIDEBAR NAVIGATION - MATCHED 100% TO LIVE REWARDS LAYOUT */}
       <aside className="w-64 border-r border-[#161920] bg-[#0D0F12] p-6 hidden md:flex flex-col justify-between">
         <div>
           <div className="mb-8">
@@ -206,7 +208,7 @@ export default function Dashboard() {
             <div className="text-3xl font-black text-[#10B981] tracking-tight">
               ${parseFloat(totalRewards).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <p className="text-[10px] text-gray-500 mt-3">Go to Rewards tab to process dynamic claim.</p>
+            <p className="text-[10px] text-gray-500 mt-3">Go to Rewards History tab to process dynamic claim.</p>
           </div>
         </div>
 
