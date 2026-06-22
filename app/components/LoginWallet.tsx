@@ -10,12 +10,13 @@ declare global {
 
 export default function LoginWallet() {
   const [wallet, setWallet] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
 
+  // Load wallet state on client side safely
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem("wallet");
-    if (saved) setWallet(saved);
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("wallet");
+      if (saved) setWallet(saved);
+    }
   }, []);
 
   const saveWallet = (address: string) => {
@@ -35,7 +36,7 @@ export default function LoginWallet() {
       setWallet(addr);
       saveWallet(addr);
     } catch (error) {
-      console.error(error);
+      console.error("Connection error:", error);
     }
   };
 
@@ -44,27 +45,28 @@ export default function LoginWallet() {
     setWallet(null);
   };
 
-  if (!mounted) return null;
-
   return (
-    <div>
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", zIndex: 9999 }}>
       {!wallet ? (
         <button 
           onClick={connectWallet}
           style={{
             background: "#2563eb",
-            color: "#fff",
-            border: "none",
-            padding: "8px 16px",
+            color: "#ffffff",
+            border: "1px solid #3b82f6",
+            padding: "10px 20px",
             borderRadius: "8px",
             cursor: "pointer",
-            fontWeight: "bold"
+            fontWeight: "bold",
+            display: "block",
+            visibility: "visible",
+            opacity: 1
           }}
         >
           Connect Wallet
         </button>
       ) : (
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#222", padding: "5px 10px", borderRadius: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#222", padding: "6px 12px", borderRadius: "8px", border: "1px solid #333" }}>
           <span style={{ fontFamily: "monospace", color: "#4ade80", fontSize: "14px" }}>
             {`${wallet.slice(0, 6)}...${wallet.slice(-4)}`}
           </span>
@@ -72,12 +74,13 @@ export default function LoginWallet() {
             onClick={disconnectWallet}
             style={{
               background: "#ef4444",
-              color: "#fff",
+              color: "#ffffff",
               border: "none",
-              padding: "4px 8px",
-              borderRadius: "5px",
+              padding: "4px 10px",
+              borderRadius: "6px",
               cursor: "pointer",
-              fontSize: "12px"
+              fontSize: "12px",
+              fontWeight: "500"
             }}
           >
             Disconnect
