@@ -16,8 +16,8 @@ export default function Dashboard() {
   const [totalStaked, setTotalStaked] = useState("15000.00");
   const [totalRewards, setTotalRewards] = useState("1250.00");
 
-  // 3. Mini Integrated Ledger Log State
-  const [recentLogs, setRecentLogs] = useState([]);
+  // 3. Mini Integrated Ledger Log State (Fixed TypeScript type definition)
+  const [recentLogs, setRecentLogs] = useState<any[]>([]);
 
   // 4. Interactive Transaction States
   const [stakeAmount, setStakeAmount] = useState("");
@@ -56,10 +56,10 @@ export default function Dashboard() {
     if (masterLogs) {
       setRecentLogs(JSON.parse(masterLogs).slice(0, 4)); // Only taking top items for sleek mini widget look
     }
-  }, []);
+  }, [mainBalance, totalStaked]); // Standard hooks safe watch matrix
 
-  // Web3 Core Action: Stake Submission Logic (Alters Core Matrix & Appends Logs Outwards)
-  const handleExecuteStaking = (e: React.FormEvent) => {
+  // Web3 Core Action: Stake Submission Logic
+  const handleExecuteStaking = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const amountToStake = parseFloat(stakeAmount);
     const available = parseFloat(mainBalance);
@@ -99,7 +99,7 @@ export default function Dashboard() {
   };
 
   // Web3 Core Action: Send Balance Outward Function
-  const handleSendAssets = (e: React.FormEvent) => {
+  const handleSendAssets = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const amountToSend = parseFloat(sendAmount);
     const available = parseFloat(mainBalance);
