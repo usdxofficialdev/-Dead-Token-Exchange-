@@ -7,7 +7,7 @@ import LoginWallet from "../components/LoginWallet";
 export default function Rewards() {
   const router = useRouter();
 
-  // 1. Dynamic Balances Configurable from Admin Panel
+  // 1. Dynamic Balances Matrix Configurable from Admin Panel
   const [claimableRewards, setClaimableRewards] = useState("342.80");
   const [totalClaimed, setTotalClaimed] = useState("1,250.00");
 
@@ -21,13 +21,13 @@ export default function Rewards() {
     { amount: "100,000,000 USDX", yield: "25% APY", description: "Genesis Foundation Tier" },
   ]);
 
-  // 3. Dynamic History Logs
+  // 3. Centralized In/Out Ledger History Array (Synced with Dashboard Staking & Rewards Claiming)
   const [rewardRows, setRewardRows] = useState([
-    { date: "2026-06-22", source: "Daily Staking Yield", amount: "+$25.40 USDX", status: "Claimed" },
-    { date: "2026-06-21", source: "Gold Tier Milestone Bonus", amount: "+$10.00 USDX", status: "Claimed" }
+    { date: "2026-06-22", source: "Daily Staking Yield", amount: "+$25.40 USDX", type: "IN", status: "Claimed" },
+    { date: "2026-06-21", source: "Gold Tier Milestone Bonus", amount: "+$10.00 USDX", type: "IN", status: "Claimed" }
   ]);
 
-  // Syncing elements with Admin database storage on load
+  // Hydrating all ledger items from Admin database storage on application load
   useEffect(() => {
     const adminTiers = localStorage.getItem("admin_staking_tiers");
     if (adminTiers) setStakingTiers(JSON.parse(adminTiers));
@@ -39,11 +39,16 @@ export default function Rewards() {
       setTotalClaimed(parsed.claimed || "1,250.00");
     }
 
+    // Dynamic pull for both IN and OUT operations logs
     const adminRewardsLog = localStorage.getItem("admin_rewards_history_list");
-    if (adminRewardsLog) setRewardRows(JSON.parse(adminRewardsLog));
+    if (adminRewardsLog) {
+      setRewardRows(JSON.parse(adminRewardsLog));
+    } else {
+      localStorage.setItem("admin_rewards_history_list", JSON.stringify(rewardRows));
+    }
   }, []);
 
-  // Claim Button functional processing trigger
+  // Functional Processing: In-Yield Claim Trigger routing tokens directly to Dashboard Main Balance
   const handleClaimRewards = () => {
     const currentClaimable = parseFloat(claimableRewards.replace(/,/g, ""));
     if (currentClaimable <= 0) {
@@ -54,37 +59,38 @@ export default function Rewards() {
     const currentClaimed = parseFloat(totalClaimed.replace(/,/g, ""));
     const newTotalClaimed = (currentClaimed + currentClaimable).toFixed(2);
     
-    // Fetch dashboard balance matrix and inject claimed amount directly
+    // Fetch and sync directly with user's core dashboard balances
     const savedDashboardBalances = localStorage.getItem("user_dashboard_balances") || '{"mainBalance":"5000.00","totalStaked":"15000.00"}';
     const parsedDashboard = JSON.parse(savedDashboardBalances);
     const currentDashboardMain = parseFloat(parsedDashboard.mainBalance);
     const newDashboardMain = (currentDashboardMain + currentClaimable).toFixed(2);
 
-    // Commit changes straight back into cross-storage nodes
+    // Commit dynamic credit back to dashboard
     localStorage.setItem("user_dashboard_balances", JSON.stringify({
       mainBalance: newDashboardMain,
       totalStaked: parsedDashboard.totalStaked
     }));
 
-    // Update internal audit logs
+    // Injecting the absolute "IN" entry log to the operational audit ledger
     const newTransactionRow = {
       date: new Date().toISOString().split('T')[0],
       source: "User Action Claim Request",
       amount: `+$${currentClaimable.toFixed(2)} USDX`,
+      type: "IN",
       status: "Claimed"
     };
     const updatedRows = [newTransactionRow, ...rewardRows];
 
-    // Local states updates
+    // Committing changes to local states
     setClaimableRewards("0.00");
     setTotalClaimed(newTotalClaimed);
     setRewardRows(updatedRows);
 
-    // Back sync to Admin ledger state
+    // Sync pipeline distribution updates straight back to admin log indexes
     localStorage.setItem("admin_reward_balances", JSON.stringify({ claimable: "0.00", claimed: newTotalClaimed }));
     localStorage.setItem("admin_rewards_history_list", JSON.stringify(updatedRows));
 
-    alert(`Successfully processed withdrawal of ${currentClaimable} USDX directly into your Liquid Balance!`);
+    alert(`Successfully processed withdrawal of ${currentClaimable} USDX directly into your Liquid Dashboard Balance!`);
   };
 
   const menuItems = [
@@ -100,7 +106,7 @@ export default function Rewards() {
   return (
     <div className="flex min-h-screen bg-[#0B0B0F] text-white">
       
-      {/* SIDEBAR SYSTEM */}
+      {/* SIDEBAR NAVIGATION GRID */}
       <aside className="w-64 border-r border-gray-800 bg-[#121218] p-6 hidden md:block">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-amber-500 tracking-wider">USDX NETWORK</h1>
@@ -123,17 +129,17 @@ export default function Rewards() {
         </nav>
       </aside>
 
-      {/* CORE HUB CONTAINER */}
+      {/* CORE WORKSPACE SPACE */}
       <main className="flex-1 p-8">
         <header className="flex flex-wrap items-center justify-between border-b border-gray-800 pb-6 mb-8 gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">Rewards Control & Distribution</h1>
-            <p className="text-sm text-gray-400">Audit historical token payouts, view system yields, and execute live state claims.</p>
+            <p className="text-sm text-gray-400">Audit transaction history (In / Out), manage system token yields, and trigger asset states.</p>
           </div>
           <LoginWallet />
         </header>
 
-        {/* BALANCES CARDS */}
+        {/* FINANCIAL DATA TILES */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-6xl">
           <div className="bg-[#121218] border border-gray-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
             <div>
@@ -154,12 +160,12 @@ export default function Rewards() {
           </div>
 
           <div className="bg-[#121218] border border-amber-500/20 p-6 rounded-2xl shadow-xl bg-gradient-to-br from-amber-500/5 to-transparent flex flex-col justify-center">
-            <span className="text-amber-500 font-bold text-sm mb-1">⚡ Instant Distribution Protocol</span>
-            <p className="text-xs text-gray-400 leading-relaxed">Claims update across system parameters instantly, piping ledger numbers straight to your main dashboard matrix.</p>
+            <span className="text-amber-500 font-bold text-sm mb-1">⚡ Dynamic Cross-Link Node</span>
+            <p className="text-xs text-gray-400 leading-relaxed">Claims pipeline liquid value directly back to the dashboard, while dashboard staking instantly logs outward history onto this audit chart.</p>
           </div>
         </div>
 
-        {/* STAKING ARCHITECTURE LIST */}
+        {/* ADVANCED STAKING TIERS MATRIX LIST */}
         <div className="mb-8 max-w-6xl">
           <h3 className="text-lg font-semibold text-amber-500 mb-4">Network Pool Staking Yield Architecture</h3>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
@@ -175,15 +181,16 @@ export default function Rewards() {
           </div>
         </div>
 
-        {/* LOGS TABLE */}
+        {/* INTEGRATED HISTORICAL IN/OUT AUDIT LOGS TABLE */}
         <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6 shadow-xl max-w-6xl">
-          <h3 className="text-xl font-bold mb-4">Staking Yield Audit Logs</h3>
+          <h3 className="text-xl font-bold mb-4">Staking & Yield Operational History Logs</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-400">
               <thead className="border-b border-gray-800 text-xs uppercase text-gray-500">
                 <tr>
-                  <th className="py-3 px-4">Distribution Timestamp</th>
-                  <th className="py-3 px-4">Origin Source</th>
+                  <th className="py-3 px-4">Timestamp</th>
+                  <th className="py-3 px-4">Operational Origin</th>
+                  <th className="py-3 px-4">Asset Type</th>
                   <th className="py-3 px-4">Allocation Mass</th>
                   <th className="py-3 px-4">System Status</th>
                 </tr>
@@ -193,9 +200,24 @@ export default function Rewards() {
                   <tr key={index} className="hover:bg-black/10 transition-colors">
                     <td className="py-4 px-4 text-gray-400 font-mono text-xs">{row.date}</td>
                     <td className="py-4 px-4 font-medium text-gray-200">{row.source}</td>
-                    <td className="py-4 px-4 text-emerald-400 font-semibold">{row.amount}</td>
                     <td className="py-4 px-4">
-                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-wider">
+                      <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
+                        row.type === "IN" 
+                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+                          : "bg-red-500/10 text-red-400 border border-red-500/20"
+                      }`}>
+                        {row.type || "IN"}
+                      </span>
+                    </td>
+                    <td className={`py-4 px-4 font-semibold ${row.type === "IN" ? "text-emerald-400" : "text-red-400"}`}>
+                      {row.amount}
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className={`text-[10px] uppercase font-black px-2 py-0.5 rounded border tracking-wider ${
+                        row.status === "Confirmed" || row.status === "Claimed"
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                      }`}>
                         {row.status}
                       </span>
                     </td>
