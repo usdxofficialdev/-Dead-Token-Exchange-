@@ -11,9 +11,11 @@ declare global {
 
 export default function LoginWallet() {
   const [wallet, setWallet] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // load saved wallet on refresh
+  // Page load hone par saved wallet check karne ke liye
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("wallet");
     if (saved) setWallet(saved);
   }, []);
@@ -24,17 +26,20 @@ export default function LoginWallet() {
 
   const connectWallet = async () => {
     if (!window.ethereum) {
-      alert("MetaMask install karo");
+      alert("MetaMask install karo bhai!");
       return;
     }
 
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-
-    const addr = accounts[0];
-    setWallet(addr);
-    saveWallet(addr);
+    try {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const addr = accounts[0];
+      setWallet(addr);
+      saveWallet(addr);
+    } catch (error) {
+      console.error("Wallet connection failed:", error);
+    }
   };
 
   const disconnectWallet = () => {
@@ -42,16 +47,43 @@ export default function LoginWallet() {
     setWallet(null);
   };
 
+  // Hydration error se bachne ke liye
+  if (!mounted) return null;
+
   return (
-    <div>
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
       {!wallet ? (
-        <button onClick={connectWallet}>
+        <button 
+          onClick={connectWallet}
+          style={{
+            background: "#2563eb",
+            color: "#fff",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+        >
           Connect Wallet
         </button>
       ) : (
-        <div>
-          <p>{wallet}</p>
-          <button onClick={disconnectWallet}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#222", padding: "5px 10px", borderRadius: "8px" }}>
+          <span style={{ fontFamily: "monospace", color: "#4ade80", fontSize: "14px" }}>
+            {`${wallet.slice(0, 6)}...${wallet.slice(-4)}`}
+          </span>
+          <button 
+            onClick={disconnectWallet}
+            style={{
+              background: "#ef4444",
+              color: "#fff",
+              border: "none",
+              padding: "4px 8px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "12px"
+            }}
+          >
             Disconnect
           </button>
         </div>
