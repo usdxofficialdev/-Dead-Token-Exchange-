@@ -2,87 +2,57 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import LoginWallet from "../components/LoginWallet"; // Real-time wallet tracking connected
 
-export default function Profile() {
+export default function ReferralProgram() {
   const router = useRouter();
 
-  // Core Inputs (State Synchronized with Browser Storage Data Control)
-  const [username, setUsername] = useState("CryptoKing");
-  const [email, setEmail] = useState("user@example.com");
-  const [selectedCode, setSelectedCode] = useState("+91");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  // Core Dynamic States connected to your Admin Control System
+  const [referralLink, setReferralLink] = useState("https://usdx.network/ref?id=90812");
+  const [referralStats, setReferralStats] = useState({
+    totalInvites: "14 Users",
+    activeStakers: "8 Active",
+    commissionEarned: "420.50 USDX",
+    pendingPayout: "45.00 USDX"
+  });
 
-  // Connected KYC States
-  const [kycStatus, setKycStatus] = useState("Not Submitted");
-  const [fullName, setFullName] = useState("");
-  const [docType, setDocType] = useState("Passport");
-  const [docNumber, setDocNumber] = useState("");
+  // Dynamic tracking table array synced with admin control panel logs
+  const [referralRows, setReferralRows] = useState([
+    { user: "0x4A1...d912", date: "2026-06-20", tier: "Gold Tier", status: "Active Staking", reward: "+85.00 USDX" },
+    { user: "0x8B3...e110", date: "2026-06-19", tier: "Silver Tier", status: "Active Staking", reward: "+35.20 USDX" },
+    { user: "am***@gmail.com", date: "2026-06-15", tier: "Bronze Tier", status: "Account Created", reward: "0.00 USDX" },
+  ]);
 
-  // Load existing data from shared local DB on mount
+  // Syncing with shared admin data payload on application mount
   useEffect(() => {
-    const savedKyc = localStorage.getItem("admin_kyc_data");
-    if (savedKyc) {
-      const parsed = JSON.parse(savedKyc);
-      setKycStatus(parsed.status || "Not Submitted");
-      setFullName(parsed.fullName || "");
-      setDocType(parsed.docType || "Passport");
-      setDocNumber(parsed.docNumber || "");
-    }
-    
-    const savedProfile = localStorage.getItem("user_profile_data");
-    if (savedProfile) {
-      const parsed = JSON.parse(savedProfile);
-      setUsername(parsed.username || "CryptoKing");
-      setEmail(parsed.email || "user@example.com");
-      setSelectedCode(parsed.selectedCode || "+91");
-      setPhoneNumber(parsed.phoneNumber || "");
-    }
+    // 1. Link configuration sync
+    const customLink = localStorage.getItem("admin_global_referral_link");
+    if (customLink) setReferralLink(customLink);
+
+    // 2. Performance Stats sync
+    const customStats = localStorage.getItem("admin_referral_stats");
+    if (customStats) setReferralStats(JSON.parse(customStats));
+
+    // 3. Network Rows history log sync
+    const customRows = localStorage.getItem("admin_referral_network_rows");
+    if (customRows) setReferralRows(JSON.parse(customRows));
   }, []);
 
+  // Professional Navigation mapping matrix
   const menuItems = [
     { name: "Dashboard", route: "/dashboard", active: false },
     { name: "Membership Plans", route: "/membership", active: false },
     { name: "Rewards History", route: "/rewards", active: false },
-    { name: "Referral Program", route: "/referral", active: false },
+    { name: "Referral Program", route: "/referral", active: true },
     { name: "Leaderboard", route: "/leaderboard", active: false },
-    { name: "Profile Settings", route: "/profile", active: true },
+    { name: "Profile Settings", route: "/profile", active: false },
     { name: "Admin Panel", route: "/admin", active: false },
   ];
-
-  const worldCountryCodes = [
-    { code: "+1", country: "US/CA" }, { code: "+44", country: "UK" },
-    { code: "+91", country: "IN" }, { code: "+971", country: "AE" },
-    { code: "+61", country: "AU" }, { code: "+65", country: "SG" },
-    { code: "+49", country: "DE" }, { code: "+33", country: "FR" },
-    { code: "+81", country: "JP" }, { code: "+86", country: "CN" }
-  ];
-
-  // Save Profile Changes
-  const handleProfileSave = () => {
-    const profileObj = { username, email, selectedCode, phoneNumber };
-    localStorage.setItem("user_profile_data", JSON.stringify(profileObj));
-    alert("Profile changes saved and synced!");
-  };
-
-  // Push Live KYC Data to Admin Connection Panel
-  const submitKycToAdmin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const kycSubmission = {
-      fullName,
-      docType,
-      docNumber,
-      status: "Pending",
-      submittedAt: new Date().toLocaleDateString()
-    };
-    localStorage.setItem("admin_kyc_data", JSON.stringify(kycSubmission));
-    setKycStatus("Pending");
-    alert("KYC Submitted! Connected directly to Admin Review Panel.");
-  };
 
   return (
     <div className="flex min-h-screen bg-[#0B0B0F] text-white">
       
-      {/* SIDEBAR COMPONENT (MATCHING DASHBOARD PERFECTLY) */}
+      {/* 1. SIDEBAR GRID SYSTEM */}
       <aside className="w-64 border-r border-gray-800 bg-[#121218] p-6 hidden md:block">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-amber-500 tracking-wider">USDX NETWORK</h1>
@@ -105,74 +75,118 @@ export default function Profile() {
         </nav>
       </aside>
 
-      {/* MAIN CONTENT WORKSPACE */}
+      {/* 2. MAIN WORKING ZONE */}
       <main className="flex-1 p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold">Profile Settings</h1>
-          <p className="text-sm text-gray-400">Manage credentials, global mobile formats, and legal KYC tracking.</p>
+        
+        {/* TOP COMPONENT HEADER HEADER */}
+        <header className="flex flex-wrap items-center justify-between border-b border-gray-800 pb-6 mb-8 gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">Referral Program</h1>
+            <p className="text-sm text-gray-400">Invite connections to the USDX Node network and instantly bag a premium 10% on their staking yield distributions.</p>
+          </div>
+          <div>
+            <LoginWallet />
+          </div>
+        </header>
+
+        {/* ADVANCED STEP: NETWORK LIVE COMMISSIONS CARD */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="bg-[#121218] border border-gray-800 p-5 rounded-xl shadow-md">
+            <span className="block text-[11px] uppercase text-gray-500 font-semibold mb-1">Total Invites</span>
+            <span className="text-xl font-bold text-white">{referralStats.totalInvites}</span>
+          </div>
+          <div className="bg-[#121218] border border-gray-800 p-5 rounded-xl shadow-md">
+            <span className="block text-[11px] uppercase text-gray-500 font-semibold mb-1">Active Stakers</span>
+            <span className="text-xl font-bold text-amber-500">{referralStats.activeStakers}</span>
+          </div>
+          <div className="bg-[#121218] border border-gray-800 p-5 rounded-xl shadow-md">
+            <span className="block text-[11px] uppercase text-gray-500 font-semibold mb-1">Commission Earned</span>
+            <span className="text-xl font-bold text-emerald-400">{referralStats.commissionEarned}</span>
+          </div>
+          <div className="bg-[#121218] border border-gray-800 p-5 rounded-xl shadow-md">
+            <span className="block text-[11px] uppercase text-gray-500 font-semibold mb-1">Pending Sync</span>
+            <span className="text-xl font-bold text-gray-400">{referralStats.pendingPayout}</span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
-          {/* PROFILE CARD */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-8 max-w-6xl">
+          
+          {/* LINK ACQUISITION BOX */}
+          <div className="lg:col-span-2 bg-[#121218] border border-gray-800 rounded-2xl p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-amber-500 mb-2">Your Premium Network Gate</h3>
+            <p className="text-xs text-gray-400 mb-4">Share this link directly. New nodes initializing through this path append to your tracking index automatically.</p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input 
+                type="text" 
+                readOnly 
+                value={referralLink} 
+                className="bg-black/40 border border-gray-800 rounded-xl px-4 py-3 flex-1 text-sm text-gray-300 outline-none select-all"
+              />
+              <button 
+                onClick={() => { navigator.clipboard.writeText(referralLink); alert("Referral gateway link copied!"); }} 
+                className="bg-amber-500 text-black font-bold px-6 py-3 rounded-xl hover:bg-amber-600 transition-all text-sm whitespace-nowrap"
+              >
+                Copy Link
+              </button>
+            </div>
+          </div>
+
+          {/* ADVANCED MILESTONES BOX */}
           <div className="bg-[#121218] border border-gray-800 rounded-2xl p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-amber-500 mb-4">Account Credentials</h3>
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-xs uppercase text-gray-400 font-semibold mb-2">Username</label>
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-500/50 transition-all" />
-              </div>
-              <div>
-                <label className="block text-xs uppercase text-gray-400 font-semibold mb-2">Email Address</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-500/50 transition-all" />
-              </div>
-              <div>
-                <label className="block text-xs uppercase text-gray-400 font-semibold mb-2">Phone Number</label>
-                <div className="flex gap-2">
-                  <select value={selectedCode} onChange={(e) => setSelectedCode(e.target.value)} className="bg-black/40 border border-gray-800 rounded-xl px-2 py-3 text-sm text-amber-500 outline-none cursor-pointer">
-                    {worldCountryCodes.map((item, i) => (
-                      <option key={i} value={item.code} className="bg-[#121218] text-white">{item.code} ({item.country})</option>
-                    ))}
-                  </select>
-                  <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="1234567890" className="flex-1 bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-500/50 transition-all" />
+            <h3 className="text-lg font-semibold text-amber-500 mb-2">Network Milestones</h3>
+            <div className="space-y-3 mt-4">
+              <div className="bg-black/20 p-3 rounded-xl border border-gray-800/40">
+                <div className="flex justify-between text-xs font-semibold mb-1">
+                  <span>Reach 20 Invites</span>
+                  <span className="text-amber-500">+50 USDX Bonus</span>
+                </div>
+                <div className="w-full bg-gray-900 h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-amber-500 h-full w-[70%]"></div>
                 </div>
               </div>
+              <p className="text-[11px] text-gray-500 leading-relaxed">Milestones automatically process tokens directly into your dynamic reward log once the metric updates.</p>
             </div>
-            <button onClick={handleProfileSave} className="bg-amber-500 text-black font-bold px-6 py-3 rounded-xl hover:bg-amber-600 transition-all text-sm w-full">
-              Save Changes
-            </button>
           </div>
 
-          {/* KYC CORE SYSTEM */}
-          <div className="bg-[#121218] border border-gray-800 rounded-2xl p-6 shadow-xl">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-amber-500">Legal KYC Verification</h3>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full border ${kycStatus === "Pending" ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" : kycStatus === "Approved" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-gray-500/10 text-gray-400 border-gray-800"}`}>
-                Status: {kycStatus}
-              </span>
-            </div>
-            <form onSubmit={submitKycToAdmin} className="space-y-4">
-              <div>
-                <label className="block text-xs uppercase text-gray-400 font-semibold mb-2">Full Legal Name</label>
-                <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Official ID Name" className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-500/50 transition-all" />
-              </div>
-              <div>
-                <label className="block text-xs uppercase text-gray-400 font-semibold mb-2">Document Type</label>
-                <select value={docType} onChange={(e) => setDocType(e.target.value)} className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-500/50">
-                  <option value="Passport" className="bg-[#121218]">Passport</option>
-                  <option value="National ID" className="bg-[#121218]">National ID Card</option>
-                  <option value="Driving License" className="bg-[#121218]">Driving License</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs uppercase text-gray-400 font-semibold mb-2">Document ID Number</label>
-                <input type="text" required value={docNumber} onChange={(e) => setDocNumber(e.target.value)} placeholder="Registration ID Number" className="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-amber-500/50 transition-all" />
-              </div>
-              <button type="submit" disabled={kycStatus === "Pending"} className={`w-full font-bold px-6 py-3 rounded-xl transition-all text-sm ${kycStatus === "Pending" ? "bg-gray-800 text-gray-500 cursor-not-allowed" : "bg-amber-500 text-black hover:bg-amber-600"}`}>
-                {kycStatus === "Pending" ? "Under Admin Review" : "Submit KYC Data"}
-              </button>
-            </form>
+        </div>
+
+        {/* 3. DYNAMIC NETWORK CONNECTION LIST LOG */}
+        <div className="rounded-2xl border border-gray-800 bg-[#121218] p-6 shadow-xl max-w-6xl">
+          <h3 className="text-xl font-bold mb-4">Referred Nodes Logs</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-400">
+              <thead className="border-b border-gray-800 text-xs uppercase text-gray-500">
+                <tr>
+                  <th className="py-3 px-4">Node Account</th>
+                  <th className="py-3 px-4">Connection Date</th>
+                  <th className="py-3 px-4">Staking Tier</th>
+                  <th className="py-3 px-4">Network Status</th>
+                  <th className="py-3 px-4">Your Yield Share</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                {referralRows.map((row, index) => (
+                  <tr key={index} className="hover:bg-black/10 transition-colors">
+                    <td className="py-4 px-4 font-mono text-white">{row.user}</td>
+                    <td className="py-4 px-4 text-gray-400 text-xs">{row.date}</td>
+                    <td className="py-4 px-4">
+                      <span className="text-xs px-2 py-0.5 rounded border border-gray-800 bg-black/20 text-gray-300">
+                        {row.tier}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className={`text-[11px] font-bold uppercase tracking-wider ${row.status.includes("Staking") ? "text-amber-500" : "text-gray-500"}`}>
+                        ● {row.status}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-emerald-400 font-semibold">{row.reward}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
+
       </main>
     </div>
   );
