@@ -10,7 +10,6 @@ export default function LoginWallet() {
   useEffect(() => {
     const savedAddress = localStorage.getItem("userAddress");
     if (savedAddress && !wallet) {
-      // Agar localStorage mein address hai toh use wapas set kar do
       setWallet(savedAddress);
     }
   }, [wallet, setWallet]);
@@ -22,6 +21,13 @@ export default function LoginWallet() {
     }
   }, [wallet]);
 
+  // 3. Logout/Disconnect Logic
+  const handleDisconnect = () => {
+    localStorage.removeItem("userAddress");
+    setWallet(null);
+    window.location.reload(); // Page refresh taki state puri tarah reset ho jaye
+  };
+
   return (
     <div>
       {!wallet ? (
@@ -29,7 +35,23 @@ export default function LoginWallet() {
           Connect Wallet / Login
         </button>
       ) : (
-        <p>Wallet: {wallet.slice(0, 6)}...{wallet.slice(-4)}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <p>Wallet: {wallet.slice(0, 6)}...{wallet.slice(-4)}</p>
+          <button 
+            onClick={handleDisconnect}
+            style={{ 
+              padding: '5px 10px', 
+              fontSize: '12px', 
+              cursor: 'pointer',
+              background: '#ff4d4d', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px' 
+            }}
+          >
+            Disconnect
+          </button>
+        </div>
       )}
     </div>
   );
