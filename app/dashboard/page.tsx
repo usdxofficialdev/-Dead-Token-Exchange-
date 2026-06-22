@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import LoginWallet from "../components/LoginWallet"; // <-- Asli wallet button ko yahan import kiya
 
 export default function DashboardPage() {
   const router = useRouter();
 
-  // Sidebar navigation ke liye items
   const menuItems = [
     { name: "Dashboard", route: "/dashboard", active: true },
     { name: "Membership Plans", route: "/membership", active: false },
@@ -46,11 +46,16 @@ export default function DashboardPage() {
       {/* 2. MAIN CONTENT AREA */}
       <main className="flex-1 p-8">
         
-        {/* Top Header (Nakli Wallet Connect aur Logout Buttons Yahan Se Saaf Kar Diye Hain) */}
+        {/* Top Header - Isme asli login/logout button daal diya hai */}
         <header className="flex flex-wrap items-center justify-between border-b border-gray-800 pb-6 mb-8 gap-4">
           <div>
             <h2 className="text-3xl font-bold">User Dashboard</h2>
             <p className="text-sm text-gray-400">Welcome back! Here is your live crypto status.</p>
+          </div>
+          
+          {/* Right side mein aapka asli working button bina design bigade */}
+          <div>
+            <LoginWallet />
           </div>
         </header>
 
