@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-/* Fix TypeScript window.ethereum */
 declare global {
   interface Window {
     ethereum?: any;
@@ -13,7 +12,6 @@ export default function LoginWallet() {
   const [wallet, setWallet] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Page load hone par saved wallet check karne ke liye
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("wallet");
@@ -29,7 +27,6 @@ export default function LoginWallet() {
       alert("MetaMask install karo bhai!");
       return;
     }
-
     try {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
@@ -38,7 +35,7 @@ export default function LoginWallet() {
       setWallet(addr);
       saveWallet(addr);
     } catch (error) {
-      console.error("Wallet connection failed:", error);
+      console.error(error);
     }
   };
 
@@ -47,11 +44,10 @@ export default function LoginWallet() {
     setWallet(null);
   };
 
-  // Hydration error se bachne ke liye
   if (!mounted) return null;
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+    <div>
       {!wallet ? (
         <button 
           onClick={connectWallet}
