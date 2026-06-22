@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [walletConnected, setWalletConnected] = useState(true); // Kyunki user connect karke aaya hai
 
   // Sidebar navigation ke liye items
   const menuItems = [
@@ -47,23 +46,11 @@ export default function DashboardPage() {
       {/* 2. MAIN CONTENT AREA */}
       <main className="flex-1 p-8">
         
-        {/* Top Navbar Inside Dashboard */}
+        {/* Top Header (Nakli Wallet Connect aur Logout Buttons Yahan Se Saaf Kar Diye Hain) */}
         <header className="flex flex-wrap items-center justify-between border-b border-gray-800 pb-6 mb-8 gap-4">
           <div>
             <h2 className="text-3xl font-bold">User Dashboard</h2>
             <p className="text-sm text-gray-400">Welcome back! Here is your live crypto status.</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="rounded-full bg-emerald-500/10 px-4 py-2 border border-emerald-500/20 text-emerald-400 text-sm font-medium flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Wallet: Connected
-            </div>
-            <button 
-              onClick={() => router.push("/login")}
-              className="text-sm text-gray-400 hover:text-red-400 transition-colors"
-            >
-              Logout
-            </button>
           </div>
         </header>
 
@@ -99,7 +86,7 @@ export default function DashboardPage() {
 
         </div>
 
-        {/* 4. RECENT ACTIVITY TABLE (TEMPLATING) */}
+        {/* 4. RECENT ACTIVITY TABLE */}
         <div className="mt-10 rounded-2xl border border-gray-800 bg-[#121218] p-6 shadow-xl">
           <h3 className="text-xl font-bold mb-4">Recent Exchange History</h3>
           <div className="overflow-x-auto">
