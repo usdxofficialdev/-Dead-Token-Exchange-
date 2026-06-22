@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import LoginWallet from "@/app/components/LoginWallet"; // <-- Is path ko maine sahi kar diya hai!
+import LoginWallet from "../components/LoginWallet"; // <-- Is path ko perfect kar diya hai
 
 export default function Navbar() {
   return (
@@ -15,7 +15,7 @@ export default function Navbar() {
       justifyContent: "space-between",
       borderBottom: "1px solid #222"
     }}>
-      {/* Navigation Links */}
+      {/* Links */}
       <div style={{ display: "flex", gap: "20px" }}>
         <Link href="/dashboard" style={{ color: "#fff", textDecoration: "none", fontWeight: "500" }}>Dashboard</Link>
         <Link href="/membership" style={{ color: "#fff", textDecoration: "none", fontWeight: "500" }}>Staking</Link>
