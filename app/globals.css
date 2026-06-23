@@ -1,42 +1,152 @@
+/* ============================================
+   GLOBAL STYLES - BLACK & GOLD THEME
+   ============================================ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body {
+
+/* CSS Variables - Easy to use across app */
+:root {
+  /* Primary Colors */
+  --color-bg-primary: #0B0B0F;
+  --color-bg-secondary: #121218;
+  --color-bg-tertiary: #1A1A24;
+  --color-bg-dark: #0E1116;
+  
+  /* Border Colors */
+  --color-border-light: #161920;
+  --color-border-gray: #2A2A35;
+  
+  /* Text Colors */
+  --color-text-white: #FFFFFF;
+  --color-text-gray: #A0A0A0;
+  --color-text-muted: #808080;
+  
+  /* Gold Theme */
+  --color-gold-primary: #F59E0B;
+  --color-gold-dark: #D97706;
+  --color-gold-light: #FCD34D;
+  
+  /* Status Colors */
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+}
+
+/* Base Styles */
+* {
   margin: 0;
   padding: 0;
-  background: #0a0a0a;
-  color: #fff;
-  font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-white);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Component Classes */
 .card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 18px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: 1rem;
+  padding: 1.5rem;
 }
 
-.btn {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
+.card-hover {
+  @apply card transition-all duration-200 hover:border-gold-500 hover:shadow-glow-gold;
 }
 
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+.btn-primary {
+  @apply bg-gold-500 text-black font-bold px-6 py-3 rounded-xl hover:bg-gold-600 transition-all;
 }
 
-.flex {
-  display: flex;
-  gap: 10px;
+.btn-secondary {
+  @apply border border-gold-500 text-gold-500 font-bold px-6 py-3 rounded-xl hover:bg-gold-500/10 transition-all;
+}
+
+.input-field {
+  @apply bg-black/40 border border-border-light rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-gold-500/50 transition-all;
+}
+
+.sidebar {
+  @apply w-64 border-r border-border-light bg-secondary-bg p-6 hidden md:flex flex-col;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-dark);
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
 }
