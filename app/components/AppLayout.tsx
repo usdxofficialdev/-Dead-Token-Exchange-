@@ -19,7 +19,7 @@ export default function AppLayout({
     <div className="flex min-h-screen bg-[#07080B] text-white">
       <Sidebar />
 
-      <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
+      <main className="flex-1 overflow-x-hidden p-4 md:p-8">
         <PageHeader
           title={title}
           description={description}
