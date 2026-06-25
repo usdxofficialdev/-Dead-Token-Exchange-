@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import PageHeader from "./PageHeader";
+import MobileNav from "./MobileNav";
 
 type AppLayoutProps = {
   children: ReactNode;
@@ -17,12 +18,15 @@ export default function AppLayout({
 }: AppLayoutProps) {
   return (
     <div className="flex min-h-screen bg-[#0B0B0F] text-white">
-      {/* Sidebar - Hidden on mobile, visible on md+ */}
+      {/* Mobile Navigation */}
+      <MobileNav />
+
+      {/* Desktop Sidebar - Hidden on mobile */}
       <div className="hidden md:block">
         <Sidebar />
       </div>
 
-      {/* Main Content - Full width on mobile, with margin on desktop */}
+      {/* Main Content */}
       <main className="w-full md:ml-64 overflow-x-hidden p-4 md:p-8">
         <PageHeader
           title={title}
