@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-export default function CompleteDashboard() {
+export default function Home() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [availableBalance, setAvailableBalance] = useState(12960.97);
   const [stakedAssets, setStakedAssets] = useState(5000.00);
@@ -16,7 +16,7 @@ export default function CompleteDashboard() {
   const [withdrawInput, setWithdrawInput] = useState("");
   const [sendAddress, setSendAddress] = useState("");
   const [sendAmount, setSendAmount] = useState("");
-  const [activeWalletTab, setActiveWalletTab] = useState("withdraw"); // withdraw | send | receive
+  const [activeWalletTab, setActiveWalletTab] = useState("withdraw");
 
   // Admin Credit/Debit Tools State
   const [adminTargetUser, setAdminTargetUser] = useState("Premium_User_90812");
@@ -39,7 +39,7 @@ export default function CompleteDashboard() {
     { id: "#TXN-85112", type: "Referral Bonus", amount: "+$50.00", status: "Succeed", date: "2026-06-17" },
   ]);
 
-  // Admin Dashboard State (Registered Users Control Data)
+  // Admin Dashboard State
   const [adminUsers, setAdminUsers] = useState([
     { username: "Premium_User_90812", email: "jordan@usdx.network", balance: 12960.97, kyc: "Tier 2 Verified" },
     { username: "Crypto_King_22", email: "king@crypto.org", balance: 45210.00, kyc: "Tier 1 Verified" },
@@ -172,23 +172,17 @@ export default function CompleteDashboard() {
     alert(`🚀 Verification request for ${selectedPlan.name} submitted! Check Admin Panel to Approve.`);
   };
 
-
-  // ====================================================
-  // 🔒 CORE ADMIN ACTIONS (THE 3 CORE ADMIN REQUIREMENT IMPLEMENTATIONS)
-  // ====================================================
-
-  // 1. Transaction State Modifier (Approve / Reject Requests)
+  // Transaction State Modifier
   const handleAdminTxnStatus = (id: string, newStatus: "Succeed" | "Rejected") => {
     setTransactions(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
     alert(`Transaction ${id} status updated to ${newStatus} by Admin!`);
   };
 
-  // 2. Direct Balance Engine (Credit/Debit System)
+  // Direct Balance Engine
   const handleAdminModifyBalance = (actionType: "CREDIT" | "DEBIT") => {
     const value = parseFloat(adminAmountInput);
     if (!value || value <= 0) return alert("Enter a valid numeric amount.");
 
-    // Update inside Admin Users Table list
     setAdminUsers(prev => prev.map(u => {
       if (u.username === adminTargetUser) {
         const revisedBalance = actionType === "CREDIT" ? u.balance + value : Math.max(0, u.balance - value);
@@ -197,12 +191,10 @@ export default function CompleteDashboard() {
       return u;
     }));
 
-    // If target is current active dashboard user, sync view state balance
     if (adminTargetUser === profile.username) {
       setAvailableBalance(prev => actionType === "CREDIT" ? prev + value : Math.max(0, prev - value));
     }
 
-    // Append standard audit logging transaction
     const logTxn = {
       id: `#ADM-${Math.floor(10000 + Math.random() * 90000)}`,
       type: `Admin ${actionType === "CREDIT" ? "Manual Credit" : "Manual Debit"}`,
@@ -215,7 +207,7 @@ export default function CompleteDashboard() {
     alert(`✅ User @${adminTargetUser} system balance updated via ${actionType}!`);
   };
 
-  // 3. User KYC State Modifier Switch
+  // User KYC State Modifier
   const handleAdminKycChange = (username: string, newKyc: string) => {
     setAdminUsers(prev => prev.map(u => u.username === username ? { ...u, kyc: newKyc } : u));
     if (username === profile.username) {
@@ -223,7 +215,6 @@ export default function CompleteDashboard() {
     }
     alert(`KYC Status for @${username} changed to ${newKyc}`);
   };
-
 
   return (
     <div className="min-h-screen bg-[#0B0C10] text-white flex flex-col md:flex-row pb-24 md:pb-0 font-sans selection:bg-[#FF9F1C] selection:text-black">
@@ -458,7 +449,7 @@ export default function CompleteDashboard() {
                 { name: "Gold Plan", price: "2,000 USDX", yield: "15% APY Daily", features: ["✔ Unlimited Members", "✔ VIP Personal Account Executive"] }
               ].map((plan, i) => (
                 <div key={i} className={`p-6 rounded-2xl flex flex-col justify-between relative shadow-xl ${plan.highlight ? 'bg-[#1F2833]/80 border-2 border-[#FF9F1C]' : 'bg-[#1F2833]/40 border border-gray-800'}`}>
-                  {plan.highlight && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF9F1C] text-black text-xs font-bold px-3 py-1 rounded-full framework tracking-wider">MOST POPULAR</span>}
+                  {plan.highlight && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF9F1C] text-black text-xs font-bold px-3 py-1 rounded-full tracking-wider">MOST POPULAR</span>}
                   <div>
                     <h3 className="text-xl font-bold mb-2 text-gray-200 mt-2">{plan.name}</h3>
                     <span className="text-3xl font-extrabold text-[#FF9F1C]">{plan.price}</span>
