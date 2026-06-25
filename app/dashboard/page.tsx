@@ -39,9 +39,9 @@ export default function Dashboard() {
       description="Monitor your account performance and earnings"
     >
       {/* Financial Stats Cards */}
-     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 animate-fade-in"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {/* Total Balance Card */}
-       <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] hover:border-amber-500/30 transition-all glow-gold">
+        <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] hover:border-amber-500/30 transition-all duration-300">
           <p className="text-xs uppercase text-gray-500 font-semibold mb-2">Total Balance</p>
           <h2 className="text-3xl md:text-4xl font-black text-amber-500 mb-4">
             ${data?.main_balance || 0}
@@ -50,7 +50,7 @@ export default function Dashboard() {
         </div>
 
         {/* Total Staked Card */}
-        <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] hover:border-amber-500/30 transition-all">
+        <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] hover:border-amber-500/30 transition-all duration-300">
           <p className="text-xs uppercase text-gray-500 font-semibold mb-2">Total Staked</p>
           <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
             ${data?.total_staked || 0}
@@ -59,7 +59,7 @@ export default function Dashboard() {
         </div>
 
         {/* Pending Rewards Card */}
-        <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] hover:border-amber-500/30 transition-all">
+        <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] hover:border-amber-500/30 transition-all duration-300">
           <p className="text-xs uppercase text-gray-500 font-semibold mb-2">Pending Rewards</p>
           <h2 className="text-3xl md:text-4xl font-black text-emerald-400 mb-4">
             ${data?.pending_rewards || 0}
@@ -72,16 +72,16 @@ export default function Dashboard() {
       <div className="bg-[#121218] p-6 rounded-lg border border-[#2A2A35] mb-8">
         <h3 className="text-lg font-bold text-white mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-         <button className="btn-primary">
+          <button className="bg-amber-500 text-black font-bold py-3 rounded-lg hover:bg-amber-600 transition-all duration-200 transform hover:scale-105">
             Stake Now
           </button>
-          <button className="border border-amber-500 text-amber-500 font-bold py-3 rounded-lg hover:bg-amber-500/10 transition-all">
+          <button className="border border-amber-500 text-amber-500 font-bold py-3 rounded-lg hover:bg-amber-500/10 transition-all duration-200">
             Claim Rewards
           </button>
-          <button className="border border-[#2A2A35] text-white font-bold py-3 rounded-lg hover:bg-[#1A1A24] transition-all">
+          <button className="border border-[#2A2A35] text-white font-bold py-3 rounded-lg hover:bg-[#1A1A24] transition-all duration-200">
             View History
           </button>
-          <button className="border border-[#2A2A35] text-white font-bold py-3 rounded-lg hover:bg-[#1A1A24] transition-all">
+          <button className="border border-[#2A2A35] text-white font-bold py-3 rounded-lg hover:bg-[#1A1A24] transition-all duration-200">
             Settings
           </button>
         </div>
