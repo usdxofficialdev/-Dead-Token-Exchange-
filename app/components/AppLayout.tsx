@@ -17,9 +17,13 @@ export default function AppLayout({
 }: AppLayoutProps) {
   return (
     <div className="flex min-h-screen bg-[#0B0B0F] text-white">
-      <Sidebar />
+      {/* Sidebar - Hidden on mobile, visible on md and up */}
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
 
-      <main className="flex-1 ml-64 overflow-x-hidden p-4 md:p-8">
+      {/* Main Content */}
+      <main className="w-full md:ml-64 overflow-x-hidden p-4 md:p-8">
         <PageHeader
           title={title}
           description={description}
