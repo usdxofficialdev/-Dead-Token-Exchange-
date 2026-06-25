@@ -1,280 +1,115 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AppLayout from "../components/AppLayout";
 
-type MembershipPlan = {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  features: string[];
-  popular: boolean;
-};
+export default function Membership() {
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [txHash, setTxHash] = useState("");
+  const [isMember, setIsMember] = useState(false);
 
-export default function MembershipPlans() {
-  const defaultPlans: MembershipPlan[] = [
-    {
-      id: 1,
-      name: "Starter Tier",
-      price: 10,
-      currency: "USDX",
-      features: [
-        "Basic Node Access",
-        "5% APY Staking Bracket",
-        "Standard Ticket Support",
-      ],
-      popular: false,
-    },
-    {
-      id: 2,
-      name: "Micro Node",
-      price: 50,
-      currency: "USDX",
-      features: [
-        "Priority Node Access",
-        "6% APY Staking Bracket",
-        "Community Chat Access",
-      ],
-      popular: false,
-    },
-    {
-      id: 3,
-      name: "Advanced Node",
-      price: 100,
-      currency: "USDX",
-      features: [
-        "Validator Access (Level 1)",
-        "8% APY Staking Bracket",
-        "24/7 Support Line",
-      ],
-      popular: false,
-    },
-    {
-      id: 4,
-      name: "Pro Validator",
-      price: 200,
-      currency: "USDX",
-      features: [
-        "Validator Access (Level 2)",
-        "10% APY Staking Bracket",
-        "Zero Gas Fee Mints",
-      ],
-      popular: true,
-    },
-    {
-      id: 5,
-      name: "Silver Node",
-      price: 500,
-      currency: "USDX",
-      features: [
-        "Exclusive Liquid Pools",
-        "12% APY Staking Bracket",
-        "Direct Discord Dev Channel",
-      ],
-      popular: false,
-    },
-    {
-      id: 6,
-      name: "Gold Node",
-      price: 1000,
-      currency: "USDX",
-      features: [
-        "Matching Bonuses Activated",
-        "15% APY Staking Bracket",
-        "Personal Account Executive",
-      ],
-      popular: false,
-    },
-    {
-      id: 7,
-      name: "Platinum Cluster",
-      price: 2500,
-      currency: "USDX",
-      features: [
-        "Custom Pool Generation",
-        "16.5% APY Staking Bracket",
-        "Early Governance Voting Rights",
-      ],
-      popular: false,
-    },
-    {
-      id: 8,
-      name: "Diamond Node",
-      price: 5000,
-      currency: "USDX",
-      features: [
-        "Unlimited Node Spawning",
-        "18% APY Staking Bracket",
-        "VIP Real-World Event Invites",
-      ],
-      popular: false,
-    },
-    {
-      id: 9,
-      name: "Alpha Whale",
-      price: 10000,
-      currency: "USDX",
-      features: [
-        "Institutional Liquidity Access",
-        "22% APY Staking Bracket",
-        "Direct Developer Voice Calls",
-      ],
-      popular: false,
-    },
-    {
-      id: 10,
-      name: "Genesis Foundation",
-      price: 25000,
-      currency: "USDX",
-      features: [
-        "Full System Revenue Share",
-        "25% APY Staking Bracket",
-        "Core Network Board Seat",
-      ],
-      popular: false,
-    },
+  const plans = [
+    { id: "bronze", name: "Bronze", price: "100 USDX", apy: "5%", features: ["Basic staking", "Monthly rewards", "Community access"] },
+    { id: "silver", name: "Silver", price: "500 USDX", apy: "8%", features: ["Advanced staking", "Daily rewards", "Priority support"] },
+    { id: "gold", name: "Gold", price: "1000 USDX", apy: "15%", features: ["Premium staking", "Real-time rewards", "VIP access", "Referral commissions"] },
   ];
 
-  const [plans, setPlans] = useState<MembershipPlan[]>(defaultPlans);
+  const handleBuyNow = (planId: string) => {
+    setSelectedPlan(planId);
+    setShowPayment(true);
+  };
 
-  useEffect(() => {
-    const adminPlans = localStorage.getItem("admin_membership_plans");
-
-    if (adminPlans) {
-      setPlans(JSON.parse(adminPlans));
-    } else {
-      localStorage.setItem(
-        "admin_membership_plans",
-        JSON.stringify(defaultPlans)
-      );
-    }
-  }, []);
-
-  const handlePurchasePlan = (plan: MembershipPlan) => {
-    const dashboardData =
-      localStorage.getItem("user_dashboard_balances") ||
-      '{"mainBalance":"5000.00","totalStaked":"15000.00"}';
-
-    const parsedDashboard = JSON.parse(dashboardData);
-    const mainBalance = parseFloat(parsedDashboard.mainBalance);
-
-    if (mainBalance < plan.price) {
-      alert(
-        `Insufficient funds. Required ${plan.price} ${plan.currency}`
-      );
+  const handleConfirmPurchase = () => {
+    if (!txHash) {
+      alert("Enter TRX Hash!");
       return;
     }
 
-    if (
-      !window.confirm(
-        `Purchase ${plan.name} for ${plan.price} ${plan.currency}?`
-      )
-    ) {
-      return;
-    }
+    const plan = plans.find(p => p.id === selectedPlan);
+    const purchaseData = {
+      plan: plan?.name,
+      amount: plan?.price,
+      txHash: txHash,
+      date: new Date().toISOString().split('T')[0],
+      status: "Pending"
+    };
 
-    const newBalance = (mainBalance - plan.price).toFixed(2);
+    localStorage.setItem("user_membership_purchase", JSON.stringify(purchaseData));
+    localStorage.setItem("user_is_member", "true");
+    localStorage.setItem("user_membership_date", new Date().toISOString().split('T')[0]);
 
-    localStorage.setItem(
-      "user_dashboard_balances",
-      JSON.stringify({
-        mainBalance: newBalance,
-        totalStaked: parsedDashboard.totalStaked,
-      })
-    );
+    const adminPurchases = JSON.parse(localStorage.getItem("admin_membership_purchases") || "[]");
+    adminPurchases.push(purchaseData);
+    localStorage.setItem("admin_membership_purchases", JSON.stringify(adminPurchases));
 
-    localStorage.setItem(
-      "user_active_membership",
-      JSON.stringify(plan)
-    );
-
-    const logs = JSON.parse(
-      localStorage.getItem("admin_rewards_history_list") || "[]"
-    );
-
-    logs.unshift({
-      date: new Date().toISOString().split("T")[0],
-      source: `Purchased ${plan.name}`,
-      amount: `-${plan.price} ${plan.currency}`,
-      type: "OUT",
-      status: "Confirmed",
-    });
-
-    localStorage.setItem(
-      "admin_rewards_history_list",
-      JSON.stringify(logs)
-    );
-
-    alert(
-      `${plan.name} activated successfully.\nBalance: ${newBalance} ${plan.currency}`
-    );
+    alert(`✅ Purchase Submitted!\nPlan: ${plan?.name}\nStatus: Pending Admin Approval`);
+    setShowPayment(false);
+    setTxHash("");
+    setSelectedPlan(null);
+    setIsMember(true);
   };
 
   return (
-    <AppLayout
-      title="Premium Network Memberships"
-      description="Unlock staking rewards, validator access and premium network benefits."
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
+    <AppLayout title="Membership Plans" description="Choose your membership tier">
+      {isMember && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-lg mb-8">
+          <h3 className="text-lg font-bold text-emerald-400">✅ You are a Premium Member!</h3>
+          <p className="text-sm text-gray-400 mt-2">Enjoy daily rewards, staking benefits, and referral commissions.</p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {plans.map((plan) => (
-          <div
-            key={plan.id}
-            className={`rounded-2xl border p-5 flex flex-col justify-between transition-all bg-[#0E1116]
-            ${
-              plan.popular
-                ? "border-amber-500 shadow-lg"
-                : "border-[#161920]"
-            }`}
-          >
-            <div>
-              {plan.popular && (
-                <span className="inline-block mb-3 rounded-lg bg-amber-500 px-2 py-1 text-[10px] font-black uppercase text-black">
-                  Most Popular
-                </span>
-              )}
+          <div key={plan.id} className="bg-[#121218] border border-[#2A2A35] rounded-lg p-6 hover:border-amber-500/30 transition-all">
+            <h3 className="text-2xl font-black text-amber-500 mb-2">{plan.name}</h3>
+            <p className="text-3xl font-bold text-white mb-2">{plan.price}</p>
+            <p className="text-sm text-gray-400 mb-4">APY: <span className="text-emerald-400 font-bold">{plan.apy}</span></p>
 
-              <h3 className="text-lg font-bold text-white">
-                {plan.name}
-              </h3>
-
-              <div className="mt-4 mb-6">
-                <span className="text-3xl font-black">
-                  {plan.price.toLocaleString()}
-                </span>
-
-                <span className="ml-2 text-xs font-bold text-amber-500">
-                  {plan.currency}
-                </span>
-              </div>
-
-              <ul className="space-y-3 border-t border-[#161920] pt-4">
-                {plan.features.map((feature, index) => (
-                  <li
-                    key={index}
-                    className="flex gap-2 text-xs text-gray-400"
-                  >
-                    <span className="text-amber-500">✓</span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+            <div className="space-y-2 mb-6">
+              {plan.features.map((feature, idx) => (
+                <div key={idx} className="text-sm text-gray-300 flex items-center">
+                  <span className="text-amber-500 mr-2">✓</span>{feature}
+                </div>
+              ))}
             </div>
 
-            <button
-              onClick={() => handlePurchasePlan(plan)}
-              className={`mt-6 w-full rounded-xl py-3 text-xs font-bold transition-all
-              ${
-                plan.popular
-                  ? "bg-amber-500 text-black hover:bg-amber-600"
-                  : "border border-[#161920] bg-black/20 text-white hover:bg-[#141922]"
-              }`}
-            >
-              Purchase Membership
+            <button onClick={() => handleBuyNow(plan.id)} className="w-full bg-amber-500 text-black font-bold py-3 rounded-lg hover:bg-amber-600 transition-all">
+              Buy Now
             </button>
           </div>
         ))}
       </div>
+
+      {showPayment && selectedPlan && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#121218] border border-[#2A2A35] rounded-lg p-8 max-w-md w-full">
+            <h3 className="text-2xl font-bold text-white mb-4">Complete Purchase</h3>
+
+            <div className="bg-black/40 p-4 rounded-lg mb-4">
+              <p className="text-sm text-gray-400 mb-2">Plan: <span className="text-white font-bold">{plans.find(p => p.id === selectedPlan)?.name}</span></p>
+              <p className="text-sm text-gray-400">Amount: <span className="text-amber-500 font-bold">{plans.find(p => p.id === selectedPlan)?.price}</span></p>
+            </div>
+
+            <div className="mb-4 p-4 bg-black/40 rounded-lg text-center">
+              <p className="text-xs text-gray-400 mb-2">Send to Wallet Address:</p>
+              <p className="text-sm font-mono text-amber-500 break-all">0x742d35Cc6634C0532925a3b844Bc9e7595f...</p>
+              <button className="text-xs text-gray-400 hover:text-gray-300 mt-2">Copy Address</button>
+            </div>
+
+            <input type="text" placeholder="Enter TRX Hash" value={txHash} onChange={(e) => setTxHash(e.target.value)} className="w-full bg-black/40 border border-[#2A2A35] rounded-lg px-4 py-3 text-white mb-4 outline-none" />
+
+            <div className="flex gap-3">
+              <button onClick={handleConfirmPurchase} className="flex-1 bg-emerald-500 text-black font-bold py-3 rounded-lg hover:bg-emerald-600">
+                Confirm
+              </button>
+              <button onClick={() => { setShowPayment(false); setTxHash(""); }} className="flex-1 border border-gray-600 text-gray-400 font-bold py-3 rounded-lg hover:bg-gray-900">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }
