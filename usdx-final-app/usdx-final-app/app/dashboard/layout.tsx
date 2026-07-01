@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Login - USDX Network',
-  description: 'Connect your wallet to start staking',
+  title: 'Dashboard - USDX Network',
+  description: 'Manage your stakes and rewards',
 }
 
-export default function LoginLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
