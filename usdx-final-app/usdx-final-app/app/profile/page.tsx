@@ -1,91 +1,69 @@
 'use client'
 
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { User, Wallet, Settings } from 'lucide-react'
-import { useAccount } from 'wagmi'
 
 export default function ProfilePage() {
-  const { address } = useAccount()
-
   return (
-    <div className="min-h-screen bg-black p-8">
-      <Link href="/dashboard" className="text-[#e8c547] hover:text-[#d4a25e] mb-6 inline-block">← Back to Dashboard</Link>
-      
+    <div className="min-h-screen bg-gradient-dark p-6">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">My Profile</h1>
-
-        {/* PROFILE INFO */}
-        <div className="bg-[#0a0a12] border border-[#1a1a24] rounded-lg p-8 mb-6">
-          <div className="flex items-center gap-6 mb-8">
-            <div className="w-20 h-20 bg-[#e8c547] rounded-full flex items-center justify-center">
-              <User size={40} className="text-black" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">User Profile</h2>
-              <p className="text-gray-400 font-mono">{address}</p>
-            </div>
-          </div>
-
-          {/* STATS */}
-          <div className="grid md:grid-cols-3 gap-4 mb-8 pb-8 border-b border-[#1a1a24]">
-            <div>
-              <p className="text-gray-400 text-sm mb-1">Total Staked</p>
-              <p className="text-2xl font-bold text-[#e8c547]">800.00 USDX</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm mb-1">Total Rewards</p>
-              <p className="text-2xl font-bold text-[#e8c547]">120.50 USDX</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm mb-1">Lifetime Earnings</p>
-              <p className="text-2xl font-bold text-[#e8c547]">320.75 USDX</p>
-            </div>
-          </div>
-
-          {/* EDIT SETTINGS */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold flex items-center gap-2 mb-4">
-              <Settings size={20} /> Settings
-            </h3>
-            
-            <div>
-              <label className="text-gray-400 text-sm mb-2 block">Email (Optional)</label>
-              <input type="email" placeholder="your@email.com" className="w-full bg-[#1a1a24] border border-[#2a2a34] rounded px-4 py-2 focus:border-[#e8c547]" />
-            </div>
-
-            <div>
-              <label className="text-gray-400 text-sm mb-2 block">Preferred Currency</label>
-              <select className="w-full bg-[#1a1a24] border border-[#2a2a34] rounded px-4 py-2 focus:border-[#e8c547]">
-                <option>USDX</option>
-                <option>USD</option>
-                <option>EUR</option>
-              </select>
-            </div>
-
-            <label className="flex items-center gap-3 mt-6">
-              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#e8c547]" />
-              <span className="text-sm text-gray-400">Enable Email Notifications</span>
-            </label>
-
-            <label className="flex items-center gap-3">
-              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#e8c547]" />
-              <span className="text-sm text-gray-400">Auto-Claim Rewards</span>
-            </label>
-
-            <button className="w-full mt-8 bg-gradient-to-r from-[#e8c547] to-[#d4a25e] text-black font-bold py-2 rounded hover:shadow-lg hover:shadow-[#e8c547]/50">
-              Save Settings
-            </button>
-          </div>
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/dashboard" className="flex items-center gap-2 text-[#e8c547] hover:text-white transition mb-4">
+            <ArrowLeft size={20} />
+            Back to Dashboard
+          </Link>
+          <h1 className="text-4xl font-bold">Profile</h1>
+          <p className="text-gray-400 mt-2">View and edit your profile information</p>
         </div>
 
-        {/* WALLET INFO */}
-        <div className="bg-[#0a0a12] border border-[#1a1a24] rounded-lg p-8">
-          <h3 className="text-lg font-bold flex items-center gap-2 mb-4">
-            <Wallet size={20} /> Connected Wallet
-          </h3>
-          <div className="bg-[#1a1a24] p-4 rounded flex justify-between items-center">
-            <p className="font-mono text-[#e8c547]">{address}</p>
-            <button className="text-gray-400 hover:text-[#e8c547]">Copy</button>
+        {/* Profile Card */}
+        <div className="glass rounded-lg p-8 space-y-6">
+          {/* Avatar */}
+          <div className="flex justify-center">
+            <div className="w-24 h-24 bg-gradient-gold rounded-lg flex items-center justify-center font-bold text-4xl text-black shadow-glow">
+              U
+            </div>
+          </div>
+
+          {/* Info */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Wallet Address</label>
+              <p className="text-white font-mono">0x742d35Cc6634C0532925a3b844Bc9e7595f9...def</p>
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Member Since</label>
+              <p className="text-white">May 15, 2024</p>
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Current Tier</label>
+              <p className="text-[#e8c547] font-bold">👑 Gold Member</p>
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Account Status</label>
+              <p className="text-green-500 font-bold">✓ Verified</p>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#e8c547]/20">
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Total Staked</p>
+              <p className="text-xl font-bold">800 USDX</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Total Earned</p>
+              <p className="text-xl font-bold text-[#e8c547]">320.75 USDX</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Active Stakes</p>
+              <p className="text-xl font-bold">1</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Referrals</p>
+              <p className="text-xl font-bold">12</p>
+            </div>
           </div>
         </div>
       </div>
