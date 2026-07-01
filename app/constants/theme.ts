@@ -1,5 +1,0 @@
-export const COLORS = {
-  GOLD_PRIMARY: "#F59E0B",
-  BG_PRIMARY: "#0B0B0F",
-  BG_SECONDARY: "#121218",
-};
